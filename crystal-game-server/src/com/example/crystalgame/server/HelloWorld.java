@@ -1,3 +1,4 @@
+package com.example.crystalgame.server;
 
 /**
  * This is a Sample HelloWorld program
