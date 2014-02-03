@@ -1,9 +1,9 @@
 package com.example.crystalgame;
 
-import com.example.crystalgame.library.Dummy;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Menu;
 
 public class MainActivity extends Activity {
@@ -13,8 +13,9 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		// This is a test to see if the com.example.crystalgame.library element are loading
-		Dummy d = new Dummy();
+		/*Calling GPS activity*/
+		Intent intent = new Intent(getApplicationContext(), GpsActivity.class);
+		startActivity(intent);
 	}
 
 	@Override
