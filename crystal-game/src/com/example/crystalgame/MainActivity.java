@@ -1,25 +1,22 @@
 package com.example.crystalgame;
 
+
 import com.example.crystalgame.communication.CommunicationService;
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
-import android.view.View;
 
 public class MainActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getApplicationContext().startService(new Intent(getBaseContext(), CommunicationService.class));
 		setContentView(R.layout.activity_main);
 	}
 	
-	public void startService(View view) {
-
-		startService(new Intent(getBaseContext(), CommunicationService.class));
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

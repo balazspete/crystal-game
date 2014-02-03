@@ -23,7 +23,7 @@
         </activity>
         <service 
             android:name="com.example.crystalgame.communication.CommunicationService"
-            android:enabled="false">
+            android:enabled="true">
             
         </service>
     </application>
