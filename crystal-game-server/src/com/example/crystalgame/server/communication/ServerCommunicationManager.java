@@ -2,6 +2,7 @@ package com.example.crystalgame.server.communication;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,13 +21,13 @@ public class ServerCommunicationManager extends CommunicationManager {
 
 	public static final int MAX_THREADS = 100;
 	
-	private ConcurrentHashMap<String, ConnectionHandler> connections;
+	private HashMap<String, ConnectionHandler> connections;
 	
 	private ServerSocket serverSocket;
 	private ExecutorService pool;
 	
 	public ServerCommunicationManager() {
-		connections = new ConcurrentHashMap<String, ConnectionHandler>();
+		connections = new HashMap<String, ConnectionHandler>();
 	}
 	
 	/**
@@ -81,7 +82,7 @@ public class ServerCommunicationManager extends CommunicationManager {
 		
 		do {
 			id = RandomID.getRandomId();
-		} while (connections.contains(id));
+		} while (connections.containsKey(id));
 		
 		return id;
 	}
