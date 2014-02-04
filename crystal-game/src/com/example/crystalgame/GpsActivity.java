@@ -5,6 +5,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 
 import android.location.Criteria;
 import android.location.Location;
@@ -24,6 +26,7 @@ public class GpsActivity extends FragmentActivity implements LocationListener{
 	
 	LocationManager locationManager;
 	String locationFind;
+	LocalMapPolygon localMapPolygon;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,11 +57,12 @@ public class GpsActivity extends FragmentActivity implements LocationListener{
        String display = "My Location is : Latitude + Longitude -> "+latitude+ " "+longitude;
        
        /*display on the map*/
-       Toast.makeText(getApplicationContext(),display,Toast.LENGTH_LONG ).show();
+       //Toast.makeText(getApplicationContext(),display,Toast.LENGTH_LONG ).show();
        
        LocationEvent place1 = new LocationEvent(53.3436688, -6.247169);
        LocationEvent place2 = new LocationEvent(53.347067, -6.250805);
-       LocationEvent place3 = new LocationEvent(53.34553, -6.262392);
+       LocationEvent place3 = new LocationEvent(53.3446688, -6.264616);
+      
        
        // Add three dummy locations that are nearby
        map.addMarker(new MarkerOptions()
@@ -78,8 +82,20 @@ public class GpsActivity extends FragmentActivity implements LocationListener{
        .snippet("Player3")
        .position(new LatLng(place3.getLattitudePosition(), place3.getLongitudePosition()))
        );
+       
+       localMapPolygon = new LocalMapPolygon();
+       map = localMapPolygon.createPolygon(map);
+       
+       Boolean boolean1 = localMapPolygon.playerPositionLocalMap(place3.getLattitudePosition(),place3.getLongitudePosition());
+       if(boolean1 == true)
+       {
+    	   Toast.makeText(getApplicationContext(), "true for player",Toast.LENGTH_SHORT).show();
+    	   LatLng latLng = localMapPolygon.zoomCenterPoint();
+    	   map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+    	   
+       }
        /*zoom Camera*/
-       map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(place1.getLattitudePosition(),place1.getLongitudePosition()), 13));
+       //map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(place1.getLattitudePosition(),place1.getLongitudePosition()), 13));
 	}
 
 	@Override
