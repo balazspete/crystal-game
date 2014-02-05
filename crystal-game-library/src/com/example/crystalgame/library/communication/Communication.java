@@ -29,6 +29,9 @@ public class Communication {
 		// TODO: initialise remaining components
 		
 		this.manager.addAbstraction(abstraction);
+		
+		manager.start();
+
 	}
 	
 }
