@@ -1,5 +1,7 @@
 package com.example.crystalgame.communication;
 
+import com.example.crystalgame.library.communication.Communication;
+
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -13,18 +15,18 @@ import android.widget.Toast;
  */
 public class CommunicationService extends Service {
 
+	private Communication communication;
+	
 	public void onCreate() {
 		super.onCreate();
+		ClientCommunicationManager manager = new ClientCommunicationManager("192.168.1.8", 3000);
+		communication = new Communication(manager);
 	}
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		startService(intent);
-		
-		// TODO: remove 
-		Toast.makeText(this, "Service Started", Toast.LENGTH_SHORT).show();
-		
-		return START_NOT_STICKY;
+		return START_STICKY;
 	}
 	
 	@Override
