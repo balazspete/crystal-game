@@ -29,6 +29,11 @@ public class ClientCommunicationManager extends CommunicationManager {
 	private String address;
 	private int port;
 	
+	/**
+	 * Create a CommunicationManager for the client
+	 * @param address The address of the remote to connect to
+	 * @param port The port number to use for the connection
+	 */
 	public ClientCommunicationManager(String address, int port) {
 		this.address = address;
 		this.port = port;
@@ -57,7 +62,9 @@ public class ClientCommunicationManager extends CommunicationManager {
 				
 				socket = new Socket(address, port);
 				handler = new ConnectionHandler(this.abstraction, "", socket);
-				Log.i("ComunicationManager", "Connection to " + address + "successful!");
+				
+				Log.i("ComunicationManager", "Connection to " + address + " successful!");
+				
 				handler.run();
 			} catch (UnknownHostException e) {
 				Log.e("ClientCommunicationManager", "Connection failed, unknown remote " + address);
@@ -67,6 +74,7 @@ public class ClientCommunicationManager extends CommunicationManager {
 				if (socket != null) {
 					try {
 						socket.close();
+						
 						Log.i("ClientCommunicationManager", "Connection to " + address + " closed");
 					} catch (IOException e) {
 						Log.e("ClientCommunicationManager", "Connection already closed");
