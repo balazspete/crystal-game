@@ -23,11 +23,14 @@ public class ServerCommunicationManager extends CommunicationManager {
 	
 	private HashMap<String, ConnectionHandler> connections;
 	
+	private int port;
+	
 	private ServerSocket serverSocket;
 	private ExecutorService pool;
 	
-	public ServerCommunicationManager() {
+	public ServerCommunicationManager(int port) {
 		connections = new HashMap<String, ConnectionHandler>();
+		this.port = port;
 	}
 	
 	/**
@@ -35,7 +38,7 @@ public class ServerCommunicationManager extends CommunicationManager {
 	 * @param port The port to bind to
 	 * @throws CommunicationFailureException Thrown in case of an error
 	 */
-	public void initialise(int port) throws CommunicationFailureException {
+	public void initialise() throws CommunicationFailureException {
 		pool = Executors.newFixedThreadPool(MAX_THREADS);
 		
 		try {
@@ -47,7 +50,12 @@ public class ServerCommunicationManager extends CommunicationManager {
 	
 	@Override
 	public void run() {
-		handleConnections();
+		try {
+			initialise();
+			handleConnections();
+		} catch (CommunicationFailureException e) {
+			System.err.println(e.getMessage());
+		}
 	}
 
 	@Override
