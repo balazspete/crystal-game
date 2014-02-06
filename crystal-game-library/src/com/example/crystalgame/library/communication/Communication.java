@@ -6,32 +6,33 @@ import com.example.crystalgame.library.communication.outgoing.OutgoingMessages;
 
 /**
  * Interface of the Communication module
- * @author Balazs Pete, Shen Chen
+ * @author Balazs Pete, Shen Chen, Allen Thomas Varghese
  *
  */
 public class Communication {
 
 	private CommunicationManager manager;
 	private AbstractionModule abstraction;
-	private IncomingMessages incoming;
-	private OutgoingMessages outgoing;
+	public final IncomingMessages in;
+	public final OutgoingMessages out;
 	
 	/**
 	 * Initialise a new instance of the Communication module
 	 * @param manager The CommunicationManager to be used
 	 */
-	public Communication(CommunicationManager manager) {
+	public Communication(CommunicationManager manager, OutgoingMessages outgoing) {
 		this.manager = manager;
 		
 		this.abstraction = new AbstractionModule();
 		this.abstraction.initialise(manager);
 		
-		// TODO: initialise remaining components
+		this.in = new IncomingMessages(abstraction);
+		this.out = outgoing;
+		this.out.setAbstraction(abstraction);
 		
 		this.manager.addAbstraction(abstraction);
 		
 		manager.start();
-
 	}
 	
 }

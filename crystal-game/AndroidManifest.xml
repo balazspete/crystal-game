@@ -9,6 +9,7 @@
         android:targetSdkVersion="18" />
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <application
+        android:name="com.example.crystalgame.CrystalGame"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"

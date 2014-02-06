@@ -1,9 +1,9 @@
 package com.example.crystalgame.server.communication;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.ServerSocket;
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -59,8 +59,13 @@ public class ServerCommunicationManager extends CommunicationManager {
 	}
 
 	@Override
-	public void sendData(String id, String data) throws CommunicationFailureException {
+	public void sendData(String id, Serializable data) throws CommunicationFailureException {
 		ConnectionHandler handler = connections.get(id);
+		if (handler == null || handler.isClosed()) {
+			connections.remove(id);
+			throw CommunicationFailureException.FAILED_TO_TRANSMIT;
+		}
+		
 		handler.send(data);
 	}
 	

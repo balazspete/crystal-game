@@ -1,12 +1,11 @@
 package com.example.crystalgame.communication;
 
+import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.library.communication.Communication;
 
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.util.Log;
-import android.widget.Toast;
 
 /**
  * The service responsible for the management of communication
@@ -20,7 +19,11 @@ public class CommunicationService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		ClientCommunicationManager manager = new ClientCommunicationManager("192.168.1.8", 3000);
-		communication = new Communication(manager);
+		ClientOutgoingMessages out = new ClientOutgoingMessages();
+		communication = new Communication(manager, out);
+		
+		CrystalGame app = (CrystalGame) getApplication();
+    	app.addCommunication(communication);
 	}
 	
 	@Override

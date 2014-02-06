@@ -1,5 +1,7 @@
 package com.example.crystalgame.library.communication;
 
+import java.io.Serializable;
+
 import com.example.crystalgame.library.communication.abstraction.AbstractionModule;
 
 /**
@@ -25,6 +27,6 @@ public abstract class CommunicationManager extends Thread {
 	 * @param data The data to be sent
 	 * @throws CommunicationFailureException Thrown in case of an error
 	 */
-	public abstract void sendData(String id, String data) throws CommunicationFailureException;
+	public abstract void sendData(String id, Serializable data) throws CommunicationFailureException;
 	
 }

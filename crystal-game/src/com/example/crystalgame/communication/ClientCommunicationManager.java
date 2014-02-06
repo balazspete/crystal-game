@@ -4,8 +4,7 @@
 package com.example.crystalgame.communication;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -40,9 +39,8 @@ public class ClientCommunicationManager extends CommunicationManager {
 	}
 	
 	@Override
-	public void sendData(String id, String data)
+	public void sendData(String id, Serializable data)
 			throws CommunicationFailureException {
-		// TODO Auto-generated method stub
 		if (handler == null) {
 			throw CommunicationFailureException.FAILED_TO_TRANSMIT;
 		}

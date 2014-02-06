@@ -15,7 +15,8 @@ public class CommunicationFailureException extends Exception {
 	public static final CommunicationFailureException 
 		FAILED_TO_INITIALISE = new CommunicationFailureException("Failed to initialise connection"),
 		FAILED_TO_TRANSMIT = new CommunicationFailureException("Failed to transmit"),
-		FAILED_TO_CONNECT = new CommunicationFailureException("Failed to connect to remote");
+		FAILED_TO_CONNECT = new CommunicationFailureException("Failed to connect to remote"),
+		FAILED_TO_SERIALISE = new CommunicationFailureException("Failed to serialise the message");
 			
 	public CommunicationFailureException(String message) {
 		super(message);
