@@ -1,14 +1,11 @@
 package com.example.crystalgame;
 
-import com.example.crystalgame.communication.ClientOutgoingMessages;
-import com.example.crystalgame.library.communication.Communication;
+import com.example.crystalgame.communication.ClientCommunication;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polygon;
-import com.google.android.gms.maps.model.PolygonOptions;
 
 import android.location.Criteria;
 import android.location.Location;
@@ -16,8 +13,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 /**
@@ -99,10 +98,9 @@ public class GpsActivity extends FragmentActivity implements LocationListener{
 	       /*zoom Camera*/
 	       //map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(place1.getLattitudePosition(),place1.getLongitudePosition()), 13));
 	       
-	       Communication communication = ((CrystalGame) getApplication()).getCommunication();
+	       ClientCommunication communication = ((CrystalGame) getApplication()).getCommunication();
 	       if (communication != null) {
-		       ClientOutgoingMessages out = (ClientOutgoingMessages) communication.out;
-		       out.sendTestDataToServer(""+latitude+ " "+longitude);
+		       communication.out.sendTestDataToServer(""+latitude+ " "+longitude);
 	       }
        }
 	}
@@ -137,5 +135,10 @@ public class GpsActivity extends FragmentActivity implements LocationListener{
 		// TODO Auto-generated method stub
 		
 	}
+	
+    public boolean showSettings(MenuItem item) {
+    	startActivity(new Intent(this, SettingsActivity.class));
+    	return true;
+    }
 
 }

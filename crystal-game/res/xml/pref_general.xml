@@ -1,0 +1,22 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="@string/pref_default_server_address"
+        android:inputType="textCapWords"
+        android:key="server_address"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_server_address_name" />
+    
+    <EditTextPreference
+        android:defaultValue="@string/pref_default_port"
+        android:key="port"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_port_name"
+        />
+
+</PreferenceScreen>

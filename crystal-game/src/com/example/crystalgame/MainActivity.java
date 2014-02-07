@@ -1,5 +1,6 @@
 package com.example.crystalgame;
 
+import com.example.crystalgame.communication.ClientCommunication;
 import com.example.crystalgame.communication.ClientOutgoingMessages;
 import com.example.crystalgame.communication.CommunicationService;
 import com.example.crystalgame.library.communication.incoming.IncomingMessages;
@@ -11,6 +12,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -68,9 +70,10 @@ public class MainActivity extends Activity {
     	EditText text = (EditText) findViewById(R.id.editText1);
 
     	if (in == null) {
-	    	CrystalGame app = (CrystalGame) getApplication();
-	    	out = (ClientOutgoingMessages) app.getCommunication().out;
-	    	in = app.getCommunication().in;
+	    	ClientCommunication communication = 
+	    			((CrystalGame) getApplication()).getCommunication();
+	    	out = communication.out;
+	    	in = communication.in;
 	    	in.addMessageEventListener(new MessageEventListener(){
 				@Override
 				public void messageEvent(Message message) {
@@ -82,7 +85,14 @@ public class MainActivity extends Activity {
     	out.sendTestDataToServer(text.getText().toString());
     }
     
+    public boolean showSettings(MenuItem item) {
+    	startActivity(new Intent(this, SettingsActivity.class));
+    	return true;
+    }
+    
     private Intent createCommunictionIntent() {
     	return new Intent(getBaseContext(), CommunicationService.class);
     }
+    
+    
 }

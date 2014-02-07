@@ -11,8 +11,8 @@ import com.example.crystalgame.library.communication.outgoing.OutgoingMessages;
  */
 public class Communication {
 
-	private CommunicationManager manager;
-	private AbstractionModule abstraction;
+	protected CommunicationManager manager;
+	protected AbstractionModule abstraction;
 	public final IncomingMessages in;
 	public final OutgoingMessages out;
 	

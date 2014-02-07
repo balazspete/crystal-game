@@ -13,6 +13,9 @@ public abstract class CommunicationManager extends Thread {
 
 	protected AbstractionModule abstraction; 
 	
+	protected static String address;
+	protected static int port;
+	
 	/**
 	 * Add the abstraction layer to the module
 	 * @param abstraction the abstraction layer associated with the module
@@ -35,4 +38,14 @@ public abstract class CommunicationManager extends Thread {
 	 * @param nodeId The ID to send
 	 */
 	public abstract void sendId(String id, String nodeId);
+	
+	public void setServerAddress(String address) {
+		System.out.print(CommunicationManager.address + "->");
+		CommunicationManager.address = address;
+		System.out.println(CommunicationManager.address);
+	}
+	
+	public void setPort(int port) {
+		CommunicationManager.port = port;
+	}
 }

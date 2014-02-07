@@ -24,8 +24,6 @@ public class ServerCommunicationManager extends CommunicationManager {
 	
 	private HashMap<String, ConnectionHandler> connections;
 	
-	private int port;
-	
 	private ServerSocket serverSocket;
 	private ExecutorService pool;
 	

@@ -22,11 +22,10 @@ import com.example.crystalgame.library.communication.ConnectionHandler;
  */
 public class ClientCommunicationManager extends CommunicationManager {
 
+	public static final int DELAY = 500;
+	
 	private Socket socket;
 	private ConnectionHandler handler;
-	
-	private String address;
-	private int port;
 	
 	/**
 	 * Create a CommunicationManager for the client
@@ -34,8 +33,8 @@ public class ClientCommunicationManager extends CommunicationManager {
 	 * @param port The port number to use for the connection
 	 */
 	public ClientCommunicationManager(String address, int port) {
-		this.address = address;
-		this.port = port;
+		CommunicationManager.address = address;
+		CommunicationManager.port = port;
 	}
 	
 	@Override
@@ -80,6 +79,11 @@ public class ClientCommunicationManager extends CommunicationManager {
 				} else {
 					Log.i("ClientCommunicationManager", "No socket to close");
 				}
+			}
+			try {
+				sleep (DELAY);
+			} catch (InterruptedException e) {
+				Log.e("ClientCommunicationMnaager", "Failed to sleep");
 			}
 		}
 	}
