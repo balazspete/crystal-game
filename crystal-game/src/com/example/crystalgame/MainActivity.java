@@ -48,7 +48,9 @@ public class MainActivity extends Activity {
 
     //protected void onResume();
 
-    //protected void onPause();
+    protected void onPause() {
+    	super.onStop();
+    }
 
     protected void onStop() {
     	super.onStop();

@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import android.os.Looper;
 import android.util.Log;
 
 import com.example.crystalgame.library.communication.CommunicationFailureException;
