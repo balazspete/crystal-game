@@ -29,4 +29,5 @@ public class ServerOutgoingMessages extends OutgoingMessages {
 		return true;
 	}
 	
+	// TODO: implement required data transfer funtions
 }

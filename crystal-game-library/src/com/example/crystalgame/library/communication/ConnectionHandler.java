@@ -106,8 +106,7 @@ public class ConnectionHandler implements Runnable {
 					out.close();
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.println("Connection closed");
 			}
 		}
 	}

@@ -32,7 +32,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		/*Calling GPS activity*/
+		/* Calling GPS activity*/
 		Intent intent = new Intent(getApplicationContext(), GpsActivity.class);
 		startActivity(intent);
 	}

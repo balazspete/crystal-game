@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import com.example.crystalgame.library.communication.CommunicationFailureException;
 import com.example.crystalgame.library.communication.CommunicationManager;
-import com.example.crystalgame.library.communication.messages.IdMessage;
 import com.example.crystalgame.library.communication.messages.Message;
 import com.example.crystalgame.library.communication.messages.MessageType;
 import com.example.crystalgame.library.events.ListenerManager;
@@ -87,10 +86,18 @@ public class AbstractionModule {
 		listenerManager.send(message);
 	}
 
+	/**
+	 * Add an event listener for new messages
+	 * @param listener the listener
+	 */
 	public void addEventListener(MessageEventListener listener) {
 		listenerManager.addEventListener(listener);
 	}
 
+	/**
+	 * Remove an event listener
+	 * @param listener The listener to remove
+	 */
 	public void removeEventListener(MessageEventListener listener) {
 		listenerManager.removeEventListener(listener);
 	}
