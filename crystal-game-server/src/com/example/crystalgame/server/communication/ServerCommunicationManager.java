@@ -107,7 +107,8 @@ public class ServerCommunicationManager extends CommunicationManager {
 
 	@Override
 	public void sendId(String id, String nodeId) {
-		IdMessage message = new IdMessage("SERVER", nodeId);
+		IdMessage message = new IdMessage(nodeId);
+		message.setSenderId("SERVER");
 		message.setData(nodeId);
 		try {
 			sendData(id, message);

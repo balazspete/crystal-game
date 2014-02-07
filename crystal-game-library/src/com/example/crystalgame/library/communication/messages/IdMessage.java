@@ -7,7 +7,7 @@ public class IdMessage extends UnicastMessage {
 	 */
 	private static final long serialVersionUID = 1484726058591292615L;
 
-	public IdMessage(String senderId, String receiverId) {
+	public IdMessage(String receiverId) {
 		super(receiverId, MessageType.ID_MESSAGE);
 	}
 

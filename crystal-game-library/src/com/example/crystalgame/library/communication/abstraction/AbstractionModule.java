@@ -4,7 +4,9 @@ import java.util.HashMap;
 
 import com.example.crystalgame.library.communication.CommunicationFailureException;
 import com.example.crystalgame.library.communication.CommunicationManager;
+import com.example.crystalgame.library.communication.messages.IdMessage;
 import com.example.crystalgame.library.communication.messages.Message;
+import com.example.crystalgame.library.communication.messages.MessageType;
 import com.example.crystalgame.library.events.ListenerManager;
 import com.example.crystalgame.library.events.MessageEventListener;
 import com.example.crystalgame.library.util.RandomID;
@@ -16,6 +18,8 @@ import com.example.crystalgame.library.util.RandomID;
  */
 public class AbstractionModule {
 
+	private static String myId;
+	
 	private CommunicationManager manager;
 	private ListenerManager<MessageEventListener, Message> listenerManager;
 	
@@ -43,7 +47,13 @@ public class AbstractionModule {
 	 */
 	public void sendMessage(Message message) throws CommunicationFailureException {
 		try {
-			manager.sendData(clientToCommunicationMap.get(message.getReceivedId()), message);
+			String id = message.getSenderId();
+			if (id == null || id.isEmpty()) {
+				System.out.println("Sending:MyId is " + myId);
+				message.setSenderId(myId);
+			}
+			
+			manager.sendData(clientToCommunicationMap.get(message.getReceiverId()), message);
 		} catch (CommunicationFailureException e) {
 			throw CommunicationFailureException.FAILED_TO_SERIALISE;
 		}
@@ -58,16 +68,23 @@ public class AbstractionModule {
 		Message message = (Message) data;
 		String senderId = message.getSenderId();
 		
+		if (message.getMessageType() == MessageType.ID_MESSAGE) {
+			myId = message.getReceiverId();
+			System.out.println("Received:MyId is " + myId);
+			return;
+		}
+		
 		if (senderId == null || senderId.isEmpty()) {
 			// If client did not have a connection information previously
 			senderId = getRandomId();
 			message.setSenderId(senderId);
+			System.out.println("new id assigned "+ senderId);
 			manager.sendId(id, senderId);
 		}
 		
 		// Update connection information for client
 		clientToCommunicationMap.put(senderId, id);
-		listenerManager.send((Message) data);
+		listenerManager.send(message);
 	}
 
 	public void addEventListener(MessageEventListener listener) {

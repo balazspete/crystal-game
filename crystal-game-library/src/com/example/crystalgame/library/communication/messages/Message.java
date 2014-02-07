@@ -89,7 +89,7 @@ public abstract class Message implements Serializable {
 	 * Get the receiver's ID
 	 * @return The receiver node's ID
 	 */
-	public String getReceivedId() {
+	public String getReceiverId() {
 		return receiverId;
 	}
 	
@@ -97,7 +97,7 @@ public abstract class Message implements Serializable {
 	 * Set the receiver's ID
 	 * @param receiverId The receiver node's ID
 	 */
-	public void setReceivedId(String receiverId) {
+	public void setReceiverId(String receiverId) {
 		this.receiverId = receiverId;
 	}
 	

@@ -12,10 +12,13 @@ import com.example.crystalgame.library.communication.outgoing.OutgoingMessages;
  *
  */
 public class ServerOutgoingMessages extends OutgoingMessages {
+	
+	public final String serverID = "SERVER"; 
 
 	public boolean sendTestDataToClient(String clientId, Serializable data) {
 		TestMessage message = new TestMessage(clientId);
 		message.setData(data);
+		message.setSenderId(serverID);
 		
 		try {
 			send(message);
