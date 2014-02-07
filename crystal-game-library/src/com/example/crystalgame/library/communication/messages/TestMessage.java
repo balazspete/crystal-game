@@ -16,7 +16,7 @@ public class TestMessage extends UnicastMessage {
 	 * Create a test message
 	 */
 	public TestMessage() {
-		super(null, null, MessageType.TEST_MESSAGE);
+		super(null, MessageType.TEST_MESSAGE);
 	}
 	
 	/**
@@ -24,8 +24,8 @@ public class TestMessage extends UnicastMessage {
 	 * @param sourceId The sender's ID
 	 * @param receiverId The receiver's ID
 	 */
-	public TestMessage(String sourceId, String receiverId) {
-		super(sourceId, receiverId, MessageType.TEST_MESSAGE);
+	public TestMessage(String receiverId) {
+		super(receiverId, MessageType.TEST_MESSAGE);
 	}
 
 }

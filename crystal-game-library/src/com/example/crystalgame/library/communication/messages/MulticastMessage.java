@@ -12,8 +12,8 @@ public abstract class MulticastMessage extends Message {
 	 */
 	private static final long serialVersionUID = 2056131887823741319L;
 
-	public MulticastMessage(String senderId, MessageType messageType) {
-		super(senderId, messageType);
+	public MulticastMessage(MessageType messageType) {
+		super(messageType);
 	}
 	
 }

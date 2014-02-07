@@ -23,10 +23,9 @@ public abstract class Message implements Serializable {
 	
 	/**
 	 * Create a Message
-	 * @param senderId The sender's assigned ID
+	 * @param messageType The type of the message
 	 */
-	public Message(String senderId, MessageType messageType) {
-		this.senderId = senderId;
+	public Message(MessageType messageType) {
 		this.messageType = messageType;
 	}
 	

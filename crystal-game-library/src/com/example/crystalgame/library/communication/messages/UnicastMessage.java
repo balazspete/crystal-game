@@ -14,11 +14,10 @@ public abstract class UnicastMessage extends Message {
 	
 	/**
 	 * Create a Message destined to a single node
-	 * @param senderId The sender's ID
 	 * @param receiverId The receiver's ID
 	 */
-	public UnicastMessage(String senderId, String receiverId, MessageType messageType) {
-		super(senderId, messageType);
+	public UnicastMessage(String receiverId, MessageType messageType) {
+		super(messageType);
 		this.receiverId = receiverId;
 	}
 

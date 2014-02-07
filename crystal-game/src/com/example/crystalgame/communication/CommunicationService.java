@@ -20,7 +20,7 @@ public class CommunicationService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		// TODO: get IP from config
-		ClientCommunicationManager manager = new ClientCommunicationManager("192.168.1.8", 3000);
+		ClientCommunicationManager manager = new ClientCommunicationManager("192.168.0.3", 3000);
 		ClientOutgoingMessages out = new ClientOutgoingMessages();
 		communication = new Communication(manager, out);
 		

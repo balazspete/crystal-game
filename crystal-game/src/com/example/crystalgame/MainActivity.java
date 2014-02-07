@@ -31,6 +31,10 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		/*Calling GPS activity*/
+		Intent intent = new Intent(getApplicationContext(), GpsActivity.class);
+		startActivity(intent);
 	}
 	
 	protected void onStart() {
@@ -41,21 +45,21 @@ public class MainActivity extends Activity {
 		getApplicationContext().startService(communicationIntent);
 	}
     
-	@Override
+	/*@Override
     protected void onRestart(){
     	super.onRestart();
-    }
+    }*/
 
     //protected void onResume();
 
     protected void onPause() {
     	super.onStop();
-    }
-
-    protected void onStop() {
-    	super.onStop();
     	getApplicationContext().stopService(communicationIntent);
     }
+
+    /*protected void onStop() {
+    	super.onStop();
+    }*/
 
     //protected void onDestroy();
 	
