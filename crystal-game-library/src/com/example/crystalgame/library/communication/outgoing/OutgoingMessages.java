@@ -14,10 +14,19 @@ public abstract class OutgoingMessages {
 	private AbstractionModule abstraction;
 	protected String nodeId;
 	
+	/**
+	 * Set the abstraction module to be used
+	 * @param abstraction The abstraction layer to be used
+	 */
 	public void setAbstraction(AbstractionModule abstraction) {
 		this.abstraction = abstraction;
 	}
-			
+
+	/**
+	 * Send a message
+	 * @param message The message to be sent
+	 * @throws CommunicationFailureException Thrown in case of a failure
+	 */
 	protected void send(Message message) throws CommunicationFailureException {
 		if (abstraction == null) {
 			throw CommunicationFailureException.FAILED_TO_INITIALISE;

@@ -29,4 +29,10 @@ public abstract class CommunicationManager extends Thread {
 	 */
 	public abstract void sendData(String id, Serializable data) throws CommunicationFailureException;
 	
+	/**
+	 * Send an ID to the other side
+	 * @param id The connection ID
+	 * @param nodeId The ID to send
+	 */
+	public abstract void sendId(String id, String nodeId);
 }

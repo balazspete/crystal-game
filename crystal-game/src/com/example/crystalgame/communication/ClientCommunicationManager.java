@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import android.os.Looper;
 import android.util.Log;
 
 import com.example.crystalgame.library.communication.CommunicationFailureException;
@@ -84,4 +85,8 @@ public class ClientCommunicationManager extends CommunicationManager {
 		}
 	}
 
+	@Override
+	public void sendId(String id, String nodeId) {
+		// Ignored
+	}
 }

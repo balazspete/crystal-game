@@ -10,11 +10,12 @@ import java.util.concurrent.Executors;
 import com.example.crystalgame.library.communication.CommunicationFailureException;
 import com.example.crystalgame.library.communication.CommunicationManager;
 import com.example.crystalgame.library.communication.ConnectionHandler;
+import com.example.crystalgame.library.communication.messages.IdMessage;
 import com.example.crystalgame.library.util.RandomID;
 
 /**
  * Module responsible for the management of communications on the server side
- * @author Balazs Pete, Shen Chen
+ * @author Balazs Pete, Shen Chen, Allen Thomas Varghese
  *
  */
 public class ServerCommunicationManager extends CommunicationManager {
@@ -28,6 +29,10 @@ public class ServerCommunicationManager extends CommunicationManager {
 	private ServerSocket serverSocket;
 	private ExecutorService pool;
 	
+	/**
+	 * Create a server specific communication manager
+	 * @param port The port to be used
+	 */
 	public ServerCommunicationManager(int port) {
 		connections = new HashMap<String, ConnectionHandler>();
 		this.port = port;
@@ -100,4 +105,14 @@ public class ServerCommunicationManager extends CommunicationManager {
 		return id;
 	}
 
+	@Override
+	public void sendId(String id, String nodeId) {
+		IdMessage message = new IdMessage("SERVER", nodeId);
+		message.setData(nodeId);
+		try {
+			sendData(id, message);
+		} catch (CommunicationFailureException e) {
+			System.err.println("Failed to transmit node ID to " + nodeId);
+		}
+	}
 }

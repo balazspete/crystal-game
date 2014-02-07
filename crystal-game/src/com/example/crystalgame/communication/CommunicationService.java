@@ -6,6 +6,7 @@ import com.example.crystalgame.library.communication.Communication;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.Looper;
 
 /**
  * The service responsible for the management of communication
@@ -18,6 +19,7 @@ public class CommunicationService extends Service {
 	
 	public void onCreate() {
 		super.onCreate();
+		// TODO: get IP from config
 		ClientCommunicationManager manager = new ClientCommunicationManager("192.168.1.8", 3000);
 		ClientOutgoingMessages out = new ClientOutgoingMessages();
 		communication = new Communication(manager, out);

@@ -39,6 +39,14 @@ public abstract class Message implements Serializable {
 	}
 	
 	/**
+	 * Set the sender's ID
+	 * @param senderId The sender's ID
+	 */
+	public void setSenderId(String senderId) {
+		this.senderId = senderId;
+	}
+	
+	/**
 	 * Set the group the message belongs to
 	 * @param groupId The group ID
 	 */

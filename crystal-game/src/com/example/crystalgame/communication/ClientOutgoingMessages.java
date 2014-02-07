@@ -3,7 +3,6 @@ package com.example.crystalgame.communication;
 import java.io.Serializable;
 
 import com.example.crystalgame.library.communication.CommunicationFailureException;
-import com.example.crystalgame.library.communication.messages.Message;
 import com.example.crystalgame.library.communication.messages.TestMessage;
 import com.example.crystalgame.library.communication.outgoing.OutgoingMessages;
 
@@ -14,9 +13,8 @@ public class ClientOutgoingMessages extends OutgoingMessages {
 	}
 
 	// temporary/tesing function
-	public boolean sendDataToServer(Serializable data) {
+	public boolean sendTestDataToServer(Serializable data) {
 		TestMessage message = new TestMessage();
-		
 		message.setData(data);
 		
 		try {

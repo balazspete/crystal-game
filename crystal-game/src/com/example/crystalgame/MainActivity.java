@@ -2,7 +2,9 @@ package com.example.crystalgame;
 
 import com.example.crystalgame.communication.ClientOutgoingMessages;
 import com.example.crystalgame.communication.CommunicationService;
-import com.example.crystalgame.library.communication.messages.TestMessage;
+import com.example.crystalgame.library.communication.incoming.IncomingMessages;
+import com.example.crystalgame.library.communication.messages.Message;
+import com.example.crystalgame.library.events.MessageEventListener;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -10,10 +12,13 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.EditText;
 
 public class MainActivity extends Activity {
 
 	private Intent communicationIntent;
+	private ClientOutgoingMessages out;
+	private IncomingMessages in;
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -36,7 +41,10 @@ public class MainActivity extends Activity {
 		getApplicationContext().startService(communicationIntent);
 	}
     
-    //protected void onRestart();
+	@Override
+    protected void onRestart(){
+    	super.onRestart();
+    }
 
     //protected void onResume();
 
@@ -49,12 +57,23 @@ public class MainActivity extends Activity {
 
     //protected void onDestroy();
 	
+    // TODO: temporary solution - remove
     public void sendTestMessage(View view) {
-    	CrystalGame app = (CrystalGame) getApplication();
-    	ClientOutgoingMessages messages = (ClientOutgoingMessages) app.getCommunication().out;
-    	TestMessage message = new TestMessage();
-    	message.setData("test message");
-    	messages.sendDataToServer("message");
+    	EditText text = (EditText) findViewById(R.id.editText1);
+
+    	if (in == null) {
+	    	CrystalGame app = (CrystalGame) getApplication();
+	    	out = (ClientOutgoingMessages) app.getCommunication().out;
+	    	in = app.getCommunication().in;
+	    	in.addMessageEventListener(new MessageEventListener(){
+				@Override
+				public void messageEvent(Message message) {
+					Log.i("ServerMessage", (String) message.getData());
+				}
+	    	});
+    	}
+    	
+    	out.sendTestDataToServer(text.getText().toString());
     }
     
     private Intent createCommunictionIntent() {
