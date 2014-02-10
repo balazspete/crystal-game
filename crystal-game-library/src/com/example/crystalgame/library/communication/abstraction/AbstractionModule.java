@@ -17,6 +17,7 @@ import com.example.crystalgame.library.util.RandomID;
  */
 public class AbstractionModule {
 
+	private MessageQueue queue;
 	private static String myId;
 	
 	private CommunicationManager manager;
@@ -37,6 +38,8 @@ public class AbstractionModule {
 				listener.messageEvent(message);
 			}
 		};
+		this.queue = new MessageQueue(manager);
+		this.queue.start();
 	}
 	
 	/**
@@ -45,17 +48,12 @@ public class AbstractionModule {
 	 * @throws CommunicationFailureException Exception thrown if the message failed to serialise
 	 */
 	public void sendMessage(Message message) throws CommunicationFailureException {
-		try {
-			String id = message.getSenderId();
-			if (id == null || id.isEmpty()) {
-				System.out.println("Sending:MyId is " + myId);
-				message.setSenderId(myId);
-			}
-			
-			manager.sendData(clientToCommunicationMap.get(message.getReceiverId()), message);
-		} catch (CommunicationFailureException e) {
-			throw CommunicationFailureException.FAILED_TO_SERIALISE;
+		String id = message.getSenderId();
+		if (id == null || id.isEmpty()) {
+			message.setSenderId(myId);
 		}
+		
+		queue.put(clientToCommunicationMap.get(message.getReceiverId()), message);
 	}
 	
 	/**
@@ -69,7 +67,6 @@ public class AbstractionModule {
 		
 		if (message.getMessageType() == MessageType.ID_MESSAGE) {
 			myId = message.getReceiverId();
-			System.out.println("Received:MyId is " + myId);
 			return;
 		}
 		
@@ -77,7 +74,6 @@ public class AbstractionModule {
 			// If client did not have a connection information previously
 			senderId = getRandomId();
 			message.setSenderId(senderId);
-			System.out.println("new id assigned "+ senderId);
 			manager.sendId(id, senderId);
 		}
 		
