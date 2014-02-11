@@ -8,6 +8,8 @@ import com.example.crystalgame.library.communication.messages.MessageType;
 import com.example.crystalgame.library.events.ControlMessageEventListener;
 import com.example.crystalgame.library.events.ListenerManager;
 import com.example.crystalgame.library.events.MessageEventListener;
+import com.example.crystalgame.library.groups.Client;
+import com.example.crystalgame.library.groups.Group;
 import com.example.crystalgame.server.groups.GroupInstanceManager;
 
 public class ServerIncomingMessages extends IncomingMessages {
@@ -45,24 +47,34 @@ public class ServerIncomingMessages extends IncomingMessages {
 	}
 
 	protected void handleMessage(Message message) {
-		// Determine if message is legitimate (is group ID is set, does the client belong to the group?)
-		boolean isAllowed = 
-				message.getGroupId() != null && 
-				groupInstanceManager.getGroup(message.getGroupId()).isClientInGroup(message.getSenderId());
+		Group group = getGroup(message);
+		if (group != null) {
+			message.setGroup(group.groupId);
+		}
 		
+		// Handle communication outside of groups here...
 		if (message.getMessageType() == MessageType.CONTROL_MESSAGE) {
 			// Forward the component message to others who have subscribed to them
 			controlMessageListenerManager.send((ControlMessage) message);
 			return;
 		}
 		
-		if (isAllowed) {
+		// Only allow messaging, if client belongs to a group
+		if (group != null) {
 			// If message is legitimate, do some forwarding here...
 			
 			// TODO: filter based on type and pass to appropriate listener
 			
 			messageListenerManager.send(message);
 		}
+	}
+	
+	private Group getGroup(Message message) {
+		Client client = groupInstanceManager.getClient(message.getSenderId());
+		if (client == null) {
+			return null;
+		}
+		return groupInstanceManager.getGroup(client.getGroupID());
 	}
 	
 	/**

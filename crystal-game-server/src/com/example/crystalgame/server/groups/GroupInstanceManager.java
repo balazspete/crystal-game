@@ -21,9 +21,11 @@ public class GroupInstanceManager {
 
 	private ListenerManager<ControlMessageEventListener, ControlMessage> manager;
 	private ConcurrentHashMap<String, Group> groups;
+	private ConcurrentHashMap<String, Client> clients;
 	
 	public GroupInstanceManager() {
 		groups = new ConcurrentHashMap<String, Group>();
+		clients = new ConcurrentHashMap<String, Client>();
 		
 		// Allow components to subscribe to ControlMessageEvents
 		manager = new ListenerManager<ControlMessageEventListener, ControlMessage>() {
@@ -59,6 +61,8 @@ public class GroupInstanceManager {
 			// If another group with the same ID exists, regenerate group
 		} while (groups.get(group.groupId) != null);
 		
+		initiator.setGroupID(group.groupId);
+		clients.put(initiator.getId(), initiator);
 		groups.put(group.groupId, group);
 		return group.groupId;
 	}
@@ -76,6 +80,8 @@ public class GroupInstanceManager {
 			if (group.isClientInGroup(otherClientId)) {
 				if (group.addClient(client)) {
 					// If we managed to add the client, return the group ID
+					client.setGroupID(group.groupId);
+					clients.put(client.getId(), client);
 					return group.groupId;
 				} else {
 					// We failed to add the client
@@ -100,6 +106,13 @@ public class GroupInstanceManager {
 		} catch (GroupException e) {
 			deleteGroup(groupId);
 		}
+		
+		clients.remove(client.getId());
+		client.setGroupID(null);
+	}
+	
+	public Client getClient(String id) {
+		return clients.get(id);
 	}
 	
 	/**
@@ -154,20 +167,23 @@ public class GroupInstanceManager {
 				reply = GroupInstruction.successReply(groupId);
 				break;
 			case JOIN:
+				
 				try {
-					groupId = this.joinGroup(new Client(message.getSenderId(), instruction.arguments[1]), instruction.arguments[0]);
+					groupId = this.joinGroup(new Client(message.getSenderId(), instruction.arguments[0]), instruction.arguments[1]);
+					reply = GroupInstruction.successReply(groupId);
 				} catch (GroupException e) {
 					// We have failed, return the error message...
 					reply = GroupInstruction.failureReply(e.getMessage());
 				}
 				// Return group ID if we have succeeded
-				reply = GroupInstruction.successReply(groupId);
 				break;
 			case LEAVE:
+				System.out.println("groupid:"+message.getGroupId());
 				Group group = groups.get(message.getGroupId());
 				this.leaveGroup(group.groupId, group.getClient(message.getSenderId()));
 				// Just return a blank success message
 				reply = GroupInstruction.successReply(null);
+				System.out.println("leave");
 				break;
 			default: 
 				reply = GroupInstruction.failureReply("Unsupported group command!");

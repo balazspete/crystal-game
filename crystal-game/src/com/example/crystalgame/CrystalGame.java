@@ -1,8 +1,13 @@
 package com.example.crystalgame;
 
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.example.crystalgame.communication.ClientCommunication;
+import com.example.crystalgame.communication.ClientCommunicationManager;
+import com.example.crystalgame.communication.ClientOutgoingMessages;
 
 /**
  * The Android application class for the CrystalGame project
@@ -11,10 +16,12 @@ import com.example.crystalgame.communication.ClientCommunication;
  */
 public class CrystalGame extends Application {
 
-	private ClientCommunication communication;
+	private static ClientCommunication communication;
 	
-	public void addCommunication(ClientCommunication communication) {
-		this.communication = communication;
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		addCommunication();
 	}
 	
 	/**
@@ -39,5 +46,28 @@ public class CrystalGame extends Application {
 	 */
 	public void portChange(int port) {
 		communication.portChange(port);
+	}
+	
+	private void addCommunication() {
+		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+		Integer port  = null;
+		try {
+			// Get the port from settings
+			port = Integer.parseInt(sp.getString(getString(R.string.PORT), "3000"));
+		} catch(NumberFormatException e) {
+			Log.e("CommunicationService", e.getMessage());
+		} finally {
+			if (port == null) {
+				port = 3000;
+			}
+		}
+		
+		// Create the communication manager and get the address form the config
+		ClientCommunicationManager manager = new ClientCommunicationManager(
+				sp.getString(getString(R.string.SERVER_ADDRESS), "example.com"), 
+				port);
+		
+		ClientOutgoingMessages out = new ClientOutgoingMessages();
+		communication = new ClientCommunication(manager, out);
 	}
 }
