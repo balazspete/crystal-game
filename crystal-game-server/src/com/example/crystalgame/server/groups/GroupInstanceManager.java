@@ -157,6 +157,8 @@ public class GroupInstanceManager {
 	public void handleGroupInstruction(ControlMessage message, GroupInstruction instruction) {
 		String groupId = null;
 		GroupInstruction reply = null;
+		
+		System.out.println(instruction.groupInstructionType + ":" + message.getSenderId());
 		switch(instruction.groupInstructionType) {
 			case CREATE:
 				int maxPlayers = Integer.parseInt(instruction.arguments[1]);
@@ -167,7 +169,6 @@ public class GroupInstanceManager {
 				reply = GroupInstruction.successReply(groupId);
 				break;
 			case JOIN:
-				
 				try {
 					groupId = this.joinGroup(new Client(message.getSenderId(), instruction.arguments[0]), instruction.arguments[1]);
 					reply = GroupInstruction.successReply(groupId);
@@ -178,12 +179,13 @@ public class GroupInstanceManager {
 				// Return group ID if we have succeeded
 				break;
 			case LEAVE:
-				System.out.println("groupid:"+message.getGroupId());
 				Group group = groups.get(message.getGroupId());
-				this.leaveGroup(group.groupId, group.getClient(message.getSenderId()));
-				// Just return a blank success message
+				// Remove player from group
+				if (group != null) {
+					this.leaveGroup(group.groupId, group.getClient(message.getSenderId()));
+				}
+				// Just return a blank success message (even if client was not in a group)
 				reply = GroupInstruction.successReply(null);
-				System.out.println("leave");
 				break;
 			default: 
 				reply = GroupInstruction.failureReply("Unsupported group command!");
