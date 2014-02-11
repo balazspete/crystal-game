@@ -1,10 +1,13 @@
 package com.example.crystalgame.server;
 
-import com.example.crystalgame.library.communication.Communication;
+import com.example.crystalgame.library.communication.messages.ControlMessage;
 import com.example.crystalgame.library.communication.messages.Message;
+import com.example.crystalgame.library.events.ControlMessageEventListener;
 import com.example.crystalgame.library.events.MessageEventListener;
+import com.example.crystalgame.server.communication.ServerCommunication;
 import com.example.crystalgame.server.communication.ServerCommunicationManager;
 import com.example.crystalgame.server.communication.ServerOutgoingMessages;
+import com.example.crystalgame.server.groups.GroupInstanceManager;
 
 /**
  * The server
@@ -14,9 +17,22 @@ import com.example.crystalgame.server.communication.ServerOutgoingMessages;
 public class Server {
 
 	public static void main(String[] args) {
+		// TODO
+		final GroupInstanceManager groupInstanceManager = new GroupInstanceManager();
+		
 		ServerCommunicationManager manager = new ServerCommunicationManager(3000); 
 		
-		final Communication c = new Communication(manager, new ServerOutgoingMessages());
+		final ServerCommunication c = new ServerCommunication(manager, groupInstanceManager);
+		c.in.addControlMessageEventListener(new ControlMessageEventListener() {
+			@Override
+			public void messageEvent(Message message) {
+				// Forward Control messages to the group instance manager
+				groupInstanceManager.processControlMessage((ControlMessage) message);
+			}
+		});
+		
+		
+		// Just for testing...
 		c.in.addMessageEventListener(new MessageEventListener(){
 			@Override
 			public void messageEvent(Message message) {

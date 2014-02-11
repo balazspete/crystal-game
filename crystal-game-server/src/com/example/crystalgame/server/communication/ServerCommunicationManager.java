@@ -33,7 +33,7 @@ public class ServerCommunicationManager extends CommunicationManager {
 	 */
 	public ServerCommunicationManager(int port) {
 		connections = new HashMap<String, ConnectionHandler>();
-		this.port = port;
+		ServerCommunicationManager.port = port;
 	}
 	
 	/**
@@ -65,6 +65,7 @@ public class ServerCommunicationManager extends CommunicationManager {
 	public void sendData(String id, Serializable data) throws CommunicationFailureException {
 		ConnectionHandler handler = connections.get(id);
 		if (handler == null || handler.isClosed()) {
+			// If the handler is not active any more, remove it and report a failure
 			connections.remove(id);
 			throw CommunicationFailureException.FAILED_TO_TRANSMIT;
 		}
@@ -78,13 +79,13 @@ public class ServerCommunicationManager extends CommunicationManager {
 	private void handleConnections() {
 		while(true) {
 			try {
+				// A new connection! Create a handler for it... (ConnectionID != ClientID)
 				String id = getRandomId();
 				ConnectionHandler connection = new ConnectionHandler(abstraction, id, serverSocket.accept());
 				connections.put(id, connection);
 				pool.execute(connection);
 			} catch (IOException e) {
-				// TODO: log this
-				System.err.println("Failed to receive");
+				System.err.println(e.getMessage());
 			}
 		}
 	}
@@ -106,8 +107,10 @@ public class ServerCommunicationManager extends CommunicationManager {
 	@Override
 	public void sendId(String id, String nodeId) {
 		IdMessage message = new IdMessage(nodeId);
-		message.setSenderId("SERVER");
+		// Since the message originates from here, set the server ID
+		message.setSenderId(ServerOutgoingMessages.serverID);
 		message.setData(nodeId);
+		
 		try {
 			sendData(id, message);
 		} catch (CommunicationFailureException e) {

@@ -21,7 +21,6 @@ public class CommunicationService extends Service {
 	
 	public void onCreate() {
 		super.onCreate();
-		// TODO: get IP from config
 		addCommunication();
 	}
 	
@@ -45,6 +44,7 @@ public class CommunicationService extends Service {
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		Integer port  = null;
 		try {
+			// Get the port from settings
 			port = Integer.parseInt(sp.getString(getString(R.string.PORT), "3000"));
 		} catch(NumberFormatException e) {
 			Log.e("CommunicationService", e.getMessage());
@@ -54,6 +54,7 @@ public class CommunicationService extends Service {
 			}
 		}
 		
+		// Create the communication manager and get the address form the config
 		ClientCommunicationManager manager = new ClientCommunicationManager(
 				sp.getString(getString(R.string.SERVER_ADDRESS), "example.com"), 
 				port);

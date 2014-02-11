@@ -12,11 +12,11 @@ import com.example.crystalgame.library.events.MessageEventListener;
  * @author Balazs Pete, Shen Chen
  *
  */
-public class IncomingMessages {
+public abstract class IncomingMessages {
 
-	private AbstractionModule abstraction;
-	private ListenerManager<MessageEventListener, Message> messageListenerManager;
-	private HashSet<String> groupIDs;
+	protected AbstractionModule abstraction;
+	protected ListenerManager<MessageEventListener, Message> messageListenerManager;
+	protected HashSet<String> groupIDs;
 	
 	/**
 	 * Create an incoming messages module
@@ -24,7 +24,6 @@ public class IncomingMessages {
 	 */
 	public IncomingMessages(AbstractionModule abstraction) {
 		this.abstraction = abstraction;
-		
 		initialise();
 	}
 	
@@ -65,14 +64,18 @@ public class IncomingMessages {
 	private void initialise() {
 		groupIDs = new HashSet<String>();
 		
+		// Add an event listener manager for message events
 		messageListenerManager = new ListenerManager<MessageEventListener, Message>() {
 			@Override
 			protected void eventHandlerHelper(MessageEventListener listener, Message message) {
+				// Forward the message event to subscribers
 				listener.messageEvent(message);
 			}
 		};
+		
 		// TODO: add instruction listener manager
 		
+		// Subscribe to events from the abstraction layer
 		abstraction.addEventListener(new MessageEventListener(){
 			@Override
 			public void messageEvent(Message message) {
@@ -81,12 +84,9 @@ public class IncomingMessages {
 		});
 	}
 	
-	private void handleMessage(Message message) {
-		if (message.getGroupId() != null && !groupIDs.contains(message.getGroupId().intern())) {
-			return;
-		}
-		
-		messageListenerManager.send(message);
-		// TODO: instruction extraction/encoding and event send
-	}
+	/**
+	 * Handler for message events by the {@link AbstractionModule}
+	 * @param message The message
+	 */
+	protected abstract void handleMessage(Message message);
 }

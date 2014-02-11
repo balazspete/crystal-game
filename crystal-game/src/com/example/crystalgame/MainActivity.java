@@ -6,6 +6,7 @@ import com.example.crystalgame.communication.CommunicationService;
 import com.example.crystalgame.library.communication.incoming.IncomingMessages;
 import com.example.crystalgame.library.communication.messages.Message;
 import com.example.crystalgame.library.events.MessageEventListener;
+import com.example.crystalgame.library.instructions.GroupInstruction;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -67,7 +68,8 @@ public class MainActivity extends Activity {
 	
     // TODO: temporary solution - remove
     public void sendTestMessage(View view) {
-    	EditText text = (EditText) findViewById(R.id.editText1);
+    	String text1 = ((EditText) findViewById(R.id.editText1)).getText().toString();
+    	String text2 = ((EditText) findViewById(R.id.editText2)).getText().toString();
 
     	if (in == null) {
 	    	ClientCommunication communication = 
@@ -77,12 +79,14 @@ public class MainActivity extends Activity {
 	    	in.addMessageEventListener(new MessageEventListener(){
 				@Override
 				public void messageEvent(Message message) {
-					Log.i("ServerMessage", (String) message.getData());
+					System.out.println(message.getData());
 				}
 	    	});
     	}
     	
-    	out.sendTestDataToServer(text.getText().toString());
+    	//out.sendTestDataToServer(text.getText().toString());
+    	
+    	out.sendGroupInstructionToServer(GroupInstruction.createGroup(text1, 20, text2));
     }
     
     public boolean showSettings(MenuItem item) {

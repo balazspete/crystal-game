@@ -22,7 +22,7 @@ import com.example.crystalgame.library.communication.ConnectionHandler;
  */
 public class ClientCommunicationManager extends CommunicationManager {
 
-	public static final int DELAY = 500;
+	public static final int DELAY = 2000;
 	
 	private Socket socket;
 	private ConnectionHandler handler;
@@ -57,11 +57,13 @@ public class ClientCommunicationManager extends CommunicationManager {
 			try {
 				Log.i("ComunicationManager", "Attempting to connect to " + address);
 				
+				// Establish a connection...
 				socket = new Socket(address, port);
 				handler = new ConnectionHandler(this.abstraction, "", socket);
 				
 				Log.i("ComunicationManager", "Connection to " + address + " successful!");
 				
+				// Run the handler in this thread
 				handler.run();
 			} catch (UnknownHostException e) {
 				Log.e("ClientCommunicationManager", "Connection failed, unknown remote " + address);
@@ -81,6 +83,7 @@ public class ClientCommunicationManager extends CommunicationManager {
 				}
 			}
 			try {
+				Log.i("ClientCommunicationManager", "Sleeping for " + DELAY + " seconds before reconnecting...");
 				sleep (DELAY);
 			} catch (InterruptedException e) {
 				Log.e("ClientCommunicationMnaager", "Failed to sleep");
