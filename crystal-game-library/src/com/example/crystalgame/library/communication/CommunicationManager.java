@@ -39,13 +39,23 @@ public abstract class CommunicationManager extends Thread {
 	 */
 	public abstract void sendId(String id, String nodeId);
 	
+	/**
+	 * Set/Change the server address to connect to
+	 * @param address The new server address
+	 */
 	public void setServerAddress(String address) {
-		System.out.print(CommunicationManager.address + "->");
+		System.out.print("Changing server address: " + CommunicationManager.address + "->");
 		CommunicationManager.address = address;
 		System.out.println(CommunicationManager.address);
 	}
 	
+	/**
+	 * Set/Change the port number used for communication
+	 * @param port The port number
+	 */
 	public void setPort(int port) {
+		System.out.print("Changing port: " + CommunicationManager.port + "->");
 		CommunicationManager.port = port;
+		System.out.println(CommunicationManager.port);
 	}
 }

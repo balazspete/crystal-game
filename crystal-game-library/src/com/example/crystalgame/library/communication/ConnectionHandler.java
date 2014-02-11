@@ -70,16 +70,17 @@ public class ConnectionHandler implements Runnable {
 			in = new ObjectInputStream(socket.getInputStream());
 
 			while(true) {
+				// Get an object from the input stream (block until received)
 				Object inputObject = in.readObject();		
 				abstraction.forwardData(id, inputObject);
 			}
-			
 		} catch (IOException e) {
 			throw CommunicationFailureException.FAILED_TO_RECEIVE;
 		} catch (ClassNotFoundException e) {
 			throw CommunicationFailureException.FAILED_TO_DESERIALISE;
 		} finally {
 			try {
+				// Try to close the input stream
 				if (in != null) {
 					in.close();
 				}
@@ -102,6 +103,7 @@ public class ConnectionHandler implements Runnable {
 			System.err.println(e.getMessage());
 		} finally {
 			try {
+				// Try to close the output stream
 				if (out != null) {
 					out.close();
 				}

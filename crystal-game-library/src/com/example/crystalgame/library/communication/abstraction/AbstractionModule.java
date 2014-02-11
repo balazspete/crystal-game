@@ -32,12 +32,16 @@ public class AbstractionModule {
 	public void initialise(CommunicationManager manager) {
 		this.manager = manager;
 		this.clientToCommunicationMap = new HashMap<String, String>();
+		
+		// Create an listener manager to be able to emit events
 		this.listenerManager = new ListenerManager<MessageEventListener, Message>() {
 			@Override
 			protected void eventHandlerHelper(MessageEventListener listener, Message message) {
+				// Forward all events to the higher levels
 				listener.messageEvent(message);
 			}
 		};
+		
 		this.queue = new MessageQueue(manager);
 		this.queue.start();
 	}
@@ -50,9 +54,11 @@ public class AbstractionModule {
 	public void sendMessage(Message message) throws CommunicationFailureException {
 		String id = message.getSenderId();
 		if (id == null || id.isEmpty()) {
+			// If id is not set => Message originates from this node
 			message.setSenderId(myId);
 		}
 		
+		// Queue up message to send
 		queue.put(clientToCommunicationMap.get(message.getReceiverId()), message);
 	}
 	
@@ -66,19 +72,24 @@ public class AbstractionModule {
 		String senderId = message.getSenderId();
 		
 		if (message.getMessageType() == MessageType.ID_MESSAGE) {
+			// If the message is an ID assignment, update ID and return
 			myId = message.getReceiverId();
 			return;
 		}
 		
 		if (senderId == null || senderId.isEmpty()) {
-			// If client did not have a connection information previously
+			// If connected client did not have a connection information previously
+			// Create an ID
 			senderId = getRandomId();
+			// Set the incoming Message's sender ID
 			message.setSenderId(senderId);
+			// Let the client know about its new ID
 			manager.sendId(id, senderId);
 		}
 		
-		// Update connection information for client
+		// Update connection information for client (in case it changed)
 		clientToCommunicationMap.put(senderId, id);
+		// Forward message to higher layers through an event
 		listenerManager.send(message);
 	}
 
