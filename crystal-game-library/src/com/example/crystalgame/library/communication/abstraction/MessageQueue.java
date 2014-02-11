@@ -1,6 +1,7 @@
 package com.example.crystalgame.library.communication.abstraction;
 
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import com.example.crystalgame.library.communication.CommunicationFailureException;
 import com.example.crystalgame.library.communication.CommunicationManager;
@@ -60,26 +61,40 @@ public class MessageQueue extends Thread {
 	private void sendService() {
 		while (sendMessages) {
 			// Get the first message in the queue (block until message in queue)
-			MessageQueueElement element = messageQueue.poll();
-			if (element != null) {
-				try {
-					// try to send the data
-					manager.sendData(element.communicationId, element.message);
-				} catch (CommunicationFailureException e) {
-					System.err.println(e.getMessage());
-					boolean success = false;
-					do {
-						// Message failed to send, put it back on the queue
-						success = put(element);
-						try {
-							// Let's sleep for a bit before we try to send a message again...
-							sleep(SLEEP_TIME);
-						} catch (InterruptedException e1) {
-							System.err.println(e1.getMessage());
-						}
-					} while (!success);
-				}
+			MessageQueueElement element = null;
+			try {
+				element = messageQueue.poll(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
+			} catch (InterruptedException e2) {
+				// Element is gonna be null, so we are going to handle it in the next step...
 			}
+			
+			if (element == null) {
+				// Let's put the thread to sleep for a bit, then try again... 
+				goToSleep();
+				continue;
+			}
+			
+			try {
+				// try to send the data
+				manager.sendData(element.communicationId, element.message);
+			} catch (CommunicationFailureException e) {
+				System.err.println(e.getMessage());
+				boolean success = false;
+				do {
+					// Message failed to send, put it back on the queue
+					success = put(element);
+					// Let's sleep for a bit before we try to send a message again...
+					goToSleep();
+				} while (!success);
+			}
+		}
+	}
+	
+	private void goToSleep() {
+		try {
+			sleep(SLEEP_TIME);
+		} catch (InterruptedException e1) {
+			System.err.println(e1.getMessage());
 		}
 	}
 	
