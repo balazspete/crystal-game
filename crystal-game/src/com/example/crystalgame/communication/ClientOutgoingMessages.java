@@ -4,9 +4,13 @@ import java.io.Serializable;
 
 import com.example.crystalgame.library.communication.CommunicationFailureException;
 import com.example.crystalgame.library.communication.messages.ControlMessage;
+import com.example.crystalgame.library.communication.messages.GroupStatusMessage;
 import com.example.crystalgame.library.communication.messages.TestMessage;
+import com.example.crystalgame.library.communication.messages.TestMulticastMessage;
+import com.example.crystalgame.library.communication.messages.UnicastMessage;
 import com.example.crystalgame.library.communication.outgoing.OutgoingMessages;
 import com.example.crystalgame.library.instructions.GroupInstruction;
+import com.example.crystalgame.library.instructions.GroupStatusInstruction;
 
 /**
  * The outgoing messages component extension for the clients
@@ -15,6 +19,8 @@ import com.example.crystalgame.library.instructions.GroupInstruction;
  */
 public class ClientOutgoingMessages extends OutgoingMessages {
 
+	private final String SERVER_ID = "SERVER";
+	
 	public ClientOutgoingMessages() {
 		super();
 	}
@@ -23,6 +29,37 @@ public class ClientOutgoingMessages extends OutgoingMessages {
 	public boolean sendTestDataToServer(Serializable data) {
 		TestMessage message = new TestMessage();
 		message.setData(data);
+		message.setReceiverId(SERVER_ID);
+		
+		try {
+			send(message);
+		} catch (CommunicationFailureException e) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	@Deprecated
+	public boolean sendTestUnicastData(String clientId, Serializable data) {
+		TestMessage message = new TestMessage(clientId);
+		message.setData(data);
+		message.setReceiverId(clientId);
+		
+		try {
+			send(message);
+		} catch (CommunicationFailureException e) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	@Deprecated
+	public boolean sendTestMulticastData(Serializable data) {
+		TestMulticastMessage message = new TestMulticastMessage();
+		message.setData(data);
+		message.setReceiverId(SERVER_ID);
 		
 		try {
 			send(message);
@@ -41,6 +78,7 @@ public class ClientOutgoingMessages extends OutgoingMessages {
 	public boolean sendGroupInstructionToServer(GroupInstruction instruction) {
 		ControlMessage message = new ControlMessage();
 		message.setData(instruction);
+		message.setReceiverId(SERVER_ID);
 		
 		try {
 			send(message);
@@ -50,6 +88,25 @@ public class ClientOutgoingMessages extends OutgoingMessages {
 		
 		return true;
 	}
+	
+	/**
+	 * Send a group status instruction to the server
+	 * @param instruction The instruction
+	 * @return True if message has been sent
+	 */
+	public boolean sendGroupStatusInstruction(GroupStatusInstruction instruction) {
+		GroupStatusMessage message = new GroupStatusMessage(SERVER_ID);
+		message.setData(instruction);
+		
+		try {
+			send(message);
+		} catch (CommunicationFailureException e) {
+			return false;
+		}
+		
+		return true;
+	}
+	
 	
 	// TODO: for each messaging scenario, add a method call here
 }

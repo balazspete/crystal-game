@@ -1,10 +1,11 @@
 package com.example.crystalgame.communication;
 
 import com.example.crystalgame.library.communication.abstraction.AbstractionModule;
+import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.communication.incoming.IncomingMessages;
 import com.example.crystalgame.library.communication.messages.ControlMessage;
+import com.example.crystalgame.library.communication.messages.GroupStatusMessage;
 import com.example.crystalgame.library.communication.messages.Message;
-import com.example.crystalgame.library.communication.messages.MessageType;
 
 /**
  * The client side implementation of incoming messages
@@ -19,22 +20,27 @@ public class ClientIncomingMessages extends IncomingMessages {
 
 	@Override
 	protected void handleMessage(Message message) {
-		if (message.getGroupId() != null && !groupIDs.contains(message.getGroupId().intern())) {
-			return;
-		}
+//		if (message.getGroupId() != null && !groupIDs.contains(message.getGroupId().intern())) {
+//			return;
+//		}
 		
-		
-		if(message.getMessageType() == MessageType.CONTROL_MESSAGE) {
-			handleControlMessage((ControlMessage) message);
-			return;
-		}
-		
-		messageListenerManager.send(message);
-		
-		// TODO: instruction extraction/encoding and event send
+		messageListenerManager.send(createMessageEventFromMessage(message));
 	}
 
-	private void handleControlMessage(ControlMessage message) {
-		// TODO: handle control message
+	@Override
+	protected void handleGroupStatusMessage(GroupStatusMessage message) {
+		messageListenerManager.send(createMessageEventFromMessage(message));
+	}
+
+	@Override
+	protected void handleControlMessage(ControlMessage message) {
+		messageListenerManager.send(createMessageEventFromMessage(message));
+	}
+	
+	private MessageEvent createMessageEventFromMessage(Message message) {
+		MessageEvent event = new MessageEvent(message);
+		event.setSenderId(message.getSenderId());
+		return event;
+		
 	}
 }

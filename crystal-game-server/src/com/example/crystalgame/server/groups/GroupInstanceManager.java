@@ -1,16 +1,22 @@
 package com.example.crystalgame.server.groups;
 
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.example.crystalgame.library.communication.messages.ControlMessage;
-import com.example.crystalgame.library.events.ControlMessageEventListener;
+import com.example.crystalgame.library.communication.messages.GroupStatusMessage;
+import com.example.crystalgame.library.communication.messages.Message;
+import com.example.crystalgame.library.communication.messages.MulticastMessage;
+import com.example.crystalgame.library.communication.messages.UnicastMessage;
 import com.example.crystalgame.library.events.ListenerManager;
-import com.example.crystalgame.library.groups.Client;
-import com.example.crystalgame.library.groups.Group;
-import com.example.crystalgame.library.groups.GroupException;
+import com.example.crystalgame.library.events.MessageEvent;
+import com.example.crystalgame.library.events.MessageEventListener;
 import com.example.crystalgame.library.instructions.GroupInstruction;
+import com.example.crystalgame.library.instructions.GroupStatusInstruction;
 import com.example.crystalgame.library.instructions.Instruction;
 import com.example.crystalgame.library.instructions.InstructionType;
+import com.example.crystalgame.server.sequencer.SequencerEventListener;
 
 /**
  * A component to manage groups and offer an interface for groups management
@@ -19,19 +25,26 @@ import com.example.crystalgame.library.instructions.InstructionType;
  */
 public class GroupInstanceManager {
 
-	private ListenerManager<ControlMessageEventListener, ControlMessage> manager;
+	public final int MAX_GROUPS = 10;
+	
+	private ListenerManager<MessageEventListener, MessageEvent> messageEventManager;
 	private ConcurrentHashMap<String, Group> groups;
 	private ConcurrentHashMap<String, Client> clients;
+	
+	private ExecutorService groupInstancePool;
+	private SequencerEventListener sequencerEventListener;
 	
 	public GroupInstanceManager() {
 		groups = new ConcurrentHashMap<String, Group>();
 		clients = new ConcurrentHashMap<String, Client>();
+		groupInstancePool = Executors.newFixedThreadPool(MAX_GROUPS);
 		
 		// Allow components to subscribe to ControlMessageEvents
-		manager = new ListenerManager<ControlMessageEventListener, ControlMessage>() {
+		messageEventManager = new ListenerManager<MessageEventListener, MessageEvent>() {
+
 			@Override
-			protected void eventHandlerHelper(ControlMessageEventListener listener, ControlMessage data) {
-				// Forward the control message event to the listener
+			// Forward the message event to the listener
+			protected void eventHandlerHelper(MessageEventListener listener, MessageEvent data) {
 				listener.messageEvent(data);
 			}
 		};
@@ -42,8 +55,9 @@ public class GroupInstanceManager {
 	 * @param groupName The desired name for the group
 	 * @param initiator The initiating client
 	 * @return The created group's ID
+	 * @throws GroupException Thrown in case the maximum limit for the number of groups has been reached
 	 */
-	public String createGroup(String groupName, Client initiator) {
+	public String createGroup(String groupName, Client initiator) throws GroupException {
 		return createGroup(groupName, Group.DEFAULT_MAX_PLAYERS, initiator);
 	}
 	
@@ -53,8 +67,18 @@ public class GroupInstanceManager {
 	 * @param maxPlayers The maximum number of players 
 	 * @param initiator The initiating client's ID
 	 * @return The group ID
+	 * @throws GroupException Thrown in case the maximum limit for the number of groups has been reached
 	 */
-	public String createGroup(String groupName, int maxPlayers, Client initiator) {
+	public String createGroup(String groupName, int maxPlayers, Client initiator) throws GroupException {
+		if (groups.size() >= MAX_GROUPS) {
+			throw GroupException.CANNOT_CREATE_LIMIT;
+		}
+		
+		Client client = getClient(initiator.getId());
+		if(client != null && getGroup(client.getGroupID()) != null) {
+			throw GroupException.ALREADY_IN_GROUP;
+		}
+		
 		Group group;
 		do {
 			group = new Group(groupName, initiator);
@@ -64,6 +88,11 @@ public class GroupInstanceManager {
 		initiator.setGroupID(group.groupId);
 		clients.put(initiator.getId(), initiator);
 		groups.put(group.groupId, group);
+		
+		group.getGroupInstance().addSequencerEventListener(sequencerEventListener);
+		
+		groupInstancePool.execute(group.getGroupInstance());
+		
 		return group.groupId;
 	}
 
@@ -75,6 +104,11 @@ public class GroupInstanceManager {
 	 * @throws GroupException Thrown if join failed
 	 */
 	public String joinGroup(Client client, String otherClientId) throws GroupException {
+		Client _client = getClient(client.getId());
+		if(_client != null && getGroup(_client.getGroupID()) != null) {
+			throw GroupException.ALREADY_IN_GROUP;
+		}
+		
 		for(Group group : groups.values()) {
 			// Determine if other client is in the group
 			if (group.isClientInGroup(otherClientId)) {
@@ -162,27 +196,35 @@ public class GroupInstanceManager {
 		switch(instruction.groupInstructionType) {
 			case CREATE:
 				int maxPlayers = Integer.parseInt(instruction.arguments[1]);
-				groupId = this.createGroup(
-						instruction.arguments[0], maxPlayers, 
-						new Client(message.getSenderId(), instruction.arguments[2]));
-				// Return group ID if we have succeeded
-				reply = GroupInstruction.successReply(groupId);
+				try {
+					groupId = this.createGroup(
+							instruction.arguments[0], maxPlayers, 
+							new Client(message.getSenderId(), instruction.arguments[2]));
+					// Return group ID if we have succeeded
+					reply = GroupInstruction.successReply(groupId);
+				} catch (GroupException e) {
+					// Thrown if the maximum group number has been reached
+					reply = GroupInstruction.failureReply(e.getMessage());
+				}
 				break;
 			case JOIN:
 				try {
 					groupId = this.joinGroup(new Client(message.getSenderId(), instruction.arguments[0]), instruction.arguments[1]);
+					// Return group ID if we have succeeded
 					reply = GroupInstruction.successReply(groupId);
 				} catch (GroupException e) {
 					// We have failed, return the error message...
 					reply = GroupInstruction.failureReply(e.getMessage());
 				}
-				// Return group ID if we have succeeded
 				break;
 			case LEAVE:
-				Group group = groups.get(message.getGroupId());
-				// Remove player from group
-				if (group != null) {
-					this.leaveGroup(group.groupId, group.getClient(message.getSenderId()));
+				groupId = message.getGroupId();
+				if(groupId!=null) {
+					Group group = groups.get(message.getGroupId());
+					// Remove player from group
+					if (group != null) {
+						this.leaveGroup(group.groupId, group.getClient(message.getSenderId()));
+					}
 				}
 				// Just return a blank success message (even if client was not in a group)
 				reply = GroupInstruction.successReply(null);
@@ -193,25 +235,101 @@ public class GroupInstanceManager {
 		}
 		
 		ControlMessage replyMessage = new ControlMessage();
-		replyMessage.setReceiverId(message.getSenderId());
 		replyMessage.setData(reply);
 		
-		manager.send(replyMessage);
+		MessageEvent event = new MessageEvent(replyMessage);
+		event.setReceiverId(message.getSenderId());
+		messageEventManager.send(event);
 	}
 	
 	/**
 	 * Add a control message event listener
 	 * @param listener The listener
 	 */
-	public void addControlMessageEventListener(ControlMessageEventListener listener) {
-		manager.addEventListener(listener);
+	public void addMessageEventListener(MessageEventListener listener) {
+		messageEventManager.addEventListener(listener);
 	}
 	
 	/**
 	 * Remove a control message event listener
 	 * @param listener The listener
 	 */
-	public void removeControlMessageEventListener(ControlMessageEventListener listener) {
-		manager.removeEventListener(listener);
+	public void removeMessageEventListener(MessageEventListener listener) {
+		messageEventManager.removeEventListener(listener);
+	}
+	
+	/**
+	 * Add a sequencer event listener
+	 * @param listener The listener
+	 */
+	public void setSequencerEventListener(SequencerEventListener listener) {
+		this.sequencerEventListener = listener;
+	}
+	
+	/**
+	 * Remove a sequencer event listener
+	 * @param listener The listener
+	 */
+	public void removeSequencerEventListener() {
+		for (Group group : groups.values()) {
+			group.getGroupInstance().removeSequencerEventListener(sequencerEventListener);
+		}
+		
+		this.sequencerEventListener = null;
+	}
+	
+	/**
+	 * Forward the input message to the group it belongs to
+	 * @param message
+	 */
+	public void forwardMessage(Message message) {
+		if (message == null) {
+			return;
+		}
+		
+		String groupId = message.getGroupId();
+		if(groupId == null) {
+			return;
+		}
+		
+		Group group = groups.get(groupId);
+		if(group == null) {
+			return;
+		}
+		
+		if (message.isMulticastMessage()) {
+			group.getGroupInstance().sendMessageToAll((MulticastMessage) message);
+		} else {
+			group.getGroupInstance().sendMessageToOne((UnicastMessage) message);
+		}	
+	}
+	
+	/**
+	 * method to handle {@link GroupStatusMessage}s
+	 * @param message The message
+	 */
+	public void handleGroupStatusMessage(GroupStatusMessage message) {
+		GroupStatusInstruction instruction = (GroupStatusInstruction) message.getData();
+		GroupStatusInstruction reply = null;
+		switch(instruction.type) {
+			case MEMBER_LIST_REQUEST :
+				String[] args = new String[clients.size()*2];
+				int i = 0;
+				for(Client client : clients.values()) {
+					args[i++] = client.getId();
+					args[i++] = client.getName();
+				}
+				reply = GroupStatusInstruction.createGroupMembershipListResponseInstruction(args);
+				break;
+			default:
+				break;
+		}
+		
+		GroupStatusMessage replyMessage = new GroupStatusMessage(message.getSenderId());
+		replyMessage.setData(reply);
+		
+		MessageEvent event = new MessageEvent(replyMessage);
+		event.setReceiverId(message.getSenderId());
+		messageEventManager.send(event);
 	}
 }

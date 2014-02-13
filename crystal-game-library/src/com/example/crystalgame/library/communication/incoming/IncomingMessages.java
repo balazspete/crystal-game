@@ -3,8 +3,11 @@ package com.example.crystalgame.library.communication.incoming;
 import java.util.HashSet;
 
 import com.example.crystalgame.library.communication.abstraction.AbstractionModule;
+import com.example.crystalgame.library.communication.messages.ControlMessage;
+import com.example.crystalgame.library.communication.messages.GroupStatusMessage;
 import com.example.crystalgame.library.communication.messages.Message;
 import com.example.crystalgame.library.events.ListenerManager;
+import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.events.MessageEventListener;
 
 /**
@@ -15,7 +18,7 @@ import com.example.crystalgame.library.events.MessageEventListener;
 public abstract class IncomingMessages {
 
 	protected AbstractionModule abstraction;
-	protected ListenerManager<MessageEventListener, Message> messageListenerManager;
+	protected ListenerManager<MessageEventListener, MessageEvent> messageListenerManager;
 	protected HashSet<String> groupIDs;
 	
 	/**
@@ -65,11 +68,10 @@ public abstract class IncomingMessages {
 		groupIDs = new HashSet<String>();
 		
 		// Add an event listener manager for message events
-		messageListenerManager = new ListenerManager<MessageEventListener, Message>() {
+		messageListenerManager = new ListenerManager<MessageEventListener, MessageEvent>() {
 			@Override
-			protected void eventHandlerHelper(MessageEventListener listener, Message message) {
-				// Forward the message event to subscribers
-				listener.messageEvent(message);
+			protected void eventHandlerHelper(MessageEventListener listener, MessageEvent event) {
+				MessageEventListener.eventHandlerHelper(listener, event);
 			}
 		};
 		
@@ -77,9 +79,20 @@ public abstract class IncomingMessages {
 		
 		// Subscribe to events from the abstraction layer
 		abstraction.addEventListener(new MessageEventListener(){
+
 			@Override
-			public void messageEvent(Message message) {
-				handleMessage(message);
+			public void messageEvent(MessageEvent event) {
+				handleMessage(event.getMessage());
+			}
+
+			@Override
+			public void groupStatusMessageEvent(MessageEvent event) {
+				handleGroupStatusMessage((GroupStatusMessage) event.getMessage());
+			}
+
+			@Override
+			public void controlMessage(MessageEvent event) {
+				handleControlMessage((ControlMessage) event.getMessage());
 			}
 		});
 	}
@@ -89,4 +102,16 @@ public abstract class IncomingMessages {
 	 * @param message The message
 	 */
 	protected abstract void handleMessage(Message message);
+	
+	/**
+	 * Handler for group status message events by the {@link AbstractionModule}
+	 * @param message The message
+	 */
+	protected abstract void handleGroupStatusMessage(GroupStatusMessage message);
+	
+	/**
+	 * Handler for control message events by the {@link AbstractionModule}
+	 * @param message The message
+	 */
+	protected abstract void handleControlMessage(ControlMessage message);
 }

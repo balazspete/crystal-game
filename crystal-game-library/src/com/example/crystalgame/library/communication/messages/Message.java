@@ -116,4 +116,11 @@ public abstract class Message implements Serializable {
 	public Serializable getData() {
 		return data;
 	}
+	
+	/**
+	 * Determine if the message is a multicast message
+	 * @return true if the message is a multicast message
+	 */
+	public abstract boolean isMulticastMessage();
+	
 }

@@ -15,5 +15,10 @@ public abstract class MulticastMessage extends Message {
 	public MulticastMessage(MessageType messageType) {
 		super(messageType);
 	}
+
+	@Override
+	public boolean isMulticastMessage() {
+		return true;
+	}
 	
 }

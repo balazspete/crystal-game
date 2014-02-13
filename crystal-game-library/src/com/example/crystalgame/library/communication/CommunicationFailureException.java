@@ -18,7 +18,8 @@ public class CommunicationFailureException extends Exception {
 		FAILED_TO_RECEIVE = new CommunicationFailureException("Failed to receive"),
 		FAILED_TO_CONNECT = new CommunicationFailureException("Failed to connect to remote"),
 		FAILED_TO_SERIALISE = new CommunicationFailureException("Failed to serialise the message"),
-		FAILED_TO_DESERIALISE = new CommunicationFailureException("Failed to deserialise the message");
+		FAILED_TO_DESERIALISE = new CommunicationFailureException("Failed to deserialise the message"),
+		NO_RECEIVER_ID = new CommunicationFailureException("No receiver ID set!");
 		
 	/**
 	 * Create an exception describing a communication failure

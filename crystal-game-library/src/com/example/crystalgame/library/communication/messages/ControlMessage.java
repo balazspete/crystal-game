@@ -16,4 +16,9 @@ public class ControlMessage extends Message {
 		super(MessageType.CONTROL_MESSAGE);
 	}
 
+	@Override
+	public boolean isMulticastMessage() {
+		return false;
+	}
+
 }

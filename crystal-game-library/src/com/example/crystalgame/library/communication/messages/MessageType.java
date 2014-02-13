@@ -10,7 +10,9 @@ import java.io.Serializable;
 public enum MessageType implements Serializable {
 
 	TEST_MESSAGE,
+	TEST_MULTICAST_MESSAGE,
 	ID_MESSAGE,
-	CONTROL_MESSAGE
+	CONTROL_MESSAGE,
+	GROUP_STATUS_MESSAGE
 	
 }

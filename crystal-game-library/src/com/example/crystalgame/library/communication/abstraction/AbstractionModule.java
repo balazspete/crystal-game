@@ -7,6 +7,7 @@ import com.example.crystalgame.library.communication.CommunicationManager;
 import com.example.crystalgame.library.communication.messages.Message;
 import com.example.crystalgame.library.communication.messages.MessageType;
 import com.example.crystalgame.library.events.ListenerManager;
+import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.events.MessageEventListener;
 import com.example.crystalgame.library.util.RandomID;
 
@@ -21,7 +22,7 @@ public class AbstractionModule {
 	private static String myId;
 	
 	private CommunicationManager manager;
-	private ListenerManager<MessageEventListener, Message> listenerManager;
+	private ListenerManager<MessageEventListener, MessageEvent> listenerManager;
 	
 	private HashMap<String, String> clientToCommunicationMap;
 	
@@ -34,11 +35,11 @@ public class AbstractionModule {
 		this.clientToCommunicationMap = new HashMap<String, String>();
 		
 		// Create an listener manager to be able to emit events
-		this.listenerManager = new ListenerManager<MessageEventListener, Message>() {
+		this.listenerManager = new ListenerManager<MessageEventListener, MessageEvent>() {
 			@Override
-			protected void eventHandlerHelper(MessageEventListener listener, Message message) {
-				// Forward all events to the higher levels
-				listener.messageEvent(message);
+			protected void eventHandlerHelper(MessageEventListener listener, MessageEvent event) {
+				// Call the forwarding implementation specified in the MessageEventListener class
+				MessageEventListener.eventHandlerHelper(listener, event);
 			}
 		};
 		
@@ -56,6 +57,11 @@ public class AbstractionModule {
 		if (id == null || id.isEmpty()) {
 			// If id is not set => Message originates from this node
 			message.setSenderId(myId);
+		}
+		
+		if (message.getReceiverId() == null) {
+			// The message does not have a destination :(
+			throw CommunicationFailureException.NO_RECEIVER_ID;
 		}
 		
 		// Queue up message to send
@@ -89,8 +95,12 @@ public class AbstractionModule {
 		
 		// Update connection information for client (in case it changed)
 		clientToCommunicationMap.put(senderId, id);
+		
 		// Forward message to higher layers through an event
-		listenerManager.send(message);
+		MessageEvent event = new MessageEvent(message);
+		event.setSenderId(message.getSenderId());
+		event.setReceiverId(message.getReceiverId());
+		listenerManager.send(event);
 	}
 
 	/**

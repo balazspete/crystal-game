@@ -1,4 +1,4 @@
-package com.example.crystalgame.library.groups;
+package com.example.crystalgame.server.groups;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ public class Group {
 	
 	private String name;
 	private int maxPlayers = -1;
+	private GroupInstance instance;
 	
 	private List<Client> clients;
 	
@@ -40,6 +41,8 @@ public class Group {
 		
 		clients = new ArrayList<Client>(maxPlayers);
 		clients.add(client);
+		
+		this.instance = new GroupInstance(this);
 	}
 	
 	/**
@@ -114,5 +117,21 @@ public class Group {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Get the list of clients
+	 * @return The clients
+	 */
+	public synchronized List<Client> getClients() {
+		return clients;
+	}
+
+	/**
+	 * Get the {@link GroupInstance} associated with the group
+	 * @return the instance
+	 */
+	public GroupInstance getGroupInstance() {
+		return instance;
 	}
 }

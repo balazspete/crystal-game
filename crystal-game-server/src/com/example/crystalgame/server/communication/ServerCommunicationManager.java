@@ -64,6 +64,7 @@ public class ServerCommunicationManager extends CommunicationManager {
 	@Override
 	public void sendData(String id, Serializable data) throws CommunicationFailureException {
 		ConnectionHandler handler = connections.get(id);
+		
 		if (handler == null || handler.isClosed()) {
 			// If the handler is not active any more, remove it and report a failure
 			connections.remove(id);

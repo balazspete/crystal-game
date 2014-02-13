@@ -2,8 +2,6 @@ package com.example.crystalgame.library.events;
 
 import java.util.EventListener;
 
-import com.example.crystalgame.library.communication.messages.Message;
-
 /**
  * The listener used to receive new message events
  * @author Balazs Pete, Allen Thomas Varghese, Rajan Verma
@@ -32,6 +30,36 @@ public abstract class MessageEventListener implements EventListener {
 	 * Listen to all message events
 	 * @param message The new message
 	 */
-	public abstract void messageEvent(Message message);
+	public abstract void messageEvent(MessageEvent event);
+	
+	/**
+	 * Listen to GroupStatusMessages
+	 * @param message The new group status message
+	 */
+	public abstract void groupStatusMessageEvent(MessageEvent event);
+	
+	/**
+	 * Listen to ControlMessages
+	 * @param message The new control message
+	 */
+	public abstract void controlMessage(MessageEvent event);
 
+	/**
+	 * Implementation of the eventHandlerHelper function of the listener manager
+	 * @param listener The listener
+	 * @param event The event
+	 */
+	public static void eventHandlerHelper(MessageEventListener listener, MessageEvent event) {
+		// Forward the message to the listener based on its type
+		switch(event.getMessage().getMessageType()) {
+			case CONTROL_MESSAGE:
+				listener.controlMessage(event);
+				break;
+			case GROUP_STATUS_MESSAGE:
+				listener.groupStatusMessageEvent(event);
+				break;
+			default:
+				listener.messageEvent(event);
+		}
+	}
 }

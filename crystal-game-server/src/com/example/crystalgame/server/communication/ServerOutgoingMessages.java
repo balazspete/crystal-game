@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import com.example.crystalgame.library.communication.CommunicationFailureException;
 import com.example.crystalgame.library.communication.messages.ControlMessage;
+import com.example.crystalgame.library.communication.messages.Message;
 import com.example.crystalgame.library.communication.messages.TestMessage;
 import com.example.crystalgame.library.communication.outgoing.OutgoingMessages;
 
@@ -39,6 +40,25 @@ public class ServerOutgoingMessages extends OutgoingMessages {
 	 */
 	public boolean sendControlMessageToClient(String clientId, ControlMessage message) {
 		message.setSenderId(serverID);
+		message.setReceiverId(clientId);
+		
+		try {
+			send(message);
+		} catch (CommunicationFailureException e) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Send a timestamped message to the specified client
+	 * @param receiverId The receiving client's ID
+	 * @param message The message
+	 * @return True if the message was successfully sent
+	 */
+	public boolean sendSequencedMessage(String receiverId, Message message) {
+		message.setReceiverId(receiverId);
 		
 		try {
 			send(message);

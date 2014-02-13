@@ -3,9 +3,11 @@ package com.example.crystalgame.server.communication;
 import com.example.crystalgame.library.communication.Communication;
 import com.example.crystalgame.library.communication.CommunicationManager;
 import com.example.crystalgame.library.communication.messages.ControlMessage;
-import com.example.crystalgame.library.communication.messages.Message;
-import com.example.crystalgame.library.events.ControlMessageEventListener;
+import com.example.crystalgame.library.events.MessageEvent;
+import com.example.crystalgame.library.events.MessageEventListener;
 import com.example.crystalgame.server.groups.GroupInstanceManager;
+import com.example.crystalgame.server.sequencer.SequencerEvent;
+import com.example.crystalgame.server.sequencer.SequencerEventListener;
 
 /**
  * An extension of the Communication module for the server
@@ -31,17 +33,37 @@ public class ServerCommunication extends Communication {
 		
 		// Set up incoming messages
 		in = new ServerIncomingMessages(this.abstraction, groupInstanceManager);
+		
 		substribeToGroupInstanceManagerEvents(groupInstanceManager);
+		substribeToSequencerEvents(groupInstanceManager);
 	}
 
 	private void substribeToGroupInstanceManagerEvents(GroupInstanceManager groupInstanceManager) {
-		groupInstanceManager.addControlMessageEventListener(new ControlMessageEventListener() {
+		groupInstanceManager.addMessageEventListener(new MessageEventListener() {
+
 			@Override
-			public void messageEvent(Message message) {
-				// Forward the group instance manager's message events to the outgoing messages component
-				out.sendControlMessageToClient(message.getReceiverId(), (ControlMessage) message);
+			public void messageEvent(MessageEvent event) {
+				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
+			}
+
+			@Override
+			public void groupStatusMessageEvent(MessageEvent event) {
+				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
+			}
+
+			@Override
+			public void controlMessage(MessageEvent event) {
+				out.sendControlMessageToClient(event.getReceiverId(), (ControlMessage) event.getMessage());
 			}
 		});
 	}
 	
+	private void substribeToSequencerEvents(GroupInstanceManager groupInstanceManager) {
+		groupInstanceManager.setSequencerEventListener(new SequencerEventListener(){
+			@Override
+			public void sequencerEvent(SequencerEvent event) {
+				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
+			}
+		});
+	}
 }

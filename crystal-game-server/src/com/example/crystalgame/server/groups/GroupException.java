@@ -1,4 +1,4 @@
-package com.example.crystalgame.library.groups;
+package com.example.crystalgame.server.groups;
 
 /**
  * An exception related to group errors
@@ -15,7 +15,9 @@ public class GroupException extends Exception {
 	public static final GroupException
 		LAST_MEMBER = new GroupException("Cannot remove, last member of group!"),
 		CANNOT_JOIN = new GroupException("Cannot join group!"),
-		NO_SUCH_GROUP = new GroupException("No such group!");
+		NO_SUCH_GROUP = new GroupException("No such group!"),
+		CANNOT_CREATE_LIMIT = new GroupException("Cannot create groups! Maximum limit reached."),
+		ALREADY_IN_GROUP = new GroupException("Cannot create group, already member of another! Leave the other group first!");
 	
 	/**
 	 * Create a group exception

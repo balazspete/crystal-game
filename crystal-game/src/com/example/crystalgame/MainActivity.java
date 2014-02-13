@@ -1,11 +1,17 @@
 package com.example.crystalgame;
 
+import java.util.Arrays;
+
 import com.example.crystalgame.communication.ClientCommunication;
 import com.example.crystalgame.communication.ClientOutgoingMessages;
 import com.example.crystalgame.library.communication.incoming.IncomingMessages;
+import com.example.crystalgame.library.communication.messages.GroupStatusMessage;
 import com.example.crystalgame.library.communication.messages.Message;
+import com.example.crystalgame.library.communication.messages.TestMessage;
+import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.events.MessageEventListener;
 import com.example.crystalgame.library.instructions.GroupInstruction;
+import com.example.crystalgame.library.instructions.GroupStatusInstruction;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -49,6 +55,18 @@ public class MainActivity extends Activity {
 		sendTestMessage(2);
 	}
 	
+	public void sendUnicast(View view) {
+		sendTestMessage(3);
+	}
+	
+	public void sendMulticast(View view) {
+		sendTestMessage(4);
+	}
+	
+	public void getMembers(View view) {
+		sendTestMessage(5);
+	}
+	
     // TODO: temporary solution - remove
     public void sendTestMessage(int option) {
     	String text1 = ((EditText) findViewById(R.id.editText1)).getText().toString();
@@ -62,8 +80,19 @@ public class MainActivity extends Activity {
 	    	in = communication.in;
 	    	in.addMessageEventListener(new MessageEventListener(){
 				@Override
-				public void messageEvent(Message message) {
-					System.out.println(message.getData());
+				public void messageEvent(MessageEvent event) {
+					System.out.println("Message: " + event.getMessage().getData());
+				}
+
+				@Override
+				public void groupStatusMessageEvent(MessageEvent event) {
+					System.out.print("GroupStatusMessage: ");
+					System.out.println(Arrays.toString(((GroupStatusInstruction) event.getMessage().getData()).arguments));
+				}
+
+				@Override
+				public void controlMessage(MessageEvent event) {
+					System.out.println("ControlMessage: " + event.getMessage().getData());
 				}
 	    	});
     	}
@@ -74,6 +103,12 @@ public class MainActivity extends Activity {
     		out.sendGroupInstructionToServer(GroupInstruction.joinGroup(text1, text2));
     	} else if (option == 2) {
     		out.sendGroupInstructionToServer(GroupInstruction.leaveGroup());
+    	} else if (option == 3) {
+    		out.sendTestUnicastData(text2, text1);
+    	} else if (option == 4) {
+    		out.sendTestMulticastData(text2);
+    	} else if (option == 5) {
+    		out.sendGroupStatusInstruction(GroupStatusInstruction.createGroupMembershipListRequestIntruction());
     	}
     	
     }

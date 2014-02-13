@@ -20,5 +20,10 @@ public abstract class UnicastMessage extends Message {
 		super(messageType);
 		this.receiverId = receiverId;
 	}
+	
+	@Override
+	public boolean isMulticastMessage() {
+		return false;
+	}
 
 }
