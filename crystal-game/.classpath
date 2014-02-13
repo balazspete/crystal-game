@@ -6,5 +6,6 @@
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CrystalGameLibrary"/>
+	<classpathentry kind="lib" path="../guava-16.0.1.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
