@@ -3,8 +3,8 @@ package com.example.crystalgame.server.groups;
 import com.example.crystalgame.library.communication.messages.Message;
 import com.example.crystalgame.library.communication.messages.MulticastMessage;
 import com.example.crystalgame.library.communication.messages.UnicastMessage;
+import com.example.crystalgame.library.events.MessageEventListener;
 import com.example.crystalgame.server.sequencer.Sequencer;
-import com.example.crystalgame.server.sequencer.SequencerEventListener;
 
 /**
  * An object handling a group instance
@@ -61,7 +61,7 @@ public class GroupInstance implements Runnable {
 	 * Add a sequencer event listener 
 	 * @param listener the event listener
 	 */
-	public void addSequencerEventListener(SequencerEventListener listener) {
+	public void addMessageEventListener(MessageEventListener listener) {
 		sequencer.addSequencerEventListener(listener);
 	}
 	
@@ -69,7 +69,7 @@ public class GroupInstance implements Runnable {
 	 * Remove a sequencer event listener
 	 * @param listener The listener
 	 */
-	public void removeSequencerEventListener(SequencerEventListener listener) {
+	public void removeMessageEventListener(MessageEventListener listener) {
 		sequencer.removeSequencerEventListener(listener);
 	}
 	

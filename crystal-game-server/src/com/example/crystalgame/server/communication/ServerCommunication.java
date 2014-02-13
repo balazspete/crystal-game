@@ -6,8 +6,6 @@ import com.example.crystalgame.library.communication.messages.ControlMessage;
 import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.events.MessageEventListener;
 import com.example.crystalgame.server.groups.GroupInstanceManager;
-import com.example.crystalgame.server.sequencer.SequencerEvent;
-import com.example.crystalgame.server.sequencer.SequencerEventListener;
 
 /**
  * An extension of the Communication module for the server
@@ -59,9 +57,20 @@ public class ServerCommunication extends Communication {
 	}
 	
 	private void substribeToSequencerEvents(GroupInstanceManager groupInstanceManager) {
-		groupInstanceManager.setSequencerEventListener(new SequencerEventListener(){
+		// Forward all messages from the groups to the ougoing messages module
+		groupInstanceManager.setGroupMessageEventListener(new MessageEventListener(){
 			@Override
-			public void sequencerEvent(SequencerEvent event) {
+			public void messageEvent(MessageEvent event) {
+				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
+			}
+
+			@Override
+			public void groupStatusMessageEvent(MessageEvent event) {
+				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
+			}
+
+			@Override
+			public void controlMessage(MessageEvent event) {
 				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
 			}
 		});

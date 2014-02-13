@@ -16,7 +16,6 @@ import com.example.crystalgame.library.instructions.GroupInstruction;
 import com.example.crystalgame.library.instructions.GroupStatusInstruction;
 import com.example.crystalgame.library.instructions.Instruction;
 import com.example.crystalgame.library.instructions.InstructionType;
-import com.example.crystalgame.server.sequencer.SequencerEventListener;
 
 /**
  * A component to manage groups and offer an interface for groups management
@@ -32,7 +31,7 @@ public class GroupInstanceManager {
 	private ConcurrentHashMap<String, Client> clients;
 	
 	private ExecutorService groupInstancePool;
-	private SequencerEventListener sequencerEventListener;
+	private MessageEventListener groupMessageEventListener;
 	
 	public GroupInstanceManager() {
 		groups = new ConcurrentHashMap<String, Group>();
@@ -89,7 +88,7 @@ public class GroupInstanceManager {
 		clients.put(initiator.getId(), initiator);
 		groups.put(group.groupId, group);
 		
-		group.getGroupInstance().addSequencerEventListener(sequencerEventListener);
+		group.getGroupInstance().addMessageEventListener(groupMessageEventListener);
 		
 		groupInstancePool.execute(group.getGroupInstance());
 		
@@ -262,20 +261,20 @@ public class GroupInstanceManager {
 	 * Add a sequencer event listener
 	 * @param listener The listener
 	 */
-	public void setSequencerEventListener(SequencerEventListener listener) {
-		this.sequencerEventListener = listener;
+	public void setGroupMessageEventListener(MessageEventListener listener) {
+		this.groupMessageEventListener = listener;
 	}
 	
 	/**
 	 * Remove a sequencer event listener
 	 * @param listener The listener
 	 */
-	public void removeSequencerEventListener() {
+	public void removeGroupMessageEventListener() {
 		for (Group group : groups.values()) {
-			group.getGroupInstance().removeSequencerEventListener(sequencerEventListener);
+			group.getGroupInstance().removeMessageEventListener(groupMessageEventListener);
 		}
 		
-		this.sequencerEventListener = null;
+		this.groupMessageEventListener = null;
 	}
 	
 	/**

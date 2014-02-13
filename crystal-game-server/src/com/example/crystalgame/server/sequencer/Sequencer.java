@@ -4,6 +4,7 @@ import com.example.crystalgame.library.communication.messages.Message;
 import com.example.crystalgame.library.communication.messages.MulticastMessage;
 import com.example.crystalgame.library.communication.messages.UnicastMessage;
 import com.example.crystalgame.library.events.ListenerManager;
+import com.example.crystalgame.library.events.MessageEventListener;
 import com.example.crystalgame.server.groups.Client;
 import com.example.crystalgame.server.groups.Group;
 
@@ -14,7 +15,7 @@ import com.example.crystalgame.server.groups.Group;
  */
 public class Sequencer {
 
-	private ListenerManager<SequencerEventListener, SequencerEvent> manager;
+	private ListenerManager<MessageEventListener, SequencerEvent> manager;
 	
 	private long multicastTimestamp = -1;
 	private Group group;
@@ -27,10 +28,10 @@ public class Sequencer {
 		this.group = group;
 		
 		// Allow components to subscribe to message events from the Sequencer
-		manager = new ListenerManager<SequencerEventListener, SequencerEvent>() {
+		manager = new ListenerManager<MessageEventListener, SequencerEvent>() {
 			@Override
-			protected void eventHandlerHelper(SequencerEventListener listener, SequencerEvent data) {
-				listener.sequencerEvent(data);
+			protected void eventHandlerHelper(MessageEventListener listener, SequencerEvent event) {
+				MessageEventListener.eventHandlerHelper(listener, event);
 			}
 		};
 	}
@@ -75,7 +76,7 @@ public class Sequencer {
 	 * Add an event listener
 	 * @param listener The listener
 	 */
-	public void addSequencerEventListener(SequencerEventListener listener) {
+	public void addSequencerEventListener(MessageEventListener listener) {
 		manager.addEventListener(listener);
 	}
 	
@@ -83,7 +84,7 @@ public class Sequencer {
 	 * Remove an event listener
 	 * @param listener The listener
 	 */
-	public void removeSequencerEventListener(SequencerEventListener listener) {
+	public void removeSequencerEventListener(MessageEventListener listener) {
 		manager.removeEventListener(listener);
 	}
 }

@@ -1,30 +1,23 @@
 package com.example.crystalgame.server.sequencer;
 
 import com.example.crystalgame.library.communication.messages.Message;
-import com.example.crystalgame.library.events.Event;
+import com.example.crystalgame.library.events.MessageEvent;
 
-public class SequencerEvent extends Event {
+/**
+ * A sequencer message event
+ * @author Balazs Pete
+ *
+ */
+public class SequencerEvent extends MessageEvent {
 	
-	private String receiverId;
-	private Message message;
-	
+	/**
+	 * Create a new Sequencer message event
+	 * @param receiverId The receiver's ID
+	 * @param message The message
+	 */
 	public SequencerEvent(String receiverId, Message message) {
-		this.receiverId = receiverId;
-		this.message = message;
+		super(message);
+		setReceiverId(receiverId);
 	}
 
-	/**
-	 * @return the receiverId
-	 */
-	public String getReceiverId() {
-		return receiverId;
-	}
-
-	/**
-	 * @return the message
-	 */
-	public Message getMessage() {
-		return message;
-	}
-	
 }
