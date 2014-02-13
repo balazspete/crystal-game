@@ -33,10 +33,12 @@ public class GroupInstance implements Runnable {
 		// TODO: do group stuff here
 		while(running) {
 			System.out.println("Infinite looping here... (GroupInstance§run)");
-			try {
-				wait(2000);
-			} catch (InterruptedException e) {
-				// Ignored
+			synchronized(this) {
+				try {
+					wait(2000);
+				} catch (InterruptedException e) {
+					// Ignored
+				}
 			}
 		}
 	}
