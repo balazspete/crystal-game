@@ -7,7 +7,9 @@ import com.example.crystalgame.communication.ClientCommunication;
 public class CrystalGame extends Application {
 
 	private ClientCommunication communication;
-	
+	private String playerID = "PlayerID-123";
+	//private String groupID = "GroupID-123";
+	private String groupID = "";
 	public void addCommunication(ClientCommunication communication) {
 		this.communication = communication;
 	}
@@ -24,5 +26,25 @@ public class CrystalGame extends Application {
 
 		System.out.println("changing port");
 		communication.portChange(port);
+	}
+	
+	public String getPlayerID()
+	{
+		return this.playerID;
+	}
+	
+	public void setPlayerID(String ID)
+	{
+		this.playerID = ID;
+	}
+	
+	public String getGroupID()
+	{
+		return this.groupID;
+	}
+	
+	public void setGroupID(String ID)
+	{
+		this.groupID = ID;
 	}
 }

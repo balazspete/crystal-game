@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/PlayerIDLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player ID" />
+
+    <EditText
+        android:id="@+id/PlayerID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:enabled="false">
+
+        <requestFocus />
+    </EditText>
+
+    <TextView
+        android:id="@+id/GroupIDLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Group ID" />
+
+    <EditText
+        android:id="@+id/GroupID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" 
+        android:enabled="false"/>
+
+    <Button
+        android:id="@+id/btnGameLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Game Location" />
+
+    <TextView
+        android:id="@+id/GameStartTimeLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Game Start Time" />
+
+    <EditText
+        android:id="@+id/GameStartTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" />
+
+    <TextView
+        android:id="@+id/GameDurationLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Game Duration" />
+
+    <EditText
+        android:id="@+id/GameDuration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10" />
+
+    <Button
+        android:id="@+id/btnSubmitCreateGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit" />
+
+    <Button
+        android:id="@+id/btnResetCreateGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset" />
+
+</LinearLayout>
