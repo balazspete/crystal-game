@@ -6,7 +6,7 @@ package com.example.crystalgame.ui;
 
 import java.io.Serializable;
 
-import com.example.crystalgame.library.ui.ZoneDefinition;
+import com.example.crystalgame.library.data.Zone;
 
 public class CreateGameMessage implements Serializable {
 	
@@ -16,7 +16,7 @@ public class CreateGameMessage implements Serializable {
 	private static final long serialVersionUID = -6848851065944952762L;
 	private String playerID;
 	private String groupID;
-	private ZoneDefinition gameLocation;
+	private Zone gameLocation;
 	private String gameStartTime;
 	private String gameDuration;
 	
@@ -36,11 +36,11 @@ public class CreateGameMessage implements Serializable {
 		this.groupID = groupID;
 	}
 	
-	public ZoneDefinition getGameLocation() {
+	public Zone getGameLocation() {
 		return gameLocation;
 	}
 	
-	public void setGameLocation(ZoneDefinition gameLocation) {
+	public void setGameLocation(Zone gameLocation) {
 		this.gameLocation = gameLocation;
 	}
 	

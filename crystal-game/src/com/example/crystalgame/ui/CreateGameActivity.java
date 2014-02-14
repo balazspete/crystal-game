@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.R;
-import com.example.crystalgame.library.ui.ZoneDefinition;
+import com.example.crystalgame.library.data.Zone;
 import com.google.android.gms.maps.model.LatLng;
 
 public class CreateGameActivity extends Activity implements OnClickListener
@@ -28,7 +28,7 @@ public class CreateGameActivity extends Activity implements OnClickListener
 	private Button btnSubmit;
 	private Button btnReset;
 	private CrystalGame appInstance;
-	private ZoneDefinition gameBoundary = new ZoneDefinition();
+	private Zone gameBoundary = new Zone();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 

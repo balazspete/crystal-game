@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import com.example.crystalgame.R;
 import com.example.crystalgame.SettingsActivity;
-import com.example.crystalgame.library.ui.LatLngLocation;
-import com.example.crystalgame.library.ui.ZoneDefinition;
+import com.example.crystalgame.library.data.Location;
+import com.example.crystalgame.library.data.Zone;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
@@ -43,7 +43,7 @@ public class GameBoundaryActivity extends FragmentActivity implements LocationLi
 	private int clickCount = 0;
 	private Button btnSavePoints;
 	private GoogleMap map;
-	private ZoneDefinition gameBoundary = new ZoneDefinition();
+	private Zone gameBoundary = new Zone();
 	//private ArrayList<LatLng> boundaryPoints = new ArrayList<LatLng>();
 	
 	@Override
@@ -90,16 +90,16 @@ public class GameBoundaryActivity extends FragmentActivity implements LocationLi
 			Bundle extras = getIntent().getExtras();
 			if(extras !=null) {
 				Toast.makeText(this, "You have chosen" + extras.toString(), Toast.LENGTH_LONG).show();
-				this.gameBoundary = (ZoneDefinition) extras.getSerializable("locations");
+				this.gameBoundary = (Zone) extras.getSerializable("locations");
 				
 				LatLng position = null;
-				LatLngLocation loc = null;
+				Location loc = null;
 				
 				map.clear();
 				
 				for(String key : gameBoundary.getLocations().keySet()) {
 					loc = gameBoundary.getLocation(key);
-					position = new LatLng(loc.getLattitudePosition(), loc.getLongitudePosition());
+					position = new LatLng(loc.getLatitude(), loc.getLongitudePosition());
 					map.addMarker(new MarkerOptions()
 						.position(position)
 						.draggable(true)
@@ -166,7 +166,7 @@ public class GameBoundaryActivity extends FragmentActivity implements LocationLi
 				.position(position)
 				.draggable(true)
 				.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-			gameBoundary.setLocation(marker.getId(), new LatLngLocation(position.latitude, position.longitude));
+			gameBoundary.setLocation(marker.getId(), new Location(position.latitude, position.longitude));
 			clickCount++;
 		}
 	}
@@ -182,7 +182,7 @@ public class GameBoundaryActivity extends FragmentActivity implements LocationLi
 		// TODO Auto-generated method stub
 		gameBoundary.getLocations().remove(markerID.getId());
 		LatLng pos = markerID.getPosition();
-		gameBoundary.setLocation(markerID.getId(), new LatLngLocation(pos.latitude, pos.longitude));
+		gameBoundary.setLocation(markerID.getId(), new Location(pos.latitude, pos.longitude));
 	}
 
 	@Override

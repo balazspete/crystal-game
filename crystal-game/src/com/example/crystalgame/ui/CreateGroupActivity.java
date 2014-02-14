@@ -17,14 +17,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.crystalgame.R;
-import com.example.crystalgame.library.ui.ZoneDefinition;
+import com.example.crystalgame.library.data.Zone;
 
 public class CreateGroupActivity extends Activity implements OnClickListener
 {
 	private Button btnGameBoundary;
 	private Button btnSubmit;
 	private Button btnReset;
-	private ZoneDefinition gameBoundary = new ZoneDefinition();
+	private Zone gameBoundary = new Zone();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -83,7 +83,7 @@ public class CreateGroupActivity extends Activity implements OnClickListener
 			if(resultCode == RESULT_OK)
 			{
 				Bundle extras = data.getExtras();
-				this.gameBoundary = (ZoneDefinition) extras.getSerializable("locations");
+				this.gameBoundary = (Zone) extras.getSerializable("locations");
 				Toast.makeText(this, "You have chosen" + this.gameBoundary.getLocations().toString(), Toast.LENGTH_LONG).show();
 			}
 			if (resultCode == RESULT_CANCELED) 
