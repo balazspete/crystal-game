@@ -2,7 +2,7 @@ package com.example.crystalgame.library.data;
 
 /**
  * Defines a crystal
- * @author 
+ * @author Balazs Pete, Shen Chen, Rajan Verma, Allen Thomas Varghese
  *
  */
 public class Crystal extends Item {

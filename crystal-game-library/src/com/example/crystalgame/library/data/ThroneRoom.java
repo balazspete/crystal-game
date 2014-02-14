@@ -2,7 +2,7 @@ package com.example.crystalgame.library.data;
 
 /**
  * Describes a throne room
- * @author 
+ * @author Balazs Pete, Shen Chen, Rajan Verma, Allen Thomas Varghese
  *
  */
 public class ThroneRoom extends Zone {

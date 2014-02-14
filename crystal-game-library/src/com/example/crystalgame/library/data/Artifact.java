@@ -1,5 +1,10 @@
 package com.example.crystalgame.library.data;
 
+/**
+ * Describes a generic artifact
+ * @author Balazs Pete, Shen Chen, Rajan Verma, Allen Thomas Varghese
+ *
+ */
 public abstract class Artifact extends Location {
 
 	/**

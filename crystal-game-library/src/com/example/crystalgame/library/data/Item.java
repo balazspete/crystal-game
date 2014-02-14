@@ -2,7 +2,7 @@ package com.example.crystalgame.library.data;
 
 /**
  * Describes an item
- * @author 
+ * @author Balazs Pete, Shen Chen, Rajan Verma, Allen Thomas Varghese
  *
  */
 public abstract class Item extends Artifact {

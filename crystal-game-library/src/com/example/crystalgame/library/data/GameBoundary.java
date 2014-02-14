@@ -2,7 +2,7 @@ package com.example.crystalgame.library.data;
 
 /**
  * Describes the game boundary
- * @author 
+ * @author Balazs Pete, Shen Chen, Rajan Verma, Allen Thomas Varghese
  *
  */
 public class GameBoundary extends Zone {

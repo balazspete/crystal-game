@@ -2,7 +2,7 @@ package com.example.crystalgame.library.data;
 
 /**
  * Describes a character of class wizard
- * @author 
+ * @author Balazs Pete, Shen Chen, Rajan Verma, Allen Thomas Varghese
  *
  */
 public class Wizard extends Character {

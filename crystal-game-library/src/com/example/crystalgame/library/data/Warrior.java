@@ -2,7 +2,7 @@ package com.example.crystalgame.library.data;
 
 /**
  * Describes a warrior
- * @author 
+ * @author Balazs Pete, Shen Chen, Rajan Verma, Allen Thomas Varghese
  *
  */
 public class Warrior extends Character {

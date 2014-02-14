@@ -2,8 +2,6 @@ package com.example.crystalgame.library.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 import com.example.crystalgame.library.util.RandomID;
 

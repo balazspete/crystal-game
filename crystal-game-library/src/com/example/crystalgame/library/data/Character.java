@@ -2,7 +2,7 @@ package com.example.crystalgame.library.data;
 
 /**
  * Represents a Character
- * @author 
+ * @author Balazs Pete, Shen Chen, Rajan Verma, Allen Thomas Varghese
  *
  */
 public abstract class Character extends Artifact {

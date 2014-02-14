@@ -2,7 +2,7 @@ package com.example.crystalgame.library.data;
 
 /**
  * Defines a magical item
- * @author 
+ * @author Balazs Pete, Shen Chen, Rajan Verma, Allen Thomas Varghese
  *
  */
 public class MagicalItem extends Item {
