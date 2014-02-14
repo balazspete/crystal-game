@@ -40,17 +40,17 @@ public class ServerCommunication extends Communication {
 		groupInstanceManager.addMessageEventListener(new MessageEventListener() {
 
 			@Override
-			public void messageEvent(MessageEvent event) {
+			public void onMessageEvent(MessageEvent event) {
 				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
 			}
 
 			@Override
-			public void groupStatusMessageEvent(MessageEvent event) {
+			public void onGroupStatusMessageEvent(MessageEvent event) {
 				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
 			}
 
 			@Override
-			public void controlMessage(MessageEvent event) {
+			public void onControlMessage(MessageEvent event) {
 				out.sendControlMessageToClient(event.getReceiverId(), (ControlMessage) event.getMessage());
 			}
 		});
@@ -60,17 +60,17 @@ public class ServerCommunication extends Communication {
 		// Forward all messages from the groups to the ougoing messages module
 		groupInstanceManager.setGroupMessageEventListener(new MessageEventListener(){
 			@Override
-			public void messageEvent(MessageEvent event) {
+			public void onMessageEvent(MessageEvent event) {
 				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
 			}
 
 			@Override
-			public void groupStatusMessageEvent(MessageEvent event) {
+			public void onGroupStatusMessageEvent(MessageEvent event) {
 				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
 			}
 
 			@Override
-			public void controlMessage(MessageEvent event) {
+			public void onControlMessage(MessageEvent event) {
 				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
 			}
 		});

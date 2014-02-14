@@ -81,17 +81,17 @@ public abstract class IncomingMessages {
 		abstraction.addEventListener(new MessageEventListener(){
 
 			@Override
-			public void messageEvent(MessageEvent event) {
+			public void onMessageEvent(MessageEvent event) {
 				handleMessage(event.getMessage());
 			}
 
 			@Override
-			public void groupStatusMessageEvent(MessageEvent event) {
+			public void onGroupStatusMessageEvent(MessageEvent event) {
 				handleGroupStatusMessage((GroupStatusMessage) event.getMessage());
 			}
 
 			@Override
-			public void controlMessage(MessageEvent event) {
+			public void onControlMessage(MessageEvent event) {
 				handleControlMessage((ControlMessage) event.getMessage());
 			}
 		});

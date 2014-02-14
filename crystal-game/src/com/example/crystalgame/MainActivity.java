@@ -79,18 +79,18 @@ public class MainActivity extends Activity {
 	    	in = communication.in;
 	    	in.addMessageEventListener(new MessageEventListener(){
 				@Override
-				public void messageEvent(MessageEvent event) {
+				public void onMessageEvent(MessageEvent event) {
 					System.out.println("Message: " + event.getMessage().getData());
 				}
 
 				@Override
-				public void groupStatusMessageEvent(MessageEvent event) {
+				public void onGroupStatusMessageEvent(MessageEvent event) {
 					System.out.print("GroupStatusMessage: ");
 					System.out.println(Arrays.toString(((GroupStatusInstruction) event.getMessage().getData()).arguments));
 				}
 
 				@Override
-				public void controlMessage(MessageEvent event) {
+				public void onControlMessage(MessageEvent event) {
 					System.out.println("ControlMessage: " + event.getMessage().getData());
 				}
 	    	});

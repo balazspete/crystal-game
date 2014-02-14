@@ -25,18 +25,18 @@ public class Server {
 		
 		c.in.addMessageEventListener(new MessageEventListener(){
 			@Override
-			public void messageEvent(MessageEvent event) {
+			public void onMessageEvent(MessageEvent event) {
 				System.out.println("Message form: " + event.getSenderId());
 				groupInstanceManager.forwardMessage(event.getMessage());
 			}
 
 			@Override
-			public void groupStatusMessageEvent(MessageEvent event) {
+			public void onGroupStatusMessageEvent(MessageEvent event) {
 				groupInstanceManager.handleGroupStatusMessage((GroupStatusMessage) event.getMessage());
 			}
 
 			@Override
-			public void controlMessage(MessageEvent event) {
+			public void onControlMessage(MessageEvent event) {
 				// TODO Auto-generated method stub
 				ControlMessage message = (ControlMessage) event.getMessage();
 				groupInstanceManager.handleGroupInstruction(message, (GroupInstruction) message.getData());

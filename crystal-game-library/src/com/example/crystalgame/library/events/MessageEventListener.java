@@ -30,19 +30,19 @@ public abstract class MessageEventListener implements EventListener {
 	 * Listen to all message events
 	 * @param message The new message
 	 */
-	public abstract void messageEvent(MessageEvent event);
+	public abstract void onMessageEvent(MessageEvent event);
 	
 	/**
 	 * Listen to GroupStatusMessages
 	 * @param message The new group status message
 	 */
-	public abstract void groupStatusMessageEvent(MessageEvent event);
+	public abstract void onGroupStatusMessageEvent(MessageEvent event);
 	
 	/**
 	 * Listen to ControlMessages
 	 * @param message The new control message
 	 */
-	public abstract void controlMessage(MessageEvent event);
+	public abstract void onControlMessage(MessageEvent event);
 
 	/**
 	 * Implementation of the eventHandlerHelper function of the listener manager
@@ -53,13 +53,13 @@ public abstract class MessageEventListener implements EventListener {
 		// Forward the message to the listener based on its type
 		switch(event.getMessage().getMessageType()) {
 			case CONTROL_MESSAGE:
-				listener.controlMessage(event);
+				listener.onControlMessage(event);
 				break;
 			case GROUP_STATUS_MESSAGE:
-				listener.groupStatusMessageEvent(event);
+				listener.onGroupStatusMessageEvent(event);
 				break;
 			default:
-				listener.messageEvent(event);
+				listener.onMessageEvent(event);
 		}
 	}
 }

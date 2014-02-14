@@ -44,7 +44,7 @@ public class GroupInstanceManager {
 			@Override
 			// Forward the message event to the listener
 			protected void eventHandlerHelper(MessageEventListener listener, MessageEvent data) {
-				listener.messageEvent(data);
+				listener.onMessageEvent(data);
 			}
 		};
 	}
