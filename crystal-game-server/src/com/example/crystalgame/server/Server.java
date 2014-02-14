@@ -41,6 +41,11 @@ public class Server {
 				ControlMessage message = (ControlMessage) event.getMessage();
 				groupInstanceManager.handleGroupInstruction(message, (GroupInstruction) message.getData());
 			}
+
+			@Override
+			public void onInstructionRelayMessage(MessageEvent event) {
+				groupInstanceManager.forwardMessage(event.getMessage());
+			}
 		});
 	}
 	

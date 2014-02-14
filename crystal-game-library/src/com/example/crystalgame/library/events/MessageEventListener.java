@@ -43,6 +43,12 @@ public abstract class MessageEventListener implements EventListener {
 	 * @param message The new control message
 	 */
 	public abstract void onControlMessage(MessageEvent event);
+	
+	/**
+	 * Listen to instruction relay messages
+	 * @param event The new instruction relay message
+	 */
+	public abstract void onInstructionRelayMessage(MessageEvent event);
 
 	/**
 	 * Implementation of the eventHandlerHelper function of the listener manager
@@ -57,6 +63,9 @@ public abstract class MessageEventListener implements EventListener {
 				break;
 			case GROUP_STATUS_MESSAGE:
 				listener.onGroupStatusMessageEvent(event);
+				break;
+			case INSTRUCTION_MESSAGE:
+				listener.onInstructionRelayMessage(event);
 				break;
 			default:
 				listener.onMessageEvent(event);

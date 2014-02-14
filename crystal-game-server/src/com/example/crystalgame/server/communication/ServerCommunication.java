@@ -38,7 +38,6 @@ public class ServerCommunication extends Communication {
 
 	private void substribeToGroupInstanceManagerEvents(GroupInstanceManager groupInstanceManager) {
 		groupInstanceManager.addMessageEventListener(new MessageEventListener() {
-
 			@Override
 			public void onMessageEvent(MessageEvent event) {
 				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
@@ -52,6 +51,11 @@ public class ServerCommunication extends Communication {
 			@Override
 			public void onControlMessage(MessageEvent event) {
 				out.sendControlMessageToClient(event.getReceiverId(), (ControlMessage) event.getMessage());
+			}
+
+			@Override
+			public void onInstructionRelayMessage(MessageEvent event) {
+				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
 			}
 		});
 	}
@@ -71,6 +75,11 @@ public class ServerCommunication extends Communication {
 
 			@Override
 			public void onControlMessage(MessageEvent event) {
+				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
+			}
+
+			@Override
+			public void onInstructionRelayMessage(MessageEvent event) {
 				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
 			}
 		});

@@ -93,6 +93,11 @@ public class MainActivity extends Activity {
 				public void onControlMessage(MessageEvent event) {
 					System.out.println("ControlMessage: " + event.getMessage().getData());
 				}
+
+				@Override
+				public void onInstructionRelayMessage(MessageEvent event) {
+					System.out.println("Instruction relay");
+				}
 	    	});
     	}
     	

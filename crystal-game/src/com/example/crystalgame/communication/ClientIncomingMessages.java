@@ -1,10 +1,13 @@
 package com.example.crystalgame.communication;
 
 import com.example.crystalgame.library.communication.abstraction.AbstractionModule;
+import com.example.crystalgame.library.events.InstructionEvent;
 import com.example.crystalgame.library.events.MessageEvent;
+import com.example.crystalgame.library.instructions.Instruction;
 import com.example.crystalgame.library.communication.incoming.IncomingMessages;
 import com.example.crystalgame.library.communication.messages.ControlMessage;
 import com.example.crystalgame.library.communication.messages.GroupStatusMessage;
+import com.example.crystalgame.library.communication.messages.InstructionRelayMessage;
 import com.example.crystalgame.library.communication.messages.Message;
 
 /**
@@ -42,5 +45,11 @@ public class ClientIncomingMessages extends IncomingMessages {
 		event.setSenderId(message.getSenderId());
 		return event;
 		
+	}
+
+	@Override
+	protected void handleInstructionRelayMessage(InstructionRelayMessage message) {
+		InstructionEvent event = new InstructionEvent((Instruction) message.getData());
+		instructionListenerManager.send(event);
 	}
 }

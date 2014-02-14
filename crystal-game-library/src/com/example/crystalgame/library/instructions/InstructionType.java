@@ -10,6 +10,7 @@ import java.io.Serializable;
 public enum InstructionType implements Serializable {
 
 	GROUP_INSTRUCTION,
-	GROUP_STATUS_INSTRUCTION
+	GROUP_STATUS_INSTRUCTION,
+	GAME
 	
 }
