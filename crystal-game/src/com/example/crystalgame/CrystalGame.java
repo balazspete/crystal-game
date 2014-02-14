@@ -17,6 +17,8 @@ import com.example.crystalgame.communication.ClientOutgoingMessages;
 public class CrystalGame extends Application {
 
 	private static ClientCommunication communication;
+	private String playerID = "PlayerID-123";
+	private String groupID = "";
 	
 	@Override
 	public void onCreate() {
@@ -69,5 +71,25 @@ public class CrystalGame extends Application {
 		
 		ClientOutgoingMessages out = new ClientOutgoingMessages();
 		communication = new ClientCommunication(manager, out);
+	}
+
+	public String getPlayerID()
+	{
+		return this.playerID;
+	}
+	
+	public void setPlayerID(String ID)
+	{
+		this.playerID = ID;
+	}
+	
+	public String getGroupID()
+	{
+		return this.groupID;
+	}
+	
+	public void setGroupID(String ID)
+	{
+		this.groupID = ID;
 	}
 }

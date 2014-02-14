@@ -5,13 +5,11 @@ import java.util.Arrays;
 import com.example.crystalgame.communication.ClientCommunication;
 import com.example.crystalgame.communication.ClientOutgoingMessages;
 import com.example.crystalgame.library.communication.incoming.IncomingMessages;
-import com.example.crystalgame.library.communication.messages.GroupStatusMessage;
-import com.example.crystalgame.library.communication.messages.Message;
-import com.example.crystalgame.library.communication.messages.TestMessage;
 import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.events.MessageEventListener;
 import com.example.crystalgame.library.instructions.GroupInstruction;
 import com.example.crystalgame.library.instructions.GroupStatusInstruction;
+import com.example.crystalgame.ui.GameMenuActivity;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -38,8 +36,9 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		//setContentView(R.layout.activity_gamemenu);
 		/* Calling GPS activity*/
-		Intent intent = new Intent(getApplicationContext(), GpsActivity.class);
+		Intent intent = new Intent(getApplicationContext(), GameMenuActivity.class);
 		startActivity(intent);
 	}
 	
