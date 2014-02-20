@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="../junit-4.11.jar"/>
 	<classpathentry kind="lib" path="../guava-16.0.1.jar"/>
 	<classpathentry kind="lib" path="../joda-time-2.3.jar"/>
+	<classpathentry kind="lib" path="../db4o-all.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -8,5 +8,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/CrystalGameLibrary"/>
 	<classpathentry kind="lib" path="../guava-16.0.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="../joda-time-2.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="../db4o-all.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
