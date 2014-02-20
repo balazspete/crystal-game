@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.crystalgame.R;
+import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.data.Zone;
 
 public class CreateGroupActivity extends Activity implements OnClickListener
@@ -45,9 +46,8 @@ public class CreateGroupActivity extends Activity implements OnClickListener
 	public void onClick(View view) 
 	{
 		// TODO Auto-generated method stub
-		switch(view.getId())
+		if(view.getId() == R.id.btnGameBoundary)
 		{
-		    case R.id.btnGameBoundary:
 		    	if(this.gameBoundary.isEmpty())
 		    	{
 		    		startActivityForResult(new Intent(getApplicationContext(), GameBoundaryActivity.class),1);
@@ -59,16 +59,12 @@ public class CreateGroupActivity extends Activity implements OnClickListener
 			    	intent.putExtra("locations", (Serializable)gameBoundary);
 			    	startActivityForResult(intent,1);
 		    	}
-		    	break;
-		    case R.id.btnSubmitCreateGame:
-		    	
-		    	break;
-		    case R.id.btnResetCreateGame:
+		} else if(view.getId() == R.id.btnSubmitCreateGame) {
+				ClientManager.getInstance().saveGameBoundary(new GameBoundary(gameBoundary.getLocationList()));
+		} else if(view.getId() == R.id.btnResetCreateGame) {
 		    	resetFormValues();
-		    	break;
-		    default:
-		    	break;
-		    	
+		} else {
+			
 	    }	
 		
 	}

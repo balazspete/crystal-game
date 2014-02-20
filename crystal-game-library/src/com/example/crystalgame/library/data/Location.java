@@ -90,4 +90,8 @@ public class Location implements Serializable
 	public void setMarkerID(String markerID) {
 		this.markerID = markerID.intern();
 	}
+	
+	public Location getLocation() {
+		return new Location(lattitude, longitude);
+	}
 }

@@ -42,6 +42,8 @@ public class GameBoundaryActivity extends FragmentActivity implements LocationLi
 	private Button btnSavePoints;
 	private GoogleMap map;
 	private Zone gameBoundary = new Zone();
+	
+	private ClientManager clientManager;
 	//private ArrayList<LatLng> boundaryPoints = new ArrayList<LatLng>();
 	
 	@Override
@@ -136,17 +138,14 @@ public class GameBoundaryActivity extends FragmentActivity implements LocationLi
 	public void onClick(View view) 
 	{
 		// TODO Auto-generated method stub
-		switch(view.getId())
-		{
-		    case R.id.btnSavePoints:
+		if(view.getId() == R.id.btnSavePoints) {
 		    	//Toast.makeText(this, "You have chosen" + boundaryPoints.toString(), Toast.LENGTH_LONG).show();
 		    	Intent intent = new Intent();
 		    	intent.putExtra("locations", (Serializable)gameBoundary);
 		    	setResult(RESULT_OK, intent);
 		    	finish();
-		    	break;
-		    default:
-		    	break;
+		} else {
+			
 	    }	
 	}
 
@@ -163,6 +162,7 @@ public class GameBoundaryActivity extends FragmentActivity implements LocationLi
 		if (!gameBoundary.addLocation(location)) {
 			marker.remove();
 		}
+		
 	}
 
 	@Override
