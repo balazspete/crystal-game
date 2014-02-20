@@ -15,7 +15,7 @@ import com.example.crystalgame.library.util.RandomID;
  * @author Allen Thomas Varghese, Shen Chen
  *
  */
-public class Location implements Serializable 
+public class Location implements Serializable, HasID 
 {
 	
 	/**
@@ -89,5 +89,10 @@ public class Location implements Serializable
 	 */
 	public void setMarkerID(String markerID) {
 		this.markerID = markerID.intern();
+	}
+
+	@Override
+	public String getID() {
+		return id;
 	}
 }

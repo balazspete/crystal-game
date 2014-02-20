@@ -16,7 +16,7 @@ public class DataStore extends DB4OInterface {
 
 	private static DB4OInterface instance;
 	
-	public static DB4OInterface getInstance() {
+	protected static DB4OInterface getInstance() {
 		if(instance == null) {
 			instance = new DataStore();
 		}
