@@ -1,6 +1,7 @@
 package com.example.crystalgame.library.datawarehouse;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * An interface describing the expected behaviour of a database
@@ -23,6 +24,13 @@ public interface KeyValueStore {
 	 * @return The value or null
 	 */
 	public Serializable get(String key);
+	
+	/**
+	 * 
+	 * @param c
+	 * @return
+	 */
+	public List<Serializable> getAll(Class c);
 	
 	/**
 	 * Delete a value in the store
