@@ -15,14 +15,14 @@ public abstract class Instruction implements Serializable {
 	private static final long serialVersionUID = -2487964493690159271L;
 	
 	public final InstructionType type;
-	public final String[] arguments;
+	public final Serializable[] arguments;
 	
 	/**
 	 * Create an instruction
 	 * @param type The type of the instruction
 	 * @param arguments The instruction's arguments
 	 */
-	public Instruction(InstructionType type, String... arguments) {
+	public Instruction(InstructionType type, Serializable... arguments) {
 		this.type = type;
 		this.arguments = arguments;
 	}

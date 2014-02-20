@@ -50,7 +50,15 @@ public abstract class IncomingMessages {
 	public void removeMessageEventListener(MessageEventListener listener) {
 		messageListenerManager.removeEventListener(listener);
 	}
+
+	public void addInstructionEventListener(InstructionEventListener listener) {
+		instructionListenerManager.addEventListener(listener);
+	}
 	
+	
+	public void removeInstructionEventListener(InstructionEventListener listener) {
+		instructionListenerManager.removeEventListener(listener);
+	}
 	// TODO: add instruction event listeners
 	
 	/**

@@ -66,6 +66,7 @@ public abstract class MessageEventListener implements EventListener {
 				break;
 			case INSTRUCTION_MESSAGE:
 				listener.onInstructionRelayMessage(event);
+				//listener.onMessageEvent(event);
 				break;
 			default:
 				listener.onMessageEvent(event);

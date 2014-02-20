@@ -1,5 +1,6 @@
 package com.example.crystalgame.library.instructions;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -24,7 +25,7 @@ public class GroupStatusInstruction extends Instruction {
 	 * @param type The type of the instruction
 	 * @param arguments the arguments
 	 */
-	private GroupStatusInstruction(GroupStatusInstructionType type, String... arguments) {
+	private GroupStatusInstruction(GroupStatusInstructionType type, Serializable... arguments) {
 		super(InstructionType.GROUP_STATUS_INSTRUCTION, arguments);
 		this.type = type;
 	}

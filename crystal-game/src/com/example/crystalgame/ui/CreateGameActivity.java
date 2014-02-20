@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.R;
 import com.example.crystalgame.library.data.Zone;
+import com.example.crystalgame.library.instructions.GameInstruction;
+import com.example.crystalgame.library.instructions.InstructionFormatException;
 import com.google.android.gms.maps.model.LatLng;
 
 public class CreateGameActivity extends Activity implements OnClickListener
@@ -42,14 +44,6 @@ public class CreateGameActivity extends Activity implements OnClickListener
         this.btnSubmit.setOnClickListener(this);
         this.btnReset.setOnClickListener(this);
         appInstance = (CrystalGame)getApplication();
-        /**
-         * Get Player ID and Group ID from the Application object
-         */
-        if(null != appInstance)
-		{
-			((EditText)findViewById(R.id.PlayerID)).setText(appInstance.getPlayerID());
-			((EditText)findViewById(R.id.GroupID)).setText(appInstance.getGroupID());
-		}
 	}
 	
 	@Override
@@ -73,7 +67,19 @@ public class CreateGameActivity extends Activity implements OnClickListener
 		    	}
 		    	break;
 		    case R.id.btnSubmitCreateGame:
-		    	
+		    	String name = ((EditText)findViewById(R.id.GameDuration)).getText().toString();
+		    	try {
+					appInstance.getCommunication().out.relayInstructionToServer(GameInstruction
+			    			.createCreateGameGameInstruction(name, 
+			    					gameBoundary.getLocation(0), 
+			    					gameBoundary.getLocation(1), 
+			    					gameBoundary.getLocation(2),
+			    					gameBoundary.getLocation(3)));
+				} catch (InstructionFormatException e) {
+					Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+				} catch (IndexOutOfBoundsException e) {
+					Toast.makeText(this, "Game location requires 4 points", Toast.LENGTH_SHORT).show();
+				}
 		    	break;
 		    case R.id.btnResetCreateGame:
 		    	resetFormValues();
@@ -85,23 +91,26 @@ public class CreateGameActivity extends Activity implements OnClickListener
 		
 	}
 	
-
+	@SuppressWarnings("unchecked")
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+		
+		if (requestCode == 1)
+		{
+			if(resultCode == RESULT_OK)
+			{
+				Bundle extras = data.getExtras();
+				this.gameBoundary = (Zone) extras.getSerializable("locations");
+			}
+		}
+	}
 	
 	/**
 	 * Reset the values in the form
 	 */
 	private void resetFormValues() {
-		// Clear the game start time
-		((EditText)findViewById(R.id.GameStartTime)).setText("");
 		// Clear the game duration
 		((EditText)findViewById(R.id.GameDuration)).setText("");
-		
-		// Get the Player ID and Group ID again from the application object
-		// These may change when communication fails
-		if(null != appInstance)
-		{
-			((EditText)findViewById(R.id.PlayerID)).setText(appInstance.getPlayerID());
-			((EditText)findViewById(R.id.GroupID)).setText(appInstance.getGroupID());
-		}
 	}
 }

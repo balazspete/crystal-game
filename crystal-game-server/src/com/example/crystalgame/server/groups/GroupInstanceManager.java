@@ -166,7 +166,7 @@ public class GroupInstanceManager {
 	 * @param id The ID of the group to delete
 	 */
 	public void deleteGroup(String id) {
-		groups.remove(id);
+		groups.remove(id).getGroupInstance().stopInstance();
 	}
 
 	/**
@@ -191,14 +191,13 @@ public class GroupInstanceManager {
 		String groupId = null;
 		GroupInstruction reply = null;
 		
-		System.out.println(instruction.groupInstructionType + ":" + message.getSenderId());
 		switch(instruction.groupInstructionType) {
 			case CREATE:
-				int maxPlayers = Integer.parseInt(instruction.arguments[1]);
+				int maxPlayers = Integer.parseInt((String) instruction.arguments[1]);
 				try {
 					groupId = this.createGroup(
-							instruction.arguments[0], maxPlayers, 
-							new Client(message.getSenderId(), instruction.arguments[2]));
+							(String) instruction.arguments[0], maxPlayers, 
+							new Client(message.getSenderId(), (String) instruction.arguments[2]));
 					// Return group ID if we have succeeded
 					reply = GroupInstruction.successReply(groupId);
 				} catch (GroupException e) {
@@ -208,7 +207,7 @@ public class GroupInstanceManager {
 				break;
 			case JOIN:
 				try {
-					groupId = this.joinGroup(new Client(message.getSenderId(), instruction.arguments[0]), instruction.arguments[1]);
+					groupId = this.joinGroup(new Client(message.getSenderId(), (String) instruction.arguments[0]), (String) instruction.arguments[1]);
 					// Return group ID if we have succeeded
 					reply = GroupInstruction.successReply(groupId);
 				} catch (GroupException e) {
@@ -218,6 +217,7 @@ public class GroupInstanceManager {
 				break;
 			case LEAVE:
 				groupId = message.getGroupId();
+				System.out.println("GID:"+groupId);
 				if(groupId!=null) {
 					Group group = groups.get(message.getGroupId());
 					// Remove player from group
@@ -232,6 +232,9 @@ public class GroupInstanceManager {
 				reply = GroupInstruction.failureReply("Unsupported group command!");
 				break;
 		}
+		
+		System.out.println("Group ID: " + groupId);
+		System.out.println("Client ID: " + message.getSenderId());
 		
 		ControlMessage replyMessage = new ControlMessage();
 		replyMessage.setData(reply);

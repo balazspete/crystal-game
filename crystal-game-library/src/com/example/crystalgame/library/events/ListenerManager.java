@@ -8,9 +8,9 @@ import java.util.EventListener;
  * @author Balazs Pete, Allen Thomas Varghese
  *
  * @param <LISTENER> The type of listener to manage
- * @param <DATA> The type of data the listeners handle
+ * @param <EVENT> The type of event the listeners handle
  */
-public abstract class ListenerManager<LISTENER extends EventListener, DATA> {
+public abstract class ListenerManager<LISTENER extends EventListener, EVENT extends Event> {
 
 	private ArrayList<LISTENER> listeners;
 	
@@ -41,7 +41,7 @@ public abstract class ListenerManager<LISTENER extends EventListener, DATA> {
 	 * Send a DATA to all listeners
 	 * @param data The DATA to send
 	 */
-	public synchronized void send(DATA data) {
+	public synchronized void send(EVENT data) {
 		// Call the handler function for each listener
 		for (LISTENER listener : listeners) {
 			eventHandlerHelper(listener, data);
@@ -54,6 +54,6 @@ public abstract class ListenerManager<LISTENER extends EventListener, DATA> {
 	 * @param listener The listener to forward the DATA object to
 	 * @param data The DATA object to forward
 	 */
-	protected abstract void eventHandlerHelper(LISTENER listener, DATA data);
+	protected abstract void eventHandlerHelper(LISTENER listener, EVENT event);
 	
 }

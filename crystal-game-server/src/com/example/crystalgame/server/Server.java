@@ -2,6 +2,8 @@ package com.example.crystalgame.server;
 
 import com.example.crystalgame.library.communication.messages.ControlMessage;
 import com.example.crystalgame.library.communication.messages.GroupStatusMessage;
+import com.example.crystalgame.library.events.InstructionEvent;
+import com.example.crystalgame.library.events.InstructionEventListener;
 import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.events.MessageEventListener;
 import com.example.crystalgame.library.instructions.GroupInstruction;
@@ -26,7 +28,6 @@ public class Server {
 		c.in.addMessageEventListener(new MessageEventListener(){
 			@Override
 			public void onMessageEvent(MessageEvent event) {
-				System.out.println("Message form: " + event.getSenderId());
 				groupInstanceManager.forwardMessage(event.getMessage());
 			}
 
@@ -37,14 +38,30 @@ public class Server {
 
 			@Override
 			public void onControlMessage(MessageEvent event) {
-				// TODO Auto-generated method stub
 				ControlMessage message = (ControlMessage) event.getMessage();
 				groupInstanceManager.handleGroupInstruction(message, (GroupInstruction) message.getData());
 			}
 
 			@Override
 			public void onInstructionRelayMessage(MessageEvent event) {
-				groupInstanceManager.forwardMessage(event.getMessage());
+				// Case handled in onMessageEvent
+			}
+		});
+		c.in.addInstructionEventListener(new InstructionEventListener() {
+
+			@Override
+			public void onGroupInstruction(InstructionEvent event) {
+				// Ignore
+			}
+
+			@Override
+			public void onGroupStatusInstruction(InstructionEvent event) {
+				// Ignore				
+			}
+
+			@Override
+			public void onGameInstruction(InstructionEvent event) {
+				//groupInstanceManager.hand
 			}
 		});
 	}

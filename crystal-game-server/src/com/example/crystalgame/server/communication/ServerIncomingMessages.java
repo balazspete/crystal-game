@@ -62,9 +62,10 @@ public class ServerIncomingMessages extends IncomingMessages {
 		messageListenerManager.removeEventListener(listener);
 	}
 
+	@Override
 	protected void handleMessage(Message message) {
 		Group group = getGroup(message);
-
+		
 		// Only allow messaging, if client belongs to a group
 		if (group != null) {
 			message.setGroup(group.groupId);
@@ -80,7 +81,6 @@ public class ServerIncomingMessages extends IncomingMessages {
 	@Override
 	protected void handleGroupStatusMessage(GroupStatusMessage message) {
 		Group group = getGroup(message);
-
 		if (group != null) {
 			message.setGroup(group.groupId);
 			MessageEvent event = new MessageEvent(message);
@@ -91,6 +91,11 @@ public class ServerIncomingMessages extends IncomingMessages {
 
 	@Override
 	protected void handleControlMessage(ControlMessage message) {
+		Group group = getGroup(message);
+		if (group != null) {
+			message.setGroup(group.groupId);
+		}
+		
 		MessageEvent event = new MessageEvent(message);
 		event.setSenderId(message.getSenderId());
 		messageListenerManager.send(event);
@@ -98,9 +103,17 @@ public class ServerIncomingMessages extends IncomingMessages {
 
 	@Override
 	protected void handleInstructionRelayMessage(InstructionRelayMessage message) {
+		Group group = getGroup(message);
+		if (group != null) {
+			message.setGroup(group.groupId);
+		}
+		
 		// Emit instruction 
 		InstructionEvent event = new InstructionEvent((Instruction) message.getData());
 		instructionListenerManager.send(event);
+		
+		// Forward instruction message to the group instance manager
+		groupInstanceManager.forwardMessage(message);
 	}
 	
 }

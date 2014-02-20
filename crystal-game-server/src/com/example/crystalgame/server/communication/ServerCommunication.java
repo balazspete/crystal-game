@@ -65,22 +65,26 @@ public class ServerCommunication extends Communication {
 		groupInstanceManager.setGroupMessageEventListener(new MessageEventListener(){
 			@Override
 			public void onMessageEvent(MessageEvent event) {
-				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
+				String receiverId = event.getReceiverId();
+				if(receiverId.equals("SERVER")) {
+					return;
+				}
+				out.sendSequencedMessage(receiverId, event.getMessage());
 			}
 
 			@Override
 			public void onGroupStatusMessageEvent(MessageEvent event) {
-				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
+				onMessageEvent(event);
 			}
 
 			@Override
 			public void onControlMessage(MessageEvent event) {
-				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
+				onMessageEvent(event);
 			}
 
 			@Override
 			public void onInstructionRelayMessage(MessageEvent event) {
-				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
+				onMessageEvent(event);
 			}
 		});
 	}

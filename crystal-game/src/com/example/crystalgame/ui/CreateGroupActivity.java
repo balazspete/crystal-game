@@ -84,11 +84,6 @@ public class CreateGroupActivity extends Activity implements OnClickListener
 			{
 				Bundle extras = data.getExtras();
 				this.gameBoundary = (Zone) extras.getSerializable("locations");
-//				Toast.makeText(this, "You have chosen" + this.gameBoundary.getLocations().toString(), Toast.LENGTH_LONG).show();
-			}
-			if (resultCode == RESULT_CANCELED) 
-			{    
-		    
 			}
 		}
 	}
