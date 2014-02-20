@@ -1,4 +1,4 @@
-package com.example.crystalgame.datawarehouse;
+package com.example.crystalgame.library.datawarehouse;
 
 import java.io.Serializable;
 import java.util.List;
@@ -7,8 +7,6 @@ import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import com.db4o.query.Query;
-import com.example.crystalgame.library.datawarehouse.DataWrapper;
-import com.example.crystalgame.library.datawarehouse.KeyValueStore;
 
 /**
  * DB Connection class for Android
@@ -78,10 +76,10 @@ public class DBConnection implements KeyValueStore {
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<Serializable> getAll(Class c) {
-		// TODO Auto-generated method stub
-		return db.query(c);
+	public List<Serializable> getAll(Class<?> c) {
+		return (List<Serializable>) db.query(c);
 	}
  
 }
