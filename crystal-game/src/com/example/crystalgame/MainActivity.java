@@ -7,6 +7,7 @@ import com.example.crystalgame.communication.ClientOutgoingMessages;
 import com.example.crystalgame.library.communication.incoming.IncomingMessages;
 import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.events.MessageEventListener;
+import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.GroupInstruction;
 import com.example.crystalgame.library.instructions.GroupStatusInstruction;
 import com.example.crystalgame.ui.GameMenuActivity;
@@ -38,8 +39,8 @@ public class MainActivity extends Activity {
 		
 		//setContentView(R.layout.activity_gamemenu);
 		/* Calling GPS activity*/
-		Intent intent = new Intent(getApplicationContext(), GameMenuActivity.class);
-		startActivity(intent);
+//		Intent intent = new Intent(getApplicationContext(), GameMenuActivity.class);
+//		startActivity(intent);
 	}
 	
 	public void createGroup(View view) {
@@ -66,6 +67,10 @@ public class MainActivity extends Activity {
 		sendTestMessage(5);
 	}
 	
+	public void requestGameStart(View view) {
+		sendTestMessage(6);
+	}
+	
     // TODO: temporary solution - remove
     public void sendTestMessage(int option) {
     	String text1 = ((EditText) findViewById(R.id.editText1)).getText().toString();
@@ -79,35 +84,42 @@ public class MainActivity extends Activity {
 	    	in = communication.in;
 	    	in.addMessageEventListener(new MessageEventListener(){
 				@Override
-				public void messageEvent(MessageEvent event) {
+				public void onMessageEvent(MessageEvent event) {
 					System.out.println("Message: " + event.getMessage().getData());
 				}
 
 				@Override
-				public void groupStatusMessageEvent(MessageEvent event) {
+				public void onGroupStatusMessageEvent(MessageEvent event) {
 					System.out.print("GroupStatusMessage: ");
 					System.out.println(Arrays.toString(((GroupStatusInstruction) event.getMessage().getData()).arguments));
 				}
 
 				@Override
-				public void controlMessage(MessageEvent event) {
+				public void onControlMessage(MessageEvent event) {
 					System.out.println("ControlMessage: " + event.getMessage().getData());
+				}
+
+				@Override
+				public void onInstructionRelayMessage(MessageEvent event) {
+					System.out.println("Instruction relay");
 				}
 	    	});
     	}
     	
     	if(option == 0) {
-    		out.sendGroupInstructionToServer(GroupInstruction.createGroup(text1, 20, text2));
+    		out.sendGroupInstructionToServer(GroupInstruction.createGroup(text1, 20, text2, null, null, null, null));
     	} else if (option == 1) {
     		out.sendGroupInstructionToServer(GroupInstruction.joinGroup(text1, text2));
     	} else if (option == 2) {
     		out.sendGroupInstructionToServer(GroupInstruction.leaveGroup());
     	} else if (option == 3) {
-    		out.sendTestUnicastData(text2, text1);
+    		out.sendTestUnicastData(text2, text3);
     	} else if (option == 4) {
-    		out.sendTestMulticastData(text2);
+    		out.sendTestMulticastData(text3);
     	} else if (option == 5) {
     		out.sendGroupStatusInstruction(GroupStatusInstruction.createGroupMembershipListRequestIntruction());
+    	} else if (option == 6) {
+    		out.relayInstructionToServer(GameInstruction.createStartGameRequestGameInstruction());
     	}
     	
     }

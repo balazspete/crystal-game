@@ -71,6 +71,7 @@ public class CrystalGame extends Application {
 		
 		ClientOutgoingMessages out = new ClientOutgoingMessages();
 		communication = new ClientCommunication(manager, out);
+		communication.in.addInstructionEventListener(new ServerInstructionsHandler(this));
 	}
 
 	public String getPlayerID()

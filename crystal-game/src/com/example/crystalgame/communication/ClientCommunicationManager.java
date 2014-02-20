@@ -59,7 +59,7 @@ public class ClientCommunicationManager extends CommunicationManager {
 				
 				// Establish a connection...
 				socket = new Socket(address, port);
-				handler = new ConnectionHandler(this.abstraction, "", socket);
+				handler = new ConnectionHandler(this.abstraction, "SERVER", socket);
 				
 				Log.i("ComunicationManager", "Connection to " + address + " successful!");
 				

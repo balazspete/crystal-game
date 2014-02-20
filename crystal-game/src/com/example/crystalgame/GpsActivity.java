@@ -59,49 +59,50 @@ public class GpsActivity extends FragmentActivity implements LocationListener{
 	       
 	       /*display on the map*/
 	       //Toast.makeText(getApplicationContext(),display,Toast.LENGTH_LONG ).show();
-	       
-	       Location place1 = new Location(53.3436688, -6.247169);
-	       Location place2 = new Location(53.347067, -6.250805);
-	       Location place3 = new Location(53.3446688, -6.264616);
-	      
-	       
-	       // Add three dummy locations that are nearby
-	       map.addMarker(new MarkerOptions()
-		       .title("Place1")
-		       .snippet("Player1")
-		       .position(new LatLng(place1.getLatitude(), place1.getLongitude()))
-		   );
-	       
-	       map.addMarker(new MarkerOptions()
-	       .title("Place2")
-	       .snippet("Player2")
-	       .position(new LatLng(place2.getLatitude(), place2.getLongitude()))
-	       );
-	   
-	       map.addMarker(new MarkerOptions()
-	       .title("Place3")
-	       .snippet("Player3")
-	       .position(new LatLng(place3.getLatitude(), place3.getLongitude()))
-	       );
-	       
-	       localMapPolygon = new LocalMapPolygon();
-	       map = localMapPolygon.createPolygon(map);
-	       
-	       Boolean boolean1 = localMapPolygon.playerPositionLocalMap(place3.getLatitude(),place3.getLongitude());
-	       if(boolean1 == true)
-	       {
-	    	   Toast.makeText(getApplicationContext(), "true for player",Toast.LENGTH_SHORT).show();
-	    	   LatLng latLng = localMapPolygon.zoomCenterPoint();
-	    	   map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
-	    	   
-	       }
-	       /*zoom Camera*/
-	       //map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(place1.getLattitudePosition(),place1.getLongitudePosition()), 13));
-	       
-	       ClientCommunication communication = ((CrystalGame) getApplication()).getCommunication();
-	       if (communication != null) {
-		       communication.out.sendTestDataToServer(""+latitude+ " "+longitude);
-	       }
+
+//	       
+//	       LocationEvent place1 = new LocationEvent(53.3436688, -6.247169);
+//	       LocationEvent place2 = new LocationEvent(53.347067, -6.250805);
+//	       LocationEvent place3 = new LocationEvent(53.3446688, -6.264616);
+//	      
+//	       
+//	       // Add three dummy locations that are nearby
+//	       map.addMarker(new MarkerOptions()
+//		       .title("Place1")
+//		       .snippet("Player1")
+//		       .position(new LatLng(place1.getLattitudePosition(), place1.getLongitudePosition()))
+//		   );
+//	       
+//	       map.addMarker(new MarkerOptions()
+//	       .title("Place2")
+//	       .snippet("Player2")
+//	       .position(new LatLng(place2.getLattitudePosition(), place2.getLongitudePosition()))
+//	       );
+//	   
+//	       map.addMarker(new MarkerOptions()
+//	       .title("Place3")
+//	       .snippet("Player3")
+//	       .position(new LatLng(place3.getLattitudePosition(), place3.getLongitudePosition()))
+//	       );
+//	       
+//	       localMapPolygon = new LocalMapPolygon();
+//	       map = localMapPolygon.createPolygon(map);
+//	       
+//	       Boolean boolean1 = localMapPolygon.playerPositionLocalMap(place3.getLattitudePosition(),place3.getLongitudePosition());
+//	       if(boolean1 == true)
+//	       {
+//	    	   Toast.makeText(getApplicationContext(), "true for player",Toast.LENGTH_SHORT).show();
+//	    	   LatLng latLng = localMapPolygon.zoomCenterPoint();
+//	    	   map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 17));
+//	    	   
+//	       }
+//	       /*zoom Camera*/
+//	       //map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(place1.getLattitudePosition(),place1.getLongitudePosition()), 13));
+//	       
+//	       ClientCommunication communication = ((CrystalGame) getApplication()).getCommunication();
+//	       if (communication != null) {
+//		       communication.out.sendTestDataToServer(""+latitude+ " "+longitude);
+//	       }
        }
 	}
 

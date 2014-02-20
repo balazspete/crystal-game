@@ -39,6 +39,10 @@ public class Group {
 		this.name = name;
 		this.maxPlayers = maxPlayers;
 		
+		if (maxPlayers < 2) {
+			maxPlayers = 2;
+		}
+		
 		clients = new ArrayList<Client>(maxPlayers);
 		clients.add(client);
 		

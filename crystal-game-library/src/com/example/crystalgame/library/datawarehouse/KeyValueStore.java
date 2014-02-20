@@ -30,7 +30,7 @@ public interface KeyValueStore {
 	 * @param c
 	 * @return
 	 */
-	public List<Serializable> getAll(Class c);
+	public List<Serializable> getAll(Class<?> c);
 	
 	/**
 	 * Delete a value in the store

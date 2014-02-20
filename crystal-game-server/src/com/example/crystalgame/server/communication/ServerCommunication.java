@@ -38,20 +38,24 @@ public class ServerCommunication extends Communication {
 
 	private void substribeToGroupInstanceManagerEvents(GroupInstanceManager groupInstanceManager) {
 		groupInstanceManager.addMessageEventListener(new MessageEventListener() {
-
 			@Override
-			public void messageEvent(MessageEvent event) {
+			public void onMessageEvent(MessageEvent event) {
 				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
 			}
 
 			@Override
-			public void groupStatusMessageEvent(MessageEvent event) {
+			public void onGroupStatusMessageEvent(MessageEvent event) {
 				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
 			}
 
 			@Override
-			public void controlMessage(MessageEvent event) {
+			public void onControlMessage(MessageEvent event) {
 				out.sendControlMessageToClient(event.getReceiverId(), (ControlMessage) event.getMessage());
+			}
+
+			@Override
+			public void onInstructionRelayMessage(MessageEvent event) {
+				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
 			}
 		});
 	}
@@ -60,18 +64,27 @@ public class ServerCommunication extends Communication {
 		// Forward all messages from the groups to the ougoing messages module
 		groupInstanceManager.setGroupMessageEventListener(new MessageEventListener(){
 			@Override
-			public void messageEvent(MessageEvent event) {
-				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
+			public void onMessageEvent(MessageEvent event) {
+				String receiverId = event.getReceiverId();
+				if(receiverId.equals("SERVER")) {
+					return;
+				}
+				out.sendSequencedMessage(receiverId, event.getMessage());
 			}
 
 			@Override
-			public void groupStatusMessageEvent(MessageEvent event) {
-				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
+			public void onGroupStatusMessageEvent(MessageEvent event) {
+				onMessageEvent(event);
 			}
 
 			@Override
-			public void controlMessage(MessageEvent event) {
-				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
+			public void onControlMessage(MessageEvent event) {
+				onMessageEvent(event);
+			}
+
+			@Override
+			public void onInstructionRelayMessage(MessageEvent event) {
+				onMessageEvent(event);
 			}
 		});
 	}

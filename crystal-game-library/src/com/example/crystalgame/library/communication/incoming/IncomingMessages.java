@@ -5,10 +5,14 @@ import java.util.HashSet;
 import com.example.crystalgame.library.communication.abstraction.AbstractionModule;
 import com.example.crystalgame.library.communication.messages.ControlMessage;
 import com.example.crystalgame.library.communication.messages.GroupStatusMessage;
+import com.example.crystalgame.library.communication.messages.InstructionRelayMessage;
 import com.example.crystalgame.library.communication.messages.Message;
+import com.example.crystalgame.library.events.InstructionEvent;
+import com.example.crystalgame.library.events.InstructionEventListener;
 import com.example.crystalgame.library.events.ListenerManager;
 import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.events.MessageEventListener;
+import com.example.crystalgame.library.instructions.Instruction;
 
 /**
  * The interface responsible for managing incoming messages
@@ -19,6 +23,7 @@ public abstract class IncomingMessages {
 
 	protected AbstractionModule abstraction;
 	protected ListenerManager<MessageEventListener, MessageEvent> messageListenerManager;
+	protected ListenerManager<InstructionEventListener, InstructionEvent> instructionListenerManager;
 	protected HashSet<String> groupIDs;
 	
 	/**
@@ -45,7 +50,15 @@ public abstract class IncomingMessages {
 	public void removeMessageEventListener(MessageEventListener listener) {
 		messageListenerManager.removeEventListener(listener);
 	}
+
+	public void addInstructionEventListener(InstructionEventListener listener) {
+		instructionListenerManager.addEventListener(listener);
+	}
 	
+	
+	public void removeInstructionEventListener(InstructionEventListener listener) {
+		instructionListenerManager.removeEventListener(listener);
+	}
 	// TODO: add instruction event listeners
 	
 	/**
@@ -75,24 +88,35 @@ public abstract class IncomingMessages {
 			}
 		};
 		
-		// TODO: add instruction listener manager
+		// Add an event listener for instructions
+		instructionListenerManager = new ListenerManager<InstructionEventListener, InstructionEvent>() {
+			@Override
+			protected void eventHandlerHelper(InstructionEventListener listener, InstructionEvent event) {
+				InstructionEventListener.eventHandlerHelper(listener, event);
+			}
+		}; 
 		
 		// Subscribe to events from the abstraction layer
 		abstraction.addEventListener(new MessageEventListener(){
 
 			@Override
-			public void messageEvent(MessageEvent event) {
+			public void onMessageEvent(MessageEvent event) {
 				handleMessage(event.getMessage());
 			}
 
 			@Override
-			public void groupStatusMessageEvent(MessageEvent event) {
+			public void onGroupStatusMessageEvent(MessageEvent event) {
 				handleGroupStatusMessage((GroupStatusMessage) event.getMessage());
 			}
 
 			@Override
-			public void controlMessage(MessageEvent event) {
+			public void onControlMessage(MessageEvent event) {
 				handleControlMessage((ControlMessage) event.getMessage());
+			}
+
+			@Override
+			public void onInstructionRelayMessage(MessageEvent event) {
+				handleInstructionRelayMessage((InstructionRelayMessage) event.getMessage());
 			}
 		});
 	}
@@ -114,4 +138,10 @@ public abstract class IncomingMessages {
 	 * @param message The message
 	 */
 	protected abstract void handleControlMessage(ControlMessage message);
+	
+	/**
+	 * Handler for instruction relay messages
+	 * @param message The message
+	 */
+	protected abstract void handleInstructionRelayMessage(InstructionRelayMessage message);
 }

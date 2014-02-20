@@ -15,10 +15,14 @@ import com.example.crystalgame.server.groups.Group;
  */
 public class Sequencer {
 
+	public static String SERVER_ID = "SERVER";
+	
 	private ListenerManager<MessageEventListener, SequencerEvent> manager;
 	
 	private long multicastTimestamp = -1;
 	private Group group;
+	
+	private Client server;
 	
 	/**
 	 * Create a sequencer for the specified group
@@ -26,6 +30,9 @@ public class Sequencer {
 	 */
 	public Sequencer(Group group) {
 		this.group = group;
+		
+		// Create a mock client for the server 
+		server = new Client(SERVER_ID, SERVER_ID);
 		
 		// Allow components to subscribe to message events from the Sequencer
 		manager = new ListenerManager<MessageEventListener, SequencerEvent>() {
@@ -41,10 +48,13 @@ public class Sequencer {
 	 * @param message The message
 	 */
 	public void sendMessageToAll(MulticastMessage message) {
+		message.setTimeStamp(++multicastTimestamp);
+		
 		for(Client receiver : group.getClients()) {
-			message.setTimeStamp(++multicastTimestamp);
 			send(receiver, message);
 		}
+		
+		send(server, message);
 	}
 	
 	/**
@@ -52,13 +62,18 @@ public class Sequencer {
 	 * @param message The message
 	 */
 	public void sendMessageToOne(UnicastMessage message) {
-		System.out.println("message");
-		Client receiver = group.getClient(message.getReceiverId());
-		if (receiver == null) {
-			System.err.println("Receiver ID illegal: " + message.getReceiverId());
-			return;
+		Client receiver;
+		String receiverId = message.getReceiverId();
+		if (receiverId.equalsIgnoreCase(SERVER_ID)) {
+			receiver = server;
+		} else {
+			receiver = group.getClient(message.getReceiverId());
+			if (receiver == null) {
+				System.err.println("Receiver ID illegal: " + message.getReceiverId());
+				return;
+			}
 		}
-		
+
 		message.setTimeStamp(receiver.incrementTimestamp());
 		send(receiver, message);
 	}

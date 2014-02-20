@@ -1,4 +1,4 @@
-package com.example.crystalgame.datawarehouse;
+package com.example.crystalgame.library.datawarehouse;
 
 import java.io.Serializable;
 import java.util.List;
@@ -6,9 +6,8 @@ import java.util.List;
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
+import com.db4o.config.EmbeddedConfiguration;
 import com.db4o.query.Query;
-import com.example.crystalgame.library.datawarehouse.DataWrapper;
-import com.example.crystalgame.library.datawarehouse.KeyValueStore;
 
 /**
  * DB Connection class for Android
@@ -16,32 +15,16 @@ import com.example.crystalgame.library.datawarehouse.KeyValueStore;
  * @author Allen Thomas Varghese, Pete Balazs
  *
  */
-public class DBConnection implements KeyValueStore {
-
-	private String dbName = "CrystalGame";
-    private ObjectContainer db;
-    
-	private static DBConnection dbConnectionInstance;
+public abstract class DB4OInterface implements KeyValueStore {
 	
-	private DBConnection() {
-		if (this.dbName != null) {
-	        db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), this.dbName);
-	    }
-	}
-
-	public static DBConnection getInstance() {
-		if(null == dbConnectionInstance) {
-			dbConnectionInstance = new DBConnection();
-		}
-		
-		return dbConnectionInstance;
+    private ObjectContainer db;    
+	
+	protected DB4OInterface(String dbFileName) {
+		db = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), dbFileName);
 	}
  
- 
-    void CloseDb() {
- 
+    void close() {
         db.close();
- 
     }
     
 	@Override
@@ -49,7 +32,7 @@ public class DBConnection implements KeyValueStore {
 		db.store(new DataWrapper<Serializable>(key,value));
 		db.commit();
 		
-		return (get(key)!=null);
+		return get(key) != null;
 	}
 
 	@Override
@@ -78,10 +61,10 @@ public class DBConnection implements KeyValueStore {
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<Serializable> getAll(Class c) {
-		// TODO Auto-generated method stub
-		return db.query(c);
+	public List<Serializable> getAll(Class<?> c) {
+		return (List<Serializable>) db.query(c);
 	}
  
 }
