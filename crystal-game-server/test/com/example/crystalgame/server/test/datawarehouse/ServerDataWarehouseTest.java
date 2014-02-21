@@ -11,26 +11,6 @@ import com.example.crystalgame.library.util.RandomID;
 import com.example.crystalgame.server.datawarehouse.ServerDataWarehouse;
 
 public class ServerDataWarehouseTest {
-
-	private class StringWithID implements HasID {
-		
-		private String id, value;
-		
-		public StringWithID(String value) {
-			this.id = RandomID.getRandomId();
-			this.value = value;
-		}
-		
-		public String getValue() {
-			return value;
-		}
-
-		@Override
-		public String getID() {
-			return id;
-		}
-		
-	}
 	
 	private ServerDataWarehouse dw1;
 	
