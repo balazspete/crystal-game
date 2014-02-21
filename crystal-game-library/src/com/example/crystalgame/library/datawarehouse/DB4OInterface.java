@@ -1,13 +1,13 @@
 package com.example.crystalgame.library.datawarehouse;
 
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
-import com.db4o.config.EmbeddedConfiguration;
 import com.db4o.query.Query;
+import com.example.crystalgame.library.data.HasID;
 
 /**
  * DB Connection class for Android
@@ -28,43 +28,58 @@ public abstract class DB4OInterface implements KeyValueStore {
     }
     
 	@Override
-	public boolean put(String key, Serializable value) {
-		db.store(new DataWrapper<Serializable>(key,value));
+	public boolean put(@SuppressWarnings("rawtypes") Class type, HasID value) {
+		db.store(new DataWrapper<HasID>(type, value));
 		db.commit();
 		
-		return get(key) != null;
+		return get(type, value.getID()) != null;
 	}
 
 	@Override
-	public Serializable get(String key) {
-		Query query = db.query();
-		query.descend("key").constrain(key);
-		ObjectSet<DataWrapper<Serializable>> result = query.execute();
+	public HasID get(@SuppressWarnings("rawtypes") Class type, String key) {
+		DataWrapper<HasID> result = getWrapper(type, key);
+		if(result != null) {
+			return result.getValue();
+		}
 		
+		return null;
+	}
+	
+	@Override
+	public List<HasID> getAll(@SuppressWarnings("rawtypes") Class type) {
+		Query query = db.query();
+		query.descend("type").constrain(type.toString());
+		
+		ObjectSet<DataWrapper<HasID>> result = query.execute();
+		List<HasID> results = new ArrayList<HasID>();
+		while(result.hasNext()) {
+			results.add(result.next().getValue());
+		}
+		
+		return results;
+	}
+
+	@Override
+	public boolean delete(@SuppressWarnings("rawtypes") Class type, String key) {
+		DataWrapper<HasID> found = getWrapper(type, key);
+		if(found == null) {
+			return false;
+		}
+		
+		db.delete(found);
+		return true;
+	}
+
+	private DataWrapper<HasID> getWrapper(@SuppressWarnings("rawtypes") Class type, String key) {
+		Query query = db.query();
+		query.descend("type").constrain(type.toString());
+		query.descend("key").constrain(key);
+		
+		ObjectSet<DataWrapper<HasID>> result = query.execute();
 		if(result.hasNext()) {
 			return result.next();
 		}
 		
 		return null;
 	}
-
-	@Override
-	public boolean delete(String key) {
-		DataWrapper<Serializable> found = null;
-        ObjectSet<DataWrapper<Serializable>> result = db.queryByExample(new DataWrapper<Serializable>(key));
- 
-        if (result.hasNext()) {
-            found = result.next();
-            db.delete(found);
-            return true;
-        }
-		return false;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Serializable> getAll(Class<?> c) {
-		return (List<Serializable>) db.query(c);
-	}
- 
 }
