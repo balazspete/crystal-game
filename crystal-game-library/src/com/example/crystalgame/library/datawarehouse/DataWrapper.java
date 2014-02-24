@@ -1,6 +1,6 @@
 package com.example.crystalgame.library.datawarehouse;
 
-import java.io.Serializable;
+import com.example.crystalgame.library.data.HasID;
 
 /**
  * Data wrapper for storing objects in database
@@ -8,43 +8,29 @@ import java.io.Serializable;
  * @author Allen Thomas Varghese, Pete Balazs
  *
  */
-public class DataWrapper<DATA extends Serializable> implements Serializable {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 433510659043193787L;
+public class DataWrapper<DATA extends HasID> {
 	
-	private String key;
+	@SuppressWarnings("unused")
+	private String key, type;
+	
 	private DATA value;
 	
 	/**
-	 * Required for querying stored objects in the database
-	 * @param key
+	 * Create a DataWapper user for query purposes
+	 * @param id The ID of the desired
 	 */
-	public DataWrapper(String key) {
-		this.key = key;
+	protected DataWrapper(Class<DATA> type, String id) {
+		this.type = type.toString();
+		this.key = id;
 	}
 	
-	public DataWrapper(String key, DATA value) {
-		this.key = key;
+	public DataWrapper(Class<DATA> type, DATA value) {
+		this(type, value.getID());
 		this.value = value;
 	}
-
-	public String getKey() {
-		return key;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
-	}
-
-	public Serializable getValue() {
+	
+	public HasID getValue() {
 		return value;
 	}
-
-	public void setValue(DATA value) {
-		this.value = value;
-	}
-
+	
 }

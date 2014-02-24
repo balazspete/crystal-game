@@ -10,8 +10,8 @@ public class DataStore extends DB4OInterface {
 	
 	public static DataStore getGameStore(String groupId) {
 		// TODO: Read path value from the configuration
-		String path = "";
+		String path = "/Users/balazspete/Documents/crystal-game-store";
 		return new DataStore(path + "-groupID-" + groupId);
 	}
-	
+
 }
