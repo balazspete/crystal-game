@@ -11,7 +11,7 @@ import com.example.crystalgame.library.util.RandomID;
  * @author Chen Shen, Allen Thomas Varghese
  * 
  */
-public class Zone implements Serializable 
+public class Zone implements Serializable, HasID
 {
 	
 	/**
@@ -90,5 +90,10 @@ public class Zone implements Serializable
 	{
 		return this.locationPoints != null 
 				&& this.locationPoints.isEmpty();
+	}
+
+	@Override
+	public String getID() {
+		return id;
 	}
 }

@@ -3,6 +3,7 @@ package com.example.crystalgame.library.game;
 import java.util.Arrays;
 import java.util.List;
 
+import com.example.crystalgame.library.data.GameLocation;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.events.InstructionEvent;
 import com.example.crystalgame.library.events.InstructionEventListener;
@@ -14,6 +15,7 @@ public class GameManager implements Runnable {
 
 	private final String name;
 	private List<String> clientIDs;
+	private GameLocation gameLocations;
 	
 	private volatile boolean running = true; 
 	private ListenerManager<InstructionEventListener, InstructionEvent> manager;
@@ -21,6 +23,7 @@ public class GameManager implements Runnable {
 	public GameManager(String gameName, List<String> clientIDs, List<Location> locations) {
 		this.name = gameName;
 		this.clientIDs = clientIDs;
+		this.gameLocations = (GameLocation)locations;
 		// TODO: handle locations
 	}
 
@@ -68,5 +71,9 @@ public class GameManager implements Runnable {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public GameLocation getLocations(){
+		return gameLocations;
 	}
 }
