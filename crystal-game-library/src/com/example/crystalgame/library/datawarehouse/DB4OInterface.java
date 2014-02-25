@@ -29,7 +29,12 @@ public abstract class DB4OInterface implements KeyValueStore {
     
 	@Override
 	public boolean put(@SuppressWarnings("rawtypes") Class type, HasID value) {
-		db.store(new DataWrapper<HasID>(type, value));
+		DataWrapper<HasID> wrapper = getWrapper(type, value.getID());
+		if (wrapper == null) {
+			wrapper = new DataWrapper<HasID>(type, value);
+		}
+		
+		db.store(wrapper);
 		db.commit();
 		
 		return get(type, value.getID()) != null;
@@ -53,7 +58,10 @@ public abstract class DB4OInterface implements KeyValueStore {
 		ObjectSet<DataWrapper<HasID>> result = query.execute();
 		List<HasID> results = new ArrayList<HasID>();
 		while(result.hasNext()) {
-			results.add(result.next().getValue());
+			DataWrapper<HasID> entry = result.next();
+			if (!entry.isWriteLocked()) {
+				results.add(entry.getValue());
+			}
 		}
 		
 		return results;
