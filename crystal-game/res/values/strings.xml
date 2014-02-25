@@ -11,5 +11,11 @@
     <string name="pref_port_name">Port</string>
     <string name="SERVER_ADDRESS">server_address</string>
     <string name="PORT">port</string>
+    
+    
+    <string name="TIME">Time</string>
+    <string name="CRYSTL">Crystal</string>
+    <string name="MAGIC_ITEM">Magic</string>
+    <string name="ENERGY">Energy</string>
 
 </resources>

@@ -229,7 +229,7 @@ public class GroupInstance implements Runnable {
 			
 			GameManager manager = new GameManager(gameName, clientIDs, locations);
 		
-		
+			new Thread(manager).start();
 		
 		
 			inGame = true;

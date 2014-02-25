@@ -1,0 +1,103 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".90">
+    	<fragment
+	        android:id="@+id/GameMap"	    
+		    android:layout_width="match_parent"
+            android:layout_height="match_parent" 
+	        class="com.google.android.gms.maps.MapFragment" />
+    	
+	</LinearLayout>
+    <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <RadioGroup
+                android:id="@+id/main_tab_group"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:background="@drawable/info_botton"
+                android:gravity="bottom"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/main_tab_addExam"
+                    style="@style/InformationPanelButton"
+                    android:layout_weight="1.0"    
+                    android:drawableTop="@drawable/bg_info_panel_icon_1"
+                    android:text="CRYSTAL" />
+
+                <RadioButton
+                    android:id="@+id/main_tab_myExam"
+                    style="@style/InformationPanelButton"
+                    android:layout_weight="1.0"
+                    android:checked="true"
+                    android:drawableTop="@drawable/bg_info_panel_icon_2"
+                    android:text="MAGIC" />
+
+                <RadioButton
+                    android:id="@+id/main_tab_message"
+                    style="@style/InformationPanelButton"
+                    android:layout_weight="1.0"
+                    android:drawableTop="@drawable/bg_infor_panel_icon_3"
+                    android:text="ENERGY"  />
+
+                <RadioButton
+                    android:id="@+id/main_tab_settings"
+                    style="@style/InformationPanelButton"
+                    android:layout_weight="1.0"   
+                    android:drawableTop="@drawable/bg_info_panel_icon_4"
+                    android:text="TIME" />
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/Energy_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_marginLeft="40dip"
+                android:layout_marginTop="1dip"
+                android:background="@drawable/tips"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="#ffffff"
+                android:textSize="10sp"
+                android:visibility="gone" />
+             <TextView
+                android:id="@+id/Crystal_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_marginRight="120dip"
+                android:layout_marginTop="1dip"
+                android:background="@drawable/tips"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="#ffffff"
+                android:textSize="10sp"
+                android:visibility="gone" />
+             
+               <TextView
+                android:id="@+id/Magic_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_marginRight="40dip"
+                android:layout_marginTop="1dip"
+                android:background="@drawable/tips"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="#ffffff"
+                android:textSize="10sp"
+                android:visibility="gone" />
+            
+        </FrameLayout>
+
+</LinearLayout>
