@@ -1,8 +1,15 @@
 package com.example.crystalgame.library.datawarehouse;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
 
+import com.db4o.ObjectContainer;
 import com.example.crystalgame.library.data.HasID;
+import com.example.crystalgame.library.events.InstructionEventListener;
+import com.example.crystalgame.library.instructions.DataSynchronisationInstruction;
 
 /**
  * The Data Warehouse
@@ -11,10 +18,14 @@ import com.example.crystalgame.library.data.HasID;
  */
 public class DataWarehouse {
 
-	private DB4OInterface store;
+	private Synchronizer synchronizer;
+	private ObjectContainer db;
+	private ExecutorService pool;
 	
-	protected DataWarehouse(DB4OInterface store) {
-		this.store = store;
+	protected DataWarehouse(ObjectContainer db, Synchronizer synchroniser) {
+		this.db = db;
+		this.synchronizer = synchroniser;
+		this.pool = Executors.newScheduledThreadPool(20);
 	}
 	
 	/**
@@ -24,9 +35,53 @@ public class DataWarehouse {
 	 * @return True if stored successfully
 	 * @throws DataWarehouseException Thrown in case of an error or input mismatch
 	 */
-	public boolean put(@SuppressWarnings("rawtypes") Class type, HasID value) throws DataWarehouseException {
-		// TODO: remove and handle by synchroniser/concurrency control module
-		return store.put(type, value);
+	public HasID put(@SuppressWarnings("rawtypes") Class type, HasID value) throws DataWarehouseException {
+		List<HasID> values = new ArrayList<HasID>();
+		values.add(value);
+		values = putList(type, values);
+		
+		if (values.size() > 0) {
+			return values.get(0);
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Update a list of HasID elements
+	 * @param type The type of the elements in the list
+	 * @param value The elements to update
+	 * @return The new values
+	 * @throws DataWarehouseException Thrown in case of an error
+	 */
+	public List<HasID> putList(@SuppressWarnings("rawtypes") Class type, List<HasID> value) throws DataWarehouseException {
+		ObjectContainer container = db.ext().openSession();
+		DB4OInterface store = new DB4OInterface(container);
+
+		System.out.println("DataWarehouse|putList: Initiating PutList operation...");
+		
+		FutureTask<Boolean> future = new FutureTask<Boolean>(
+				new DataWarehouseUpdateTask(
+						synchronizer,
+						DataSynchronisationInstruction.createUpdateRequestInstruction(type, value)));
+		pool.submit(future);
+		
+		List<HasID> result = new ArrayList<HasID>();
+		try {
+			future.get();
+			System.out.println("DataWarehouse|putList: PutList operation successful, returning results");
+			for (HasID v : value) {
+				result.add(store.get(type, v.getID()));
+			} 
+		} catch (Exception e) {
+			System.out.println("DataWarehouse|putList: PutList operation failed, rolling back");
+			store.rollback();
+			throw DataWarehouseException.FAILED_TO_UPDATE;
+		} finally {
+			container.close();
+		}
+		
+		return result;
 	}
 
 	/**
@@ -37,8 +92,9 @@ public class DataWarehouse {
 	 * @throws DataWarehouseException Thrown in case of an error or input mismatch
 	 */
 	public HasID get(@SuppressWarnings("rawtypes") Class type, String id) throws DataWarehouseException {
-		// TODO: ensure concurrency
-		return store.get(type, id);
+		// Just read local copy
+		System.out.println("DataWarehouse|get: Retrieving desired value");
+		return new DB4OInterface(db).get(type, id);
 	}
 
 	/**
@@ -49,8 +105,36 @@ public class DataWarehouse {
 	 * @throws DataWarehouseException Thrown in case of an error
 	 */
 	public boolean delete(@SuppressWarnings("rawtypes") Class type, String id) throws DataWarehouseException {
-		// TODO: remove and handle by synchroniser/concurrency control
-		return store.delete(type, id);
+		List<String> values = new ArrayList<String>();
+		values.add(id);
+		return deleteList(type, values);
+	}
+	
+	/**
+	 * Delete a list of of objects stored in the data warehouse
+	 * @param type The type of the objects
+	 * @param idsThe list of object IDs
+	 * @return true of successful
+	 * @throws DataWarehouseException
+	 */
+	public boolean deleteList(@SuppressWarnings("rawtypes") Class type, List<String> ids) throws DataWarehouseException {
+		System.out.println("DataWarehouse|deleteList: Initiating deleteList operation...");
+		
+		FutureTask<Boolean> future = new FutureTask<Boolean>(
+				new DataWarehouseUpdateTask(
+						synchronizer,
+						DataSynchronisationInstruction.createDeleteRequestInstruction(type, ids)));
+		pool.submit(future);
+		
+		try {
+			future.get();
+			System.out.println("DataWarehouse|deleteList: Successful deleteList operation");
+			ids = null;
+			return true;
+		} catch (Exception e) {
+			System.out.println("DataWarehouse|deleteList: Failed to execute deleteList operation");
+			return false;
+		}
 	}
 
 	/**
@@ -59,9 +143,27 @@ public class DataWarehouse {
 	 * @return The list of result
 	 * @throws DataWarehouseException thrown in case of an error
 	 */
-	public List<HasID> getAll(@SuppressWarnings("rawtypes") Class type) throws DataWarehouseException {
-		// TODO: ensure concurrency control
-		return store.getAll(type);
+	public List<HasID> getList(@SuppressWarnings("rawtypes") Class type) throws DataWarehouseException {
+		// Just read local copy
+		System.out.println("DataWarehouse|getList: Retrieving desired list");
+		return new DB4OInterface(db).getAll(type);
+	}
+	
+	/**
+	 * Forward an instruction event to the DW
+	 * @param event The instruction
+	 */
+	public void passInstruction(DataSynchronisationInstruction instruction) {
+		System.out.println("DataWarehouse|passInstruction: Forwarding instruction to synchroniser. TransactionID=" + instruction.getTransactionID() + " Type=" + instruction.getDataSynchronisationInstructiontype());
+		synchronizer.passInstruction(instruction);
+	}
+	
+	public void addInstructionEventListener(InstructionEventListener listener) {
+		synchronizer.addInstructionEventListener(listener);
+	}
+	
+	public void removeInstructionEventListener(InstructionEventListener listener) {
+		synchronizer.removeInstructionEventListener(listener);
 	}
 	
 }

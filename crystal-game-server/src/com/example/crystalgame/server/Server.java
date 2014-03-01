@@ -46,23 +46,25 @@ public class Server {
 			public void onInstructionRelayMessage(MessageEvent event) {
 				// Case handled in onMessageEvent
 			}
+
+			@Override
+			public void onIdMessageEvent(MessageEvent event) {
+				// Server does not care about this...
+			}
 		});
 		c.in.addInstructionEventListener(new InstructionEventListener() {
 
 			@Override
-			public void onGroupInstruction(InstructionEvent event) {
-				// Ignore
-			}
+			public void onGroupInstruction(InstructionEvent event) {}
 
 			@Override
-			public void onGroupStatusInstruction(InstructionEvent event) {
-				// Ignore				
-			}
+			public void onGroupStatusInstruction(InstructionEvent event) {}
 
 			@Override
-			public void onGameInstruction(InstructionEvent event) {
-				//groupInstanceManager.hand
-			}
+			public void onGameInstruction(InstructionEvent event) {}
+
+			@Override
+			public void onDataSynchronisationInstruction(InstructionEvent event) {}
 		});
 	}
 	

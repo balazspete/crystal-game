@@ -1,33 +1,34 @@
-package com.example.crystalgame.server.test.datawarehouse;
+package com.example.crystalgame.library.datawarehouse;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.db4o.Db4oEmbedded;
 import com.example.crystalgame.library.data.HasID;
+import com.example.crystalgame.library.data.StringWithID;
 import com.example.crystalgame.library.util.RandomID;
-import com.example.crystalgame.server.datawarehouse.DataStore;
 
-public class DataStoreTest {
+public class DB4OInterfaceTest {
 
-	private DataStore ds;
+	private DB4OInterface ds;
 	
 	@Before
 	public void setup() {
-		ds = DataStore.getGameStore(RandomID.getRandomId());
+		ds = new DB4OInterface(Db4oEmbedded.openFile("/Users/balazspete/Documents/testdb-" + RandomID.getRandomId()));
 	}
 
 	@Test
 	public void testGetGameStore() {
-		assertNotNull("Retrieved game DataStore should not be null", DataStore.getGameStore("groupID"));
+		assertNotNull("Retrieved game DataStore should not be null", ds);
 	}
 
 	@Test
 	public void testPut() {
 		StringWithID obj = new StringWithID("test test");
 		assertNull("Data Warehouse 1 should be empty", ds.get(StringWithID.class, obj.getID()));
-		assertTrue("Put should be successful", ds.put(StringWithID.class, obj));
+		assertNotNull("Put should be successful", ds.put(StringWithID.class, obj));
 	}
 
 	@Test

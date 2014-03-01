@@ -11,5 +11,6 @@
     <string name="pref_port_name">Port</string>
     <string name="SERVER_ADDRESS">server_address</string>
     <string name="PORT">port</string>
+    <string name="title_activity_data_warehouse_test">DataWarehouseTestActivity</string>
 
 </resources>

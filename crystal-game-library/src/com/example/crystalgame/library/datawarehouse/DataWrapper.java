@@ -21,6 +21,7 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	
 	private String key, type;
 	private DATA value;
+	private long version;
 	
 	private volatile transient ReentrantReadWriteLock lock;
 	
@@ -28,18 +29,37 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	 * Create a DataWapper user for query purposes
 	 * @param id The ID of the desired
 	 */
-	protected DataWrapper(Class<DATA> type, String id) {
-		this.type = type.toString();
+	protected DataWrapper(String type, String id) {
+		this.type = type;
 		this.key = id;
 		
+		version = 1;
 		lock = new ReentrantReadWriteLock(true);
 	}
 	
+	/**
+	 * Create a wrapper for a data entry
+	 * @param type The class of the entry
+	 * @param value The entry
+	 */
 	public DataWrapper(Class<DATA> type, DATA value) {
+		this(type.toString(), value);
+	}
+	
+	/**
+	 * Create a wrapper for a data entry
+	 * @param type The stringified class of the entry
+	 * @param value The entry
+	 */
+	public DataWrapper(String type, DATA value) {
 		this(type, value.getID());
 		this.value = value;
 	}
 	
+	/**
+	 * Get the wrapped value
+	 * @return The value
+	 */
 	public HasID getValue() {
 		lock.readLock().lock();
 		try {
@@ -49,31 +69,66 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 		}
 	}
 	
+	/**
+	 * Update the wrapped value
+	 * @param value The new value
+	 * @throws DataWarehouseException Thrown in case the ID or the types do not match
+	 */
 	public void setValue(DATA value) throws DataWarehouseException {
+		// Make sure the input and the wrapped object are the same
 		if (!value.getID().equals(this.value.getID())) {
 			throw DataWarehouseException.MISMATCHING_ID_EXCEPTION;
 		} else if (value.getClass().equals(this.value.getClass())) {
 			throw DataWarehouseException.MISMATCHING_TYPE_EXCEPTION;
 		}
 		
+		// Get the write lock
 		lock.readLock().lock();
 		lock.writeLock().lock();
 		try {
+			// Update value & version
 			this.value = value;
+			version++;
 		} finally {
+			// Release locks
 			lock.writeLock().unlock();
 			lock.readLock().unlock();
 		}
 	}
 	
+	/**
+	 * Is the wrapper write locked?
+	 * @return True if write locked
+	 */
 	public boolean isWriteLocked() {
 		return lock.isWriteLocked();
 	}
+	
+	/**
+	 * Get the version of the data
+	 * @return The version number
+	 */
+	public long getVersion() {
+		return version;
+	}
+	
+	/**
+	 * Get the stringified class value
+	 * @return The type
+	 */
+	public String getType() {
+		return type;
+	}
+	
+	/*********
+	 * SERIALISATION OVERRIDE
+	 *********/
 	
 	private void writeObject(java.io.ObjectOutputStream stream) throws IOException {
 		stream.writeObject(type);
 		stream.writeObject(key);
 		stream.writeObject(value);
+		stream.writeLong(version);
     }
 
     @SuppressWarnings("unchecked")
@@ -81,6 +136,7 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
     	type = (String) stream.readObject();
     	key = (String) stream.readObject();
     	value = (DATA) stream.readObject();
+    	version = (long) stream.readLong();
     	lock = new ReentrantReadWriteLock(true);
     }
     

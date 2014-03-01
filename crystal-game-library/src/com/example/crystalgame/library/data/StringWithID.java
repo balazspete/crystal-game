@@ -1,9 +1,15 @@
-package com.example.crystalgame.server.test.datawarehouse;
+package com.example.crystalgame.library.data;
 
-import com.example.crystalgame.library.data.HasID;
+import java.io.Serializable;
+
 import com.example.crystalgame.library.util.RandomID;
 
-class StringWithID implements HasID {
+public class StringWithID implements HasID, Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1010812153100710048L;
 	
 	private String id, value;
 	

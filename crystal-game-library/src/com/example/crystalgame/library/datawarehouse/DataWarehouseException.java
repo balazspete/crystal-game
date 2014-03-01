@@ -14,7 +14,9 @@ public class DataWarehouseException extends Exception {
 
 	public static DataWarehouseException
 		MISMATCHING_ID_EXCEPTION = new DataWarehouseException("Not identical object IDs."),
-		MISMATCHING_TYPE_EXCEPTION = new DataWarehouseException("Not identical object types (classes).");
+		MISMATCHING_TYPE_EXCEPTION = new DataWarehouseException("Not identical object types (classes)."),
+		FAILED_TO_UPDATE = new DataWarehouseException("Failed to update input data"),
+		NULL_WAREHOUSE = new DataWarehouseException("Warehouse not initialised");
 	
 	
 	private DataWarehouseException(String message) {

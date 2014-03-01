@@ -2,8 +2,10 @@ package com.example.crystalgame;
 
 import android.content.Intent;
 
+import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
 import com.example.crystalgame.library.events.InstructionEvent;
 import com.example.crystalgame.library.events.InstructionEventListener;
+import com.example.crystalgame.library.instructions.DataSynchronisationInstruction;
 import com.example.crystalgame.ui.CreateGameActivity;
 
 public class ServerInstructionsHandler extends InstructionEventListener {
@@ -31,6 +33,11 @@ public class ServerInstructionsHandler extends InstructionEventListener {
 		Intent intent = new Intent(application, CreateGameActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		application.startActivity(intent);
+	}
+
+	@Override
+	public void onDataSynchronisationInstruction(InstructionEvent event) {
+		ClientDataWarehouse.getInstance().passInstruction((DataSynchronisationInstruction) event.getInstruction());
 	}
 
 }
