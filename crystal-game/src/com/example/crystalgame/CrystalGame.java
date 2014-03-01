@@ -155,7 +155,7 @@ public class CrystalGame extends Application {
 			return;
 		}
 		
-		ClientDataWarehouse.DB_PATH = this.getCacheDir().getAbsolutePath();
+		ClientDataWarehouse.DB_PATH = this.getExternalCacheDir().getAbsolutePath();
 		ClientDataWarehouse.myID = playerID;
 		ClientDataWarehouse.getInstance().addInstructionEventListener(new InstructionEventListener() {
 			@Override
