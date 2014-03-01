@@ -9,6 +9,7 @@ import com.example.crystalgame.library.events.MessageEventListener;
 import com.example.crystalgame.library.instructions.GroupInstruction;
 import com.example.crystalgame.server.communication.ServerCommunication;
 import com.example.crystalgame.server.communication.ServerCommunicationManager;
+import com.example.crystalgame.server.datawarehouse.ServerDataWarehouse;
 import com.example.crystalgame.server.groups.GroupInstanceManager;
 
 /**
@@ -18,13 +19,16 @@ import com.example.crystalgame.server.groups.GroupInstanceManager;
  */
 public class Server {
 
-	public static void main(String[] args) {
-		final GroupInstanceManager groupInstanceManager = new GroupInstanceManager();
+	public static final int COMMUNICATION_PORT = 3000;
+	public static final String DB_PATH = "/Users/balazspete/Documents/";
+	
+	private void run() {
+		ServerDataWarehouse.DB_PATH = DB_PATH;
 		
-		ServerCommunicationManager manager = new ServerCommunicationManager(3000); 
+		final GroupInstanceManager groupInstanceManager = new GroupInstanceManager();
+		ServerCommunicationManager manager = new ServerCommunicationManager(COMMUNICATION_PORT); 
 		
 		final ServerCommunication c = new ServerCommunication(manager, groupInstanceManager);
-		
 		c.in.addMessageEventListener(new MessageEventListener(){
 			@Override
 			public void onMessageEvent(MessageEvent event) {
@@ -66,6 +70,10 @@ public class Server {
 			@Override
 			public void onDataSynchronisationInstruction(InstructionEvent event) {}
 		});
+	}
+	
+	public static void main(String[] args) {
+		new Server().run();
 	}
 	
 }

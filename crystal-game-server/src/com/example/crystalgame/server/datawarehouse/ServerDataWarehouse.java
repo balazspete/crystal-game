@@ -13,7 +13,8 @@ import com.example.crystalgame.server.groups.Group;
  */
 public class ServerDataWarehouse extends DataWarehouse {
 
-	public static final String DB_PATH = "/Users/balazspete/Documents/";
+	// Need to set up value in Server
+	public static String DB_PATH = "";
 	
 	protected ServerDataWarehouse(ObjectContainer store, ServerSynchroniser synchroniser) {
 		super(store, synchroniser);
