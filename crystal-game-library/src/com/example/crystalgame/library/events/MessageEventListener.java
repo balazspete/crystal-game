@@ -51,6 +51,12 @@ public abstract class MessageEventListener implements EventListener {
 	public abstract void onInstructionRelayMessage(MessageEvent event);
 
 	/**
+	 * Listen to ID message events
+	 * @param event The event
+	 */
+	public abstract void onIdMessageEvent(MessageEvent event);
+	
+	/**
 	 * Implementation of the eventHandlerHelper function of the listener manager
 	 * @param listener The listener
 	 * @param event The event
@@ -66,7 +72,9 @@ public abstract class MessageEventListener implements EventListener {
 				break;
 			case INSTRUCTION_MESSAGE:
 				listener.onInstructionRelayMessage(event);
-				//listener.onMessageEvent(event);
+				break;
+			case ID_MESSAGE:
+				listener.onIdMessageEvent(event);
 				break;
 			default:
 				listener.onMessageEvent(event);

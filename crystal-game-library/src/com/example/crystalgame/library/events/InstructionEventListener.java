@@ -21,7 +21,17 @@ public abstract class InstructionEventListener implements EventListener {
 	 */
 	public abstract void onGroupStatusInstruction(InstructionEvent event);
 	
+	/**
+	 * Get game instruction events
+	 * @param event the event
+	 */
 	public abstract void onGameInstruction(InstructionEvent event);
+	
+	/**
+	 * Get data synchronisation instruction events
+	 * @param event The event
+	 */
+	public abstract void onDataSynchronisationInstruction(InstructionEvent event);
 	
 	/**
 	 * Implementation of the eventHandlerHelper function of the listener manager
@@ -38,6 +48,9 @@ public abstract class InstructionEventListener implements EventListener {
 				break;
 			case GAME_INSTRUCTION:
 				listener.onGameInstruction(event);
+				break;
+			case DATA_SYNCRONISATION:
+				listener.onDataSynchronisationInstruction(event);
 				break;
 			default:
 				return;

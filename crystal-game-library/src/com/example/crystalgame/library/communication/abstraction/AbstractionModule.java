@@ -78,9 +78,8 @@ public class AbstractionModule {
 		String senderId = message.getSenderId();
 		
 		if (message.getMessageType() == MessageType.ID_MESSAGE) {
-			// If the message is an ID assignment, update ID and return
+			// If the message is an ID assignment
 			myId = message.getReceiverId();
-			return;
 		}
 		
 		if (senderId == null || senderId.isEmpty()) {

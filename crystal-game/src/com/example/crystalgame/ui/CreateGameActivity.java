@@ -4,26 +4,30 @@
  * @author Chen Shen, Allen Thomas Varghese
  */
 package com.example.crystalgame.ui;
+
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.R;
+import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.data.Zone;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.InstructionFormatException;
 import com.google.android.gms.maps.model.LatLng;
 
+/**
+ * 
+ * @author Allen Thomas Varghese, Chen Shen, Rajan Verma
+ *
+ */
 public class CreateGameActivity extends Activity implements OnClickListener
 {
 	private Button btnGameLocation;
@@ -49,15 +53,11 @@ public class CreateGameActivity extends Activity implements OnClickListener
 	@Override
 	public void onClick(View view) 
 	{
-		// TODO Auto-generated method stub
-		switch(view.getId())
+		if(view.getId() == R.id.btnGameLocation)
 		{
-		    case R.id.btnGameLocation:
-		    	//startActivity(new Intent(getApplicationContext(), GameBoundaryActivity.class));
 		    	if(this.gameBoundary.isEmpty())
 		    	{
 		    		startActivityForResult(new Intent(getApplicationContext(), GameBoundaryActivity.class),1);
-		    		//Toast.makeText(this, "Null", Toast.LENGTH_LONG).show();
 		    	}
 		    	else
 		    	{
@@ -65,27 +65,11 @@ public class CreateGameActivity extends Activity implements OnClickListener
 			    	intent.putExtra("locations", (Serializable)gameBoundary);
 			    	startActivityForResult(intent,1);
 		    	}
-		    	break;
-		    case R.id.btnSubmitCreateGame:
-		    	String name = ((EditText)findViewById(R.id.GameDuration)).getText().toString();
-		    	try {
-					appInstance.getCommunication().out.relayInstructionToServer(GameInstruction
-			    			.createCreateGameGameInstruction(name, 
-			    					gameBoundary.getLocation(0), 
-			    					gameBoundary.getLocation(1), 
-			    					gameBoundary.getLocation(2),
-			    					gameBoundary.getLocation(3)));
-				} catch (InstructionFormatException e) {
-					Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-				} catch (IndexOutOfBoundsException e) {
-					Toast.makeText(this, "Game location requires 4 points", Toast.LENGTH_SHORT).show();
-				}
-		    	break;
-		    case R.id.btnResetCreateGame:
+		} else if(view.getId() == R.id.btnSubmitCreateGame) {
+			ClientManager.getInstance().saveGameLocation(new GameBoundary(gameBoundary.getLocationList()));
+		} else if(view.getId() == R.id.btnResetCreateGame) {
 		    	resetFormValues();
-		    	break;
-		    default:
-		    	break;
+		} else {
 		    	
 	    }	
 		

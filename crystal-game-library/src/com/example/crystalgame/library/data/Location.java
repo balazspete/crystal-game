@@ -95,4 +95,8 @@ public class Location implements Serializable, HasID
 	public String getID() {
 		return id;
 	}
+	
+	public Location getLocation() {
+		return new Location(lattitude, longitude);
+	}
 }

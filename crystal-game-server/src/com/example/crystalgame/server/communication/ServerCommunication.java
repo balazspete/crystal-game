@@ -57,6 +57,11 @@ public class ServerCommunication extends Communication {
 			public void onInstructionRelayMessage(MessageEvent event) {
 				out.sendSequencedMessage(event.getReceiverId(), event.getMessage());
 			}
+
+			@Override
+			public void onIdMessageEvent(MessageEvent event) {
+				// Server does not care about this...
+			}
 		});
 	}
 	
@@ -85,6 +90,11 @@ public class ServerCommunication extends Communication {
 			@Override
 			public void onInstructionRelayMessage(MessageEvent event) {
 				onMessageEvent(event);
+			}
+
+			@Override
+			public void onIdMessageEvent(MessageEvent event) {
+				// Server does not care about this...
 			}
 		});
 	}

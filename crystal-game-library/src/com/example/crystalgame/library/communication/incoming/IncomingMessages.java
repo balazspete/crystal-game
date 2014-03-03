@@ -5,6 +5,7 @@ import java.util.HashSet;
 import com.example.crystalgame.library.communication.abstraction.AbstractionModule;
 import com.example.crystalgame.library.communication.messages.ControlMessage;
 import com.example.crystalgame.library.communication.messages.GroupStatusMessage;
+import com.example.crystalgame.library.communication.messages.IdMessage;
 import com.example.crystalgame.library.communication.messages.InstructionRelayMessage;
 import com.example.crystalgame.library.communication.messages.Message;
 import com.example.crystalgame.library.events.InstructionEvent;
@@ -12,7 +13,6 @@ import com.example.crystalgame.library.events.InstructionEventListener;
 import com.example.crystalgame.library.events.ListenerManager;
 import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.events.MessageEventListener;
-import com.example.crystalgame.library.instructions.Instruction;
 
 /**
  * The interface responsible for managing incoming messages
@@ -118,6 +118,11 @@ public abstract class IncomingMessages {
 			public void onInstructionRelayMessage(MessageEvent event) {
 				handleInstructionRelayMessage((InstructionRelayMessage) event.getMessage());
 			}
+
+			@Override
+			public void onIdMessageEvent(MessageEvent event) {
+				handleIdMessages((IdMessage) event.getMessage());
+			}
 		});
 	}
 	
@@ -144,4 +149,10 @@ public abstract class IncomingMessages {
 	 * @param message The message
 	 */
 	protected abstract void handleInstructionRelayMessage(InstructionRelayMessage message);
+	
+	/**
+	 * Handler for id messages
+	 * @param message The message
+	 */
+	protected abstract void handleIdMessages(IdMessage message);
 }

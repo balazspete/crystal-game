@@ -1,6 +1,7 @@
 package com.example.crystalgame;
 
 import com.example.crystalgame.communication.ClientCommunication;
+import com.example.crystalgame.library.data.Location;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -8,7 +9,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.location.Criteria;
-import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -46,7 +46,7 @@ public class GpsActivity extends FragmentActivity implements LocationListener{
        /*Returns the name of the provider that best matches the given criteria*/
        locationFind = locationManager.getBestProvider(criteria, false);
        
-       Location location = locationManager.getLastKnownLocation(locationFind);
+       android.location.Location location = locationManager.getLastKnownLocation(locationFind);
        if(location == null)
        {
     	   Toast.makeText(getApplicationContext(),"Could not found current Location",Toast.LENGTH_LONG ).show();
@@ -113,7 +113,7 @@ public class GpsActivity extends FragmentActivity implements LocationListener{
 	}
 
 	@Override
-	public void onLocationChanged(Location arg0) {
+	public void onLocationChanged(android.location.Location arg0) {
 		// TODO Auto-generated method stub
 		
 	}

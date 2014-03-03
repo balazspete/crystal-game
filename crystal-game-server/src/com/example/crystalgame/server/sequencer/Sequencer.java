@@ -47,7 +47,7 @@ public class Sequencer {
 	 * Send a message to all members of a group
 	 * @param message The message
 	 */
-	public void sendMessageToAll(MulticastMessage message) {
+	public void sendMessageToAll(Message message) {
 		message.setTimeStamp(++multicastTimestamp);
 		
 		for(Client receiver : group.getClients()) {
