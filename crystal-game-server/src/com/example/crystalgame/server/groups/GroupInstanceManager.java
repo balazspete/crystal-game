@@ -1,5 +1,7 @@
 package com.example.crystalgame.server.groups;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -190,8 +192,17 @@ public class GroupInstanceManager {
 	public void handleGroupInstruction(ControlMessage message, GroupInstruction instruction) {
 		String groupId = null;
 		GroupInstruction reply = null;
-		
+		Map<String, String> membersList = new HashMap<String, String>();
 		switch(instruction.groupInstructionType) {
+		 	case ALLMEMBER:
+		 		
+		 		for(Client client : clients.values())
+		 		{
+		 			membersList.put(client.getId(), client.getName());
+		 		}
+		 		//Return member list if succeeded
+		 		reply = GroupInstruction.createGroupMembershipListResponseInstruction(membersList);
+			break;
 			case CREATE:
 				int maxPlayers = Integer.parseInt((String) instruction.arguments[1]);
 				try {
@@ -235,6 +246,7 @@ public class GroupInstanceManager {
 		
 		System.out.println("Group ID: " + groupId);
 		System.out.println("Client ID: " + message.getSenderId());
+		
 		
 		ControlMessage replyMessage = new ControlMessage();
 		replyMessage.setData(reply);
