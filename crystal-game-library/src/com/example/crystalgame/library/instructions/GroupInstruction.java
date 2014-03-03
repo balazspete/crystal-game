@@ -1,8 +1,10 @@
 package com.example.crystalgame.library.instructions;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import com.example.crystalgame.library.data.Location;
+import com.example.crystalgame.library.instructions.GroupStatusInstruction.GroupStatusInstructionType;
 
 /**
  * A group control instruction
@@ -22,7 +24,7 @@ public class GroupInstruction extends Instruction {
 	 *
 	 */
 	public enum GroupInstructionType implements Serializable {
-		CREATE, JOIN, LEAVE, 
+		CREATE, JOIN, LEAVE,ALLMEMBER, MEMBER_LIST_RESPONSE,
 		SUCCESS, FAILURE
 	}
 	
@@ -93,5 +95,29 @@ public class GroupInstruction extends Instruction {
 	 */
 	public static GroupInstruction failureReply(String message) {
 		return new GroupInstruction(GroupInstructionType.FAILURE, message);
+	}
+	/**
+	 * Create group membership list request instruction
+	 * @return the instruction
+	 */
+	public static GroupInstruction createGroupMembershipListRequestInstruction(){
+		return new GroupInstruction(GroupInstructionType.ALLMEMBER);
+	}
+	/**
+	 * Create a group membership list instruction reply
+	 * @param data The client data 
+	 * @return The instruction
+	 */
+	public static GroupInstruction createGroupMembershipListResponseInstruction(Map<String, String> data) 
+	{
+		String[] args = new String[data.size()*2];
+		int i = 0;
+		for(String key : data.keySet()) 
+		{
+			args[i++] = key;
+			args[i++] = data.get(key);
+		}
+		
+		return new GroupInstruction(GroupInstructionType.MEMBER_LIST_RESPONSE, args);
 	}
 }

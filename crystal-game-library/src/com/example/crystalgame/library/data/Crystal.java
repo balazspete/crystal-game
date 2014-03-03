@@ -11,7 +11,7 @@ public class Crystal extends Item {
 	 * 
 	 */
 	private static final long serialVersionUID = -7426488079048008002L;
-
+	private String zoneID;
 	/**
 	 * Create a crystal
 	 * @param latitude The latitude
@@ -19,6 +19,12 @@ public class Crystal extends Item {
 	 */
 	public Crystal(double latitude, double longitude) {
 		super(latitude, longitude, ItemType.CRYSTAL);
+		this.zoneID = new String();
+	}
+	
+	public void setZoneID(String zoneID)
+	{
+		this.zoneID = zoneID;
 	}
 
 }
