@@ -138,6 +138,7 @@ public class CrystalGame extends Application {
 					case SUCCESS:
 						if(instruction.arguments.length > 0) {
 							groupID = (String) instruction.arguments[0];
+							Log.i("CrystalGame", "Group ID updated to " + groupID);
 						}
 					default:
 						System.out.println("Unhandled group instruction");

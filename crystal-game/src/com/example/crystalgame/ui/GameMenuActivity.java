@@ -37,11 +37,11 @@ public class GameMenuActivity extends Activity implements OnClickListener
 		this.btnCreateGame 		= (Button) findViewById(R.id.btnCreateGame);
         this.btnJoinGame		= (Button) findViewById(R.id.btnJoinGame);
         this.btnCreateGroup		= (Button) findViewById(R.id.btnCreateGroup);
-        if(this.appInstance.getGroupID().isEmpty() || this.appInstance.getGroupID() == null)
+        
+        if(this.appInstance.getGroupID() == null || this.appInstance.getGroupID().isEmpty())
 		{
         	this.btnCreateGame.setEnabled(false);
 		}
-
         else
         {
         	this.btnCreateGame.setEnabled(true);
@@ -61,34 +61,19 @@ public class GameMenuActivity extends Activity implements OnClickListener
     protected void onPause() 
     {
     	super.onStop();
-    	
     }
 
 	@Override
 	public void onClick(View view) 
 	{
-		
-		// TODO Auto-generated method stub
-		switch(view.getId())
-		{
-		    case R.id.btnCreateGame:
-		    	
+		if(view.getId() == R.id.btnCreateGame) {
 		    	startActivity(new Intent(getApplicationContext(), CreateGameActivity.class));
-		    	break;
-		    	
-		    case R.id.btnCreateGroup:
-		    	
+		} else if(view.getId() == R.id.btnCreateGroup) {		    	
 		    	startActivity(new Intent(getApplicationContext(), CreateGroupActivity.class));
-		    	break;
-		    case R.id.btnJoinGame:
-		    	
-		    	break;
-
-		    default:
-		    	break;
-		    	
-	    }	
-		
+		} else if(view.getId() == R.id.btnJoinGame) {
+			
+		} else {	
+		}	
 	}
 
     /*protected void onStop() {
