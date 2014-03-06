@@ -26,5 +26,8 @@
     <string name="select_player">Select the other player</string>
     <string name="title_activity_group_lobby">GroupLobbyActivity</string>
     <string name="request_game_start">Request game start</string>
+    <string name="reset_game_info">Game settings cleared</string>
+    <string name="action_save_boundary">Save</string>
+    
 
 </resources>

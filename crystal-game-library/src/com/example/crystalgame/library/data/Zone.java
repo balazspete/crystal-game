@@ -208,4 +208,11 @@ public class Zone implements Serializable, HasID
 	public String getID() {
 		return id;
 	}
+	
+	/**
+	 * Clear the zone definition
+	 */
+	public void clear() {
+		locationPoints.clear();
+	}
 }

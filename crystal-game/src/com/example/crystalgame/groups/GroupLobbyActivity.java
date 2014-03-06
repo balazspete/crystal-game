@@ -1,11 +1,13 @@
 package com.example.crystalgame.groups;
 
 import com.example.crystalgame.CrystalGame;
+import com.example.crystalgame.DataWarehouseTestActivity;
 import com.example.crystalgame.R;
 import com.example.crystalgame.library.instructions.GameInstruction;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,4 +41,9 @@ public class GroupLobbyActivity extends Activity {
 		//ClientDataWarehouse.getInstance().get()
 	}
 	
+
+    public void launchDW(MenuItem item) {
+    	startActivity(new Intent(this, DataWarehouseTestActivity.class));
+    }
+    
 }

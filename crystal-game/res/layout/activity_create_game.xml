@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/GameDuration"
+        android:id="@+id/game_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -15,13 +15,14 @@
         android:hint="Game name" />
 
     <Button
-        android:id="@+id/btnGameLocation"
+        android:id="@+id/game_location"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/GameDuration"
+        android:layout_below="@+id/game_name"
         android:layout_marginTop="16dp"
+        android:onClick="selectLocations"
         android:text="Game Location" />
 
     <Button
@@ -29,8 +30,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/btnGameLocation"
+        android:layout_below="@+id/game_location"
         android:layout_marginTop="16dp"
+        android:onClick="resetLocations"
         android:text="Reset" />
 
     <Button
@@ -40,6 +42,7 @@
         android:layout_alignBaseline="@+id/btnResetCreateGame"
         android:layout_alignBottom="@+id/btnResetCreateGame"
         android:layout_alignParentRight="true"
-        android:text="Submit" />
+        android:onClick="createGame"
+        android:text="Create" />
 
 </RelativeLayout>
