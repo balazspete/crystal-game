@@ -13,7 +13,9 @@ import org.joda.time.DateTime;
 import com.example.crystalgame.library.communication.messages.InstructionRelayMessage;
 import com.example.crystalgame.library.communication.messages.MulticastMessage;
 import com.example.crystalgame.library.communication.messages.UnicastMessage;
+import com.example.crystalgame.library.data.Information;
 import com.example.crystalgame.library.data.Location;
+import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
 import com.example.crystalgame.library.events.InstructionEvent;
 import com.example.crystalgame.library.events.InstructionEventListener;
 import com.example.crystalgame.library.events.ListenerManager;
@@ -116,6 +118,14 @@ public class GroupInstance implements Runnable {
 				InstructionEventListener.eventHandlerHelper(listener, event);
 			}
 		};
+		
+		try {
+			// Save the group related information
+			dataWarehouse.put(Information.class, new Information(Information.GROUP_NAME, group.getName()));
+			dataWarehouse.put(Information.class, new Information(Information.GROUP_MAX_PLAYERS, group.getMaxPlayers()));
+		} catch (DataWarehouseException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
