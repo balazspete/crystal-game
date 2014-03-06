@@ -96,19 +96,21 @@ public class GroupInstruction extends Instruction {
 	public static GroupInstruction failureReply(String message) {
 		return new GroupInstruction(GroupInstructionType.FAILURE, message);
 	}
+	
 	/**
 	 * Create group membership list request instruction
 	 * @return the instruction
 	 */
-	public static GroupInstruction createGroupMembershipListRequestInstruction(){
+	public static GroupInstruction createMembershipListRequestInstruction(){
 		return new GroupInstruction(GroupInstructionType.ALLMEMBER);
 	}
+	
 	/**
 	 * Create a group membership list instruction reply
 	 * @param data The client data 
 	 * @return The instruction
 	 */
-	public static GroupInstruction createGroupMembershipListResponseInstruction(Map<String, String> data) 
+	public static GroupInstruction createMembershipListResponseInstruction(Map<String, String> data) 
 	{
 		String[] args = new String[data.size()*2];
 		int i = 0;

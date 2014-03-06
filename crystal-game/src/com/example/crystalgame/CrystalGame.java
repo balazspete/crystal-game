@@ -3,6 +3,7 @@ package com.example.crystalgame;
 import java.util.Arrays;
 
 import android.app.Application;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -11,14 +12,18 @@ import com.example.crystalgame.communication.ClientCommunication;
 import com.example.crystalgame.communication.ClientCommunicationManager;
 import com.example.crystalgame.communication.ClientOutgoingMessages;
 import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
+import com.example.crystalgame.groups.GroupLobbyActivity;
 import com.example.crystalgame.library.communication.messages.IdMessage;
 import com.example.crystalgame.library.events.InstructionEvent;
 import com.example.crystalgame.library.events.InstructionEventListener;
 import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.events.MessageEventListener;
 import com.example.crystalgame.library.instructions.DataSynchronisationInstruction;
+import com.example.crystalgame.library.instructions.GameInstruction;
+import com.example.crystalgame.library.instructions.GameInstruction.GameInstructionType;
 import com.example.crystalgame.library.instructions.GroupInstruction;
 import com.example.crystalgame.library.instructions.GroupStatusInstruction;
+import com.example.crystalgame.ui.CreateGameActivity;
 
 /**
  * The Android application class for the CrystalGame project
@@ -84,7 +89,6 @@ public class CrystalGame extends Application {
 		
 		ClientOutgoingMessages out = new ClientOutgoingMessages();
 		communication = new ClientCommunication(manager, out);
-		communication.in.addInstructionEventListener(new ServerInstructionsHandler(this));
 	}
 	
 	private void incomingCommunicationsSetup() {
@@ -103,7 +107,6 @@ public class CrystalGame extends Application {
 			@Override
 			public void onGroupStatusMessageEvent(MessageEvent event) {
 				System.out.print("GroupStatusMessage: ");
-				System.out.println(Arrays.toString(((GroupStatusInstruction) event.getMessage().getData()).arguments));
 			}
 
 			@Override
@@ -140,6 +143,8 @@ public class CrystalGame extends Application {
 							groupID = (String) instruction.arguments[0];
 							Log.i("CrystalGame", "Group ID updated to " + groupID);
 						}
+						
+						break;
 					default:
 						System.out.println("Unhandled group instruction");
 						break;
@@ -147,7 +152,16 @@ public class CrystalGame extends Application {
 			}
 			
 			@Override
-			public void onGameInstruction(InstructionEvent event) {}
+			public void onGameInstruction(InstructionEvent event) {
+				GameInstruction instruction = (GameInstruction) event.getInstruction();
+				switch (instruction.gameInstruction) {
+					case CREATE_GAME_REQUEST:
+						Intent intent = new Intent(getApplicationContext(), CreateGameActivity.class);
+						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						startActivity(intent);
+						break;
+				}
+			}
 		});
 	}
 	

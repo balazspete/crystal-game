@@ -8,6 +8,7 @@ import java.util.concurrent.Executors;
 
 import com.example.crystalgame.library.communication.messages.ControlMessage;
 import com.example.crystalgame.library.communication.messages.GroupStatusMessage;
+import com.example.crystalgame.library.communication.messages.InstructionRelayMessage;
 import com.example.crystalgame.library.communication.messages.Message;
 import com.example.crystalgame.library.communication.messages.MulticastMessage;
 import com.example.crystalgame.library.communication.messages.UnicastMessage;
@@ -201,8 +202,8 @@ public class GroupInstanceManager {
 		 			membersList.put(client.getId(), client.getName());
 		 		}
 		 		//Return member list if succeeded
-		 		reply = GroupInstruction.createGroupMembershipListResponseInstruction(membersList);
-			break;
+		 		reply = GroupInstruction.createMembershipListResponseInstruction(membersList);
+		 		break;
 			case CREATE:
 				int maxPlayers = Integer.parseInt((String) instruction.arguments[1]);
 				try {
@@ -248,7 +249,7 @@ public class GroupInstanceManager {
 		System.out.println("Client ID: " + message.getSenderId());
 		
 		
-		ControlMessage replyMessage = new ControlMessage();
+		InstructionRelayMessage replyMessage = new InstructionRelayMessage(message.getSenderId());
 		replyMessage.setData(reply);
 		
 		MessageEvent event = new MessageEvent(replyMessage);

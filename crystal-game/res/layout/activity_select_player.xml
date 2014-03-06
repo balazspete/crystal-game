@@ -16,10 +16,9 @@
             android:layout_weight="0.45"
             android:ellipsize="end"
             android:ems="10"
-            android:hint="@string/NameHint"
+            android:hint="@string/player_name_hint"
             android:inputType="text"
-            android:lines="@integer/Min"
-            android:maxLines="@integer/Min" >
+            android:lines="1" >
 
             <requestFocus />
         </EditText>
@@ -31,13 +30,11 @@
 
     </LinearLayout>
 
-    
     <ListView
         android:id="@+id/PlayersList"
         android:layout_width="fill_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        android:background="@color/transparent" 
-        android:cacheColorHint="#00000000"/>
+        android:background="@color/white" />
 
 </LinearLayout>

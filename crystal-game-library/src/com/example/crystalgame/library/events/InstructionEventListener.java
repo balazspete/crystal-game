@@ -1,5 +1,6 @@
 package com.example.crystalgame.library.events;
 
+import java.util.Arrays;
 import java.util.EventListener;
 
 /**
@@ -41,6 +42,7 @@ public abstract class InstructionEventListener implements EventListener {
 	public static void eventHandlerHelper(InstructionEventListener listener, InstructionEvent event) {
 		switch(event.getInstruction().type) {
 			case GROUP_INSTRUCTION:
+				System.out.println(Arrays.toString(event.getInstruction().arguments));
 				listener.onGroupInstruction(event);
 				break;
 			case GROUP_STATUS_INSTRUCTION:
