@@ -1,7 +1,10 @@
-package com.example.crystalgame;
+package com.example.crystalgame.ui;
+
+import java.util.ArrayList;
 
 import android.graphics.Color;
 
+import com.example.crystalgame.library.data.Location;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polygon;
@@ -34,9 +37,17 @@ public class LocalMapPolygon {
 		return true;
 		//
 	}
-	public LatLng zoomCenterPoint()
+	public LatLng zoomCenterPoint(ArrayList<Location> gameBoundaryPoints)
 	{
-		LatLng latLng = new LatLng((posX2+posX1)/2, (posY2+posY1)/2);
+		double posLat = 0.0;
+		double posLong = 0.0;
+		for(Location location: gameBoundaryPoints)
+		{
+			posLat = posLat + location.getLatitude();
+			posLong = posLong +location.getLongitude();
+					
+		}
+		LatLng latLng = new LatLng((posLat)/gameBoundaryPoints.size(), (posLong)/gameBoundaryPoints.size());
 		return latLng;
 	}
 

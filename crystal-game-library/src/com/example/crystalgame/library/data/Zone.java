@@ -11,7 +11,7 @@ import com.example.crystalgame.library.util.RandomID;
  * @author Chen Shen, Allen Thomas Varghese
  * 
  */
-public class Zone implements Serializable 
+public class Zone implements Serializable, HasID
 {
 	
 	/**
@@ -102,7 +102,12 @@ public class Zone implements Serializable
 	  int j;
 	  boolean result = false;
 	  double xVali, yVali, xValj, yValj, lng, lat, testX, testY;
-	  ArrayList<Location> tempDataList = new ArrayList<>();
+	  ArrayList<Location> tempDataList = new ArrayList<Location>();
+	  
+	  // If the list of locations is empty or null, do not process
+	  if(null == locationPoints || (null!=locationPoints && locationPoints.isEmpty())) {
+		  return false;
+	  }
 	  
 	  // Temporary ArrayList for easy iteration of points
 	  for(Location key : locationPoints)
@@ -202,5 +207,10 @@ public class Zone implements Serializable
 	{
 		return this.locationPoints != null 
 				&& this.locationPoints.isEmpty();
+	}
+
+	@Override
+	public String getID() {
+		return id;
 	}
 }

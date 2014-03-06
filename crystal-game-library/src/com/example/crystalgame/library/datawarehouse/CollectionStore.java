@@ -26,9 +26,9 @@ public class CollectionStore<DATA extends HasID> {
 	 * Get all occurrences of the queried class
 	 * @return The result
 	 */
-	public List<DATA> getAll() {
+	public List<DATA> getList() {
 		try {
-			return (List<DATA>) warehouse.getAll(type);
+			return (List<DATA>) warehouse.getList(type);
 		} catch (DataWarehouseException e) {
 			return new ArrayList<DATA>();
 		}
@@ -38,9 +38,11 @@ public class CollectionStore<DATA extends HasID> {
 	 * Save all objects in the list
 	 * @param data The list to save
 	 */
-	public void putList(List<DATA> data) {
-		for(DATA d : data) {
-			put(d);
+	public boolean putList(Class type, List<HasID> data) {
+		try {
+			return warehouse.putList(type, data) != null;
+		} catch (DataWarehouseException e) {
+			return false;
 		}
 	}
 	
@@ -51,7 +53,7 @@ public class CollectionStore<DATA extends HasID> {
 	 */
 	public boolean put(DATA data) {
 		try {
-			return warehouse.put(type, data);
+			return warehouse.put(type, data) != null;
 		} catch (DataWarehouseException e) {
 			return false;
 		}

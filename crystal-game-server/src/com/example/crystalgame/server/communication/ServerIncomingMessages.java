@@ -4,6 +4,7 @@ import com.example.crystalgame.library.communication.abstraction.AbstractionModu
 import com.example.crystalgame.library.communication.incoming.IncomingMessages;
 import com.example.crystalgame.library.communication.messages.ControlMessage;
 import com.example.crystalgame.library.communication.messages.GroupStatusMessage;
+import com.example.crystalgame.library.communication.messages.IdMessage;
 import com.example.crystalgame.library.communication.messages.InstructionRelayMessage;
 import com.example.crystalgame.library.communication.messages.Message;
 import com.example.crystalgame.library.events.InstructionEvent;
@@ -114,6 +115,11 @@ public class ServerIncomingMessages extends IncomingMessages {
 		
 		// Forward instruction message to the group instance manager
 		groupInstanceManager.forwardMessage(message);
+	}
+
+	@Override
+	protected void handleIdMessages(IdMessage message) {
+		// Server does not care about this...
 	}
 	
 }

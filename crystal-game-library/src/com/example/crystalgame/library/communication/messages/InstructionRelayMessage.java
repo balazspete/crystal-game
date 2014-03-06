@@ -1,5 +1,10 @@
 package com.example.crystalgame.library.communication.messages;
 
+/**
+ * A message carrying an instruction
+ * @author Balazs Pete, Allen Thomas Varghese
+ *
+ */
 public class InstructionRelayMessage extends UnicastMessage {
 
 	/**

@@ -12,13 +12,13 @@ import com.example.crystalgame.library.events.ProximityEvent.ArtifactType;
 
 
 /**
- *  @author Allen Thomas Varghese, Rajan Verma
+ * Game State Manager for keeping track of various 
+ * processes that happen related to game state and game agent
+ * 
+ * @author Allen Thomas Varghese, Rajan Verma
  *
  */
 public class GameStateManager {
-
-//	private GameState gameState = GameState;
-//	private GameAgent gameAgent = new GameAgent();
 	
 	private static GameStateManager gameStateManager = null;
 	
@@ -26,6 +26,10 @@ public class GameStateManager {
 		
 	}
 	
+	/**
+	 * Get the singleton instance of this class
+	 * @return GameStateManager
+	 */
 	public static GameStateManager getInstance() {
 		if(null == gameStateManager) {
 			gameStateManager = new GameStateManager();
@@ -37,13 +41,14 @@ public class GameStateManager {
 	 * Start the components that is part of this block
 	 */
 	public void startComponents() {
-		//TODO : Initialize sub-components
+		GameState.getInstance().initializeGameState();
+		GameAgent.getInstance().initializeGameAgent();
 	}
 	
 	/**
 	 * Proximity Alert with a character, crystal or magical item
 	 */
-	public void itemProximityAlert(Artifact item) {
+	public synchronized void itemProximityAlert(Artifact item) {
 		ProximityEvent proximityEvent = null;
 		if(item instanceof Crystal) {
 			proximityEvent = new ProximityEvent(ArtifactType.CRYSTAL, item);
@@ -58,13 +63,38 @@ public class GameStateManager {
 		GameState.getInstance().itemProximityAlert(proximityEvent);
 	}
 	
-	public void zoneProximityAlert(ZoneChangeEvent zoneChangeEvent)
+	/**
+	 * Callback function when the player is within a zone
+	 * @param zoneChangeEvent
+	 */
+	public synchronized void zoneProximityAlert(ZoneChangeEvent zoneChangeEvent)
 	{
 		GameAgent.getInstance().setZoneChangeEvent(zoneChangeEvent);
 	}
 	
-	public void zoneChangeCallBack(ZoneChangeEvent zoneChangeEvent)
+	/**
+	 * Callback function when zones are changed
+	 * @param zoneChangeEvent
+	 */
+	public synchronized void zoneChangeCallBack(ZoneChangeEvent zoneChangeEvent)
 	{
 		GameManager.getInstance().zoneChangeCallBack(zoneChangeEvent);
+	}
+	
+	/**
+	 * Pass the current energy level to the game state object
+	 * @param energyLevel
+	 */
+	public synchronized void energyChangeCallBack(double energyLevel) {
+		GameState.getInstance().updateEnergyLevel(energyLevel);
+	}
+	
+	/**
+	 * Callback function when energy becomes low
+	 * @param energyEvent
+	 */
+	public synchronized void energyLowCallBack(EnergyEvent  energyEvent)
+	{
+		GameManager.getInstance().energyLowCallBack(energyEvent);
 	}
 }

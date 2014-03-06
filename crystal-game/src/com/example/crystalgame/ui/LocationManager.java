@@ -3,12 +3,17 @@
  */
 package com.example.crystalgame.ui;
 
+import java.util.ArrayList;
+
 import com.example.crystalgame.library.data.Artifact;
 import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.data.Location;
+import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.events.ListenerManager;
 import com.example.crystalgame.library.events.StateChangeEvent;
 import com.example.crystalgame.library.events.StateChangeEventListener;
+import com.example.crystalgame.ui.ZoneChangeEvent.LocationState;
+import com.example.crystalgame.ui.ZoneChangeEvent.ZoneType;
 
 /**
  *  @author Allen Thomas Varghese, Rajan Verma
@@ -16,6 +21,8 @@ import com.example.crystalgame.library.events.StateChangeEventListener;
  */
 public class LocationManager {
 
+	private ZoneChangeEvent zoneChangeEvent = null;
+	
 	ListenerManager<StateChangeEventListener, StateChangeEvent> manager = 
 		new ListenerManager<StateChangeEventListener, StateChangeEvent>() {
 			@Override
@@ -55,7 +62,7 @@ public class LocationManager {
 	
 	public void locationTrackerCallback(Location previousLocation, Location currentLocation) {
 		Artifact artifact = null;
-		ZoneChangeEvent zoneChangeEvent = null;
+		
 		artifact = ArtifactTracker.getInstance().getArtifactsInProximity(currentLocation);
 		if(null != artifact) {
 			GameStateManager.getInstance().itemProximityAlert(artifact);
@@ -63,6 +70,7 @@ public class LocationManager {
 		
 		zoneChangeEvent = ZoneTracker.getInstance().searchGameBoundary(currentLocation);
 		if(null != zoneChangeEvent) {
+			System.out.println("Zone Changed : "+zoneChangeEvent);
 			GameStateManager.getInstance().zoneProximityAlert(zoneChangeEvent);
 		}
 	}
@@ -71,7 +79,43 @@ public class LocationManager {
 		ZoneTracker.getInstance().setBoundaryPoints(gameBoundary);
 	}
 	
+	public ArrayList<Location> getGameBoundaryPoints()
+	{
+		return ZoneTracker.getInstance().getBoundaryPoints();
+		
+	}
+	
+	public ArrayList<Location> getGameLocationPoints()
+	{
+		return ZoneTracker.getInstance().getGameLocationPoints();
+	}
 	public void saveGameLocation(GameBoundary gameBoundary) {
 		ZoneTracker.getInstance().setGameLocationPoints(gameBoundary);
+	}
+	
+	public boolean isGameBoundary() {
+		if(
+				zoneChangeEvent != null
+			&&	zoneChangeEvent.getLocationState() == LocationState.IN
+			&&	zoneChangeEvent.getZoneType() == ZoneType.GAME_BOUNDARY) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean isGameLocation() {
+		if(
+				zoneChangeEvent != null	
+			&&  zoneChangeEvent.getLocationState() == LocationState.IN
+			&&	zoneChangeEvent.getZoneType() == ZoneType.GAME_LOCATION) {
+			return true;
+		}
+		return false;
+	}
+	
+	public ArrayList<MagicalItem> getMagicalItemInfoList()
+	{
+		
+		return ArtifactTracker.getInstance().getMagicalItemInfoList();
 	}
 }

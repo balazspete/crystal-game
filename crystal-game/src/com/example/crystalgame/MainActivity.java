@@ -1,16 +1,11 @@
 package com.example.crystalgame;
 
-import java.util.Arrays;
-
 import com.example.crystalgame.communication.ClientCommunication;
 import com.example.crystalgame.communication.ClientOutgoingMessages;
 import com.example.crystalgame.library.communication.incoming.IncomingMessages;
-import com.example.crystalgame.library.events.MessageEvent;
-import com.example.crystalgame.library.events.MessageEventListener;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.GroupInstruction;
 import com.example.crystalgame.library.instructions.GroupStatusInstruction;
-import com.example.crystalgame.ui.GameMenuActivity;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -73,7 +68,7 @@ public class MainActivity extends Activity {
 	
     // TODO: temporary solution - remove
     public void sendTestMessage(int option) {
-    	String text1 = ((EditText) findViewById(R.id.editText1)).getText().toString();
+    	String text1 = ((EditText) findViewById(R.id.group_name)).getText().toString();
     	String text2 = ((EditText) findViewById(R.id.editText2)).getText().toString();
     	String text3 = ((EditText) findViewById(R.id.editText2)).getText().toString();
 
@@ -82,28 +77,6 @@ public class MainActivity extends Activity {
 	    			((CrystalGame) getApplication()).getCommunication();
 	    	out = communication.out;
 	    	in = communication.in;
-	    	in.addMessageEventListener(new MessageEventListener(){
-				@Override
-				public void onMessageEvent(MessageEvent event) {
-					System.out.println("Message: " + event.getMessage().getData());
-				}
-
-				@Override
-				public void onGroupStatusMessageEvent(MessageEvent event) {
-					System.out.print("GroupStatusMessage: ");
-					System.out.println(Arrays.toString(((GroupStatusInstruction) event.getMessage().getData()).arguments));
-				}
-
-				@Override
-				public void onControlMessage(MessageEvent event) {
-					System.out.println("ControlMessage: " + event.getMessage().getData());
-				}
-
-				@Override
-				public void onInstructionRelayMessage(MessageEvent event) {
-					System.out.println("Instruction relay");
-				}
-	    	});
     	}
     	
     	if(option == 0) {
@@ -127,6 +100,10 @@ public class MainActivity extends Activity {
     public boolean showSettings(MenuItem item) {
     	startActivity(new Intent(this, SettingsActivity.class));
     	return true;
+    }
+    
+    public void launchDWTest(View view) {
+    	startActivity(new Intent(this, DataWarehouseTestActivity.class));
     }
     
 }

@@ -7,6 +7,7 @@ import com.example.crystalgame.library.instructions.Instruction;
 import com.example.crystalgame.library.communication.incoming.IncomingMessages;
 import com.example.crystalgame.library.communication.messages.ControlMessage;
 import com.example.crystalgame.library.communication.messages.GroupStatusMessage;
+import com.example.crystalgame.library.communication.messages.IdMessage;
 import com.example.crystalgame.library.communication.messages.InstructionRelayMessage;
 import com.example.crystalgame.library.communication.messages.Message;
 
@@ -51,5 +52,10 @@ public class ClientIncomingMessages extends IncomingMessages {
 	protected void handleInstructionRelayMessage(InstructionRelayMessage message) {
 		InstructionEvent event = new InstructionEvent((Instruction) message.getData());
 		instructionListenerManager.send(event);
+	}
+
+	@Override
+	protected void handleIdMessages(IdMessage message) {
+		messageListenerManager.send(createMessageEventFromMessage(message));
 	}
 }

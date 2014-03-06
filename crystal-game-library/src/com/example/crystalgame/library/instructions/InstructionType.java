@@ -11,6 +11,7 @@ public enum InstructionType implements Serializable {
 
 	GROUP_INSTRUCTION,
 	GROUP_STATUS_INSTRUCTION,
-	GAME_INSTRUCTION
+	GAME_INSTRUCTION,
+	DATA_SYNCRONISATION
 	
 }

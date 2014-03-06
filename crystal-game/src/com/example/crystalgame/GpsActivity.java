@@ -2,6 +2,7 @@ package com.example.crystalgame;
 
 import com.example.crystalgame.communication.ClientCommunication;
 import com.example.crystalgame.library.data.Location;
+import com.example.crystalgame.ui.LocalMapPolygon;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -59,7 +60,6 @@ public class GpsActivity extends FragmentActivity implements LocationListener{
 	       
 	       /*display on the map*/
 	       //Toast.makeText(getApplicationContext(),display,Toast.LENGTH_LONG ).show();
-
 //	       
 //	       LocationEvent place1 = new LocationEvent(53.3436688, -6.247169);
 //	       LocationEvent place2 = new LocationEvent(53.347067, -6.250805);

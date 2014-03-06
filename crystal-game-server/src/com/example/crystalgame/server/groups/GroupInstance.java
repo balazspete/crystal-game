@@ -20,8 +20,10 @@ import com.example.crystalgame.library.events.ListenerManager;
 import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.events.MessageEventListener;
 import com.example.crystalgame.library.game.GameManager;
+import com.example.crystalgame.library.instructions.DataSynchronisationInstruction;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.Instruction;
+import com.example.crystalgame.server.datawarehouse.ServerDataWarehouse;
 import com.example.crystalgame.server.sequencer.Sequencer;
 
 /**
@@ -37,6 +39,7 @@ public class GroupInstance implements Runnable {
 	private Sequencer sequencer;
 	private boolean inGame = false;
 	private DateTime lastGameStartRequestTime = DateTime.now().minusMinutes(1);
+	private ServerDataWarehouse dataWarehouse;
 	
 	private ArrayBlockingQueue<GameManager> managerLock;
 	
@@ -50,6 +53,22 @@ public class GroupInstance implements Runnable {
 		this.group = group;
 		sequencer = new Sequencer(group);
 		this.managerLock = new ArrayBlockingQueue<GameManager>(1);
+		dataWarehouse = ServerDataWarehouse.getWarehouseForGroup(group);
+		dataWarehouse.addInstructionEventListener(new InstructionEventListener() {
+			@Override
+			public void onDataSynchronisationInstruction(InstructionEvent event) {
+				InstructionRelayMessage message = new InstructionRelayMessage(null);
+				message.setData(event.getInstruction());
+				sequencer.sendMessageToAll(message);
+			}
+			
+			@Override
+			public void onGroupStatusInstruction(InstructionEvent event) {}
+			@Override
+			public void onGroupInstruction(InstructionEvent event) {}
+			@Override
+			public void onGameInstruction(InstructionEvent event) {}
+		});
 		
 		// Add a sequencer event listener for local events
 		sequencer.addSequencerEventListener(new MessageEventListener(){
@@ -81,6 +100,12 @@ public class GroupInstance implements Runnable {
 					handleInstruction((Instruction) event.getMessage().getData());					
 				}
 			}
+
+			@Override
+			public void onIdMessageEvent(MessageEvent event) {
+				// group instance does not care about this...
+			}
+
 		});
 		
 		// Allow components to subscribe to instruction events
@@ -178,8 +203,10 @@ public class GroupInstance implements Runnable {
 	private void handleInstruction(Instruction instruction) {
 		switch(instruction.type) {
 			case GAME_INSTRUCTION:
-			handleGameInstruction((GameInstruction) instruction);
-			break;
+				handleGameInstruction((GameInstruction) instruction);
+				break;
+			case DATA_SYNCRONISATION:
+				handleDataSyncInstruction((DataSynchronisationInstruction) instruction);
 		default:
 			// Ignoring other cases, as they will not occur
 			break;
@@ -234,6 +261,10 @@ public class GroupInstance implements Runnable {
 		
 			inGame = true;
 		}
+	}
+	
+	private void handleDataSyncInstruction(DataSynchronisationInstruction instruction) {
+		dataWarehouse.passInstruction(instruction);
 	}
 	
 }
