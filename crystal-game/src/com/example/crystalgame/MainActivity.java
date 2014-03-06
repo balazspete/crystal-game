@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
@@ -66,6 +67,10 @@ public class MainActivity extends Activity {
 		sendTestMessage(6);
 	}
 	
+	public void requestAllMembers(View view) {
+		sendTestMessage(7);
+	}
+	
     // TODO: temporary solution - remove
     public void sendTestMessage(int option) {
     	String text1 = ((EditText) findViewById(R.id.editText1)).getText().toString();
@@ -90,10 +95,13 @@ public class MainActivity extends Activity {
     	} else if (option == 4) {
     		out.sendTestMulticastData(text3);
     	} else if (option == 5) {
-    		out.sendGroupStatusInstruction(GroupStatusInstruction.createGroupMembershipListRequestIntruction());
+    		//out.sendGroupStatusInstruction(GroupStatusInstruction.createGroupMembershipListRequestIntruction());
+    		out.sendGroupInstructionToServer(GroupInstruction.createGroupMembershipListRequestInstruction());
     	} else if (option == 6) {
     		out.relayInstructionToServer(GameInstruction.createStartGameRequestGameInstruction());
-    	}
+    	} else if (option == 7) {
+     		//Toast.makeText(getApplicationContext(),"Hello",Toast.LENGTH_SHORT ).show();
+     	}
     	
     }
     

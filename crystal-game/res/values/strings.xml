@@ -15,7 +15,8 @@
     <string name="CRYSTL">Crystal</string>
     <string name="MAGIC_ITEM">Magic</string>
     <string name="ENERGY">Energy</string>
-    
+
     <string name="title_activity_data_warehouse_test">DataWarehouseTestActivity</string>
 
+	<string name="NameHint">player name</string>
 </resources>

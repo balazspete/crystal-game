@@ -23,6 +23,7 @@ import android.os.Bundle;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,13 +52,13 @@ public class GameBoundaryActivity extends FragmentActivity implements LocationLi
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game_boundary);
-
-		
+        this.map = ((MapFragment) getFragmentManager().findFragmentById(R.id.GameBoundaryMap)).getMap();
+        this.map.setMyLocationEnabled(true);
+        
 		this.btnSavePoints = (Button) findViewById(R.id.btnSavePoints);
 		this.btnSavePoints.setOnClickListener(this);
 
-        this.map = ((MapFragment) getFragmentManager().findFragmentById(R.id.GameBoundaryMap)).getMap();
-        this.map.setMyLocationEnabled(true);
+
         
         /*location manager class to get current location latitude and longitude values*/
         this.locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);	

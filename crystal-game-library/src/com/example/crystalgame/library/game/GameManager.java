@@ -23,8 +23,15 @@ public class GameManager implements Runnable {
 	public GameManager(String gameName, List<String> clientIDs, List<Location> locations) {
 		this.name = gameName;
 		this.clientIDs = clientIDs;
-		this.gameLocations = (GameLocation)locations;
-		// TODO: handle locations
+		this.gameLocations = new GameLocation();
+		for(Location location : locations) 
+		{
+			if(location != null)
+			{
+				this.gameLocations.addLocation(location);
+			}
+		}
+		// TODO: handle locations*/
 	}
 
 	@Override
@@ -32,7 +39,7 @@ public class GameManager implements Runnable {
 		while(running) {
 			synchronized(this) {
 				try {
-					System.out.println("Infinite looping at GameManager");
+					//System.out.println("Infinite looping at GameManager");
 					wait(2000);
 				} catch (InterruptedException e) {
 				}

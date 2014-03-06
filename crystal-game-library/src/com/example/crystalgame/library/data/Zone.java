@@ -3,7 +3,9 @@ package com.example.crystalgame.library.data;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import com.example.crystalgame.library.util.ListController;
 import com.example.crystalgame.library.util.RandomID;
+import com.example.crystalgame.library.util.RandomNumber;
 
 /**
  * Describes a rectangular area
@@ -35,7 +37,10 @@ public class Zone implements Serializable, HasID
 	/**
 	 * Create a zone
 	 */
-	public Zone() {
+
+	public Zone() 
+	{
+
 		id = RandomID.getRandomId();
 	}
 	
@@ -45,6 +50,7 @@ public class Zone implements Serializable, HasID
 	 * @return True if in zone
 	 */
 	public static boolean inRadialZone(Location testPosition, Location itemLocation){
+
 		boolean result = false;
 		double xVali, yVali, xValj, yValj, lng, lat;
 		
@@ -98,6 +104,7 @@ public class Zone implements Serializable, HasID
 	 * @return boolean
 	 */
 	public static boolean inQuadZone(ArrayList<Location> locationPoints, Location location){
+
 	  int i;
 	  int j;
 	  boolean result = false;
@@ -165,7 +172,7 @@ public class Zone implements Serializable, HasID
 		return locationPoints;
 	}
 	
-	protected void setLocationList(ArrayList<Location> locationPoints)
+	public void setLocationList(ArrayList<Location> locationPoints)
 	{
 		this.locationPoints = locationPoints;
 	}
@@ -203,9 +210,76 @@ public class Zone implements Serializable, HasID
 		return this.locationPoints != null 
 				&& this.locationPoints.isEmpty();
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double getMinLattitudeValue()
+	{
+		new ListController();
+		return ListController.findMinDoubleNumber(getZoneLattitudes());
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public double getMinLongitudeValue()
+	{
+		new RandomNumber();
+		return ListController.findMinDoubleNumber(getZoneLongitudes());
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public double getMaxLattitudeValue()
+	{
+		new ListController();
+		return ListController.findMaxDoubleNumner(getZoneLattitudes());
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public double getMaxLongitudeValue()
+	{
+		new RandomNumber();
+		return ListController.findMaxDoubleNumner(getZoneLongitudes());
+	}
+	
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public ArrayList<Double> getZoneLattitudes()
+	{
+		ArrayList<Double> LattitudeList = new ArrayList<Double>();
+		for(Location location : locationPoints) 
+		{
+			LattitudeList.add(location.getLatitude());
+		}
+		return LattitudeList;
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public ArrayList<Double> getZoneLongitudes()
+	{
+		ArrayList<Double> LongitudeList = new ArrayList<Double>();
+		for(Location location : locationPoints) 
+		{
+			LongitudeList.add(location.getLongitude());
+		}
+		return LongitudeList;
+	}
+	
 	@Override
-	public String getID() {
+	public String getID() 
+	{
 		return id;
 	}
 }

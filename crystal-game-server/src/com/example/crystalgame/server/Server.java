@@ -20,7 +20,7 @@ import com.example.crystalgame.server.groups.GroupInstanceManager;
 public class Server {
 
 	public static final int COMMUNICATION_PORT = 3000;
-	public static final String DB_PATH = "/Users/balazspete/Documents/";
+	public static final String DB_PATH = "C:\\Users\\Shen\\Documents\\Document";
 	
 	private void run() {
 		ServerDataWarehouse.DB_PATH = DB_PATH;
