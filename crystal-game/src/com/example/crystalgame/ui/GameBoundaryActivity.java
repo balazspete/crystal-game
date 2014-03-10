@@ -35,7 +35,7 @@ import android.widget.Toast;
  * @author Chen Shen, Allen Thomas Varghese
  * @version 1.0
  */
-public class GameBoundaryActivity extends FragmentActivity implements LocationListener, OnClickListener,OnMapClickListener, OnMarkerDragListener
+public class GameBoundaryActivity extends FragmentActivity implements LocationListener, OnMapClickListener, OnMarkerDragListener
 {
 	private LocationManager locationManager;
 	private String locationFind;
@@ -52,9 +52,6 @@ public class GameBoundaryActivity extends FragmentActivity implements LocationLi
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game_boundary);
 
-		
-		this.btnSavePoints = (Button) findViewById(R.id.btnSavePoints);
-		this.btnSavePoints.setOnClickListener(this);
 
         this.map = ((MapFragment) getFragmentManager().findFragmentById(R.id.GameBoundaryMap)).getMap();
         this.map.setMyLocationEnabled(true);
@@ -78,7 +75,7 @@ public class GameBoundaryActivity extends FragmentActivity implements LocationLi
 	public boolean onCreateOptionsMenu(Menu menu) 
 	{
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.gps, menu);
+		getMenuInflater().inflate(R.menu.menu_game_boundary, menu);
 		return true;
 	}
 	
@@ -135,21 +132,6 @@ public class GameBoundaryActivity extends FragmentActivity implements LocationLi
     }
 
 	@Override
-	public void onClick(View view) 
-	{
-		// TODO Auto-generated method stub
-		if(view.getId() == R.id.btnSavePoints) {
-		    	//Toast.makeText(this, "You have chosen" + boundaryPoints.toString(), Toast.LENGTH_LONG).show();
-		    	Intent intent = new Intent();
-		    	intent.putExtra("locations", (Serializable)gameBoundary);
-		    	setResult(RESULT_OK, intent);
-		    	finish();
-		} else {
-			
-	    }	
-	}
-
-	@Override
 	public void onMapClick(LatLng position) 
 	{
 		Marker marker = map.addMarker(new MarkerOptions()
@@ -186,4 +168,11 @@ public class GameBoundaryActivity extends FragmentActivity implements LocationLi
 		
 	}
 
+	public void saveBoundary(MenuItem item) {
+		Intent intent = new Intent();
+    	intent.putExtra("locations", (Serializable) gameBoundary);
+    	setResult(RESULT_OK, intent);
+    	finish();
+	}
+	
 }
