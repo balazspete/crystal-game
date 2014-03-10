@@ -26,6 +26,7 @@ import com.example.crystalgame.library.instructions.DataSynchronisationInstructi
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.Instruction;
 import com.example.crystalgame.server.datawarehouse.ServerDataWarehouse;
+import com.example.crystalgame.server.game.GameController;
 import com.example.crystalgame.server.sequencer.Sequencer;
 
 /**
@@ -42,6 +43,7 @@ public class GroupInstance implements Runnable {
 	private boolean inGame = false;
 	private DateTime lastGameStartRequestTime = DateTime.now().minusMinutes(1);
 	private ServerDataWarehouse dataWarehouse;
+	private GameController controller;
 	
 	private ArrayBlockingQueue<GameManager> managerLock;
 	
@@ -55,6 +57,7 @@ public class GroupInstance implements Runnable {
 		this.group = group;
 		sequencer = new Sequencer(group);
 		this.managerLock = new ArrayBlockingQueue<GameManager>(1);
+		this.controller = new GameController(sequencer);
 		dataWarehouse = ServerDataWarehouse.getWarehouseForGroup(group);
 		dataWarehouse.addInstructionEventListener(new InstructionEventListener() {
 			@Override
