@@ -26,5 +26,9 @@ public class Crystal extends Item {
 	{
 		this.zoneID = zoneID;
 	}
+	
+	public String getZoneId() {
+		return zoneID;
+	}
 
 }
