@@ -5,8 +5,7 @@ package com.example.crystalgame.ui;
 
 import java.util.ArrayList;
 
-import android.util.Log;
-
+import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
@@ -76,12 +75,22 @@ public class GameManager {
 		return LocationManager.getInstance().getGameBoundaryPoints();
 		
 	}
+	
 	public synchronized ArrayList<Location> getGameLocationPoints()
 	{
 		return LocationManager.getInstance().getGameLocationPoints();
 	}
+	
 	public synchronized ArrayList<MagicalItem> getMagicalItemInfoList()
 	{
 		return LocationManager.getInstance().getMagicalItemInfoList();
+	}
+	
+	/**
+	 * Get reference to the Application object
+	 * @return Application object
+	 */
+	public CrystalGame getApplicationObj() {
+		return InformationPresenter.getInstance().getApplicationObj();
 	}
 }

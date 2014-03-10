@@ -13,6 +13,7 @@ public class GameInstruction extends Instruction {
 
 	public enum GameInstructionType implements Serializable {
 		START_GAME_REQUEST, CREATE_GAME_REQUEST, CREATE_GAME
+		, CAPTURE_CRYSTAL_REQUEST
 	}
 	
 	public final GameInstructionType gameInstruction;
@@ -58,4 +59,17 @@ public class GameInstruction extends Instruction {
 		return new GameInstruction(GameInstructionType.CREATE_GAME, gameName, upperLeft, upperRight, lowerRight, lowerLeft);
 	}
 	
+	/**
+	 * Used to request capture of a crystal
+	 * @param playerID Player ID
+	 * @param crystalID Crystal ID
+	 * @return The instruction
+	 * @throws InstructionFormatException
+	 */
+	public static GameInstruction createCrystalCaptureRequestInstruction(String playerID, String crystalID) throws InstructionFormatException {
+		if(null == playerID || null == crystalID) {
+			throw InstructionFormatException.NULL_ARGUMENT;
+		}
+		return new GameInstruction(GameInstructionType.CAPTURE_CRYSTAL_REQUEST, playerID, crystalID); 
+	}
 }

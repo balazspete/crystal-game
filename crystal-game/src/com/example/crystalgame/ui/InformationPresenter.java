@@ -2,14 +2,16 @@ package com.example.crystalgame.ui;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
+import android.util.Log;
+
+import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
 
-import android.util.Log;
-
 /**
  * 
- *  @author Allen Thomas Varghese, Rajan Verma
+ * @author Allen Thomas Varghese, Rajan Verma
  */
 public class InformationPresenter {
 
@@ -54,6 +56,7 @@ public class InformationPresenter {
 		UIController.getInstance().energyLowCallBack(energyEvent);
 		Log.d("InformationPresenter","energyLowCallBack() : "+energyEvent.toString());
 	}
+	
 	public synchronized void energyChangeCallBack(double energyLevel) {
 		UIController.getInstance().energyChangeCallBack(energyLevel);
 	}
@@ -61,16 +64,28 @@ public class InformationPresenter {
 	public ArrayList<Location> getGameBoundaryPoints()
 	{
 		return GameManager.getInstance().getGameBoundaryPoints();
-		
 	}
 	
 	public ArrayList<Location> getGameLocationPoints()
 	{
 		return GameManager.getInstance().getGameLocationPoints();
 	}
+	
 	public synchronized ArrayList<MagicalItem> getMagicalItemInfoList()
 	{
 		
 		return GameManager.getInstance().getMagicalItemInfoList();
+	}
+	
+	/**
+	 * Get reference to the Application object
+	 * @return Application object
+	 */
+	public CrystalGame getApplicationObj() {
+		Activity activity = (Activity)UIController.getInstance().getCurrentActivity();
+		if(null != activity) {
+			return (CrystalGame)activity.getApplication();
+		}
+		return null;
 	}
 }

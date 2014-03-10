@@ -6,25 +6,32 @@ package com.example.crystalgame.ui;
 import java.util.ArrayList;
 
 import com.example.crystalgame.library.data.Artifact;
+import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Crystal;
+import com.example.crystalgame.library.data.Item;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
-import com.example.crystalgame.library.data.Character;
-import com.example.crystalgame.library.data.Zone;
 
 /**
- *  @author Allen Thomas Varghese, Rajan Verma
- *
+ * Tracker class for crystals and magical items
+ * @author Allen Thomas Varghese, Rajan Verma
  */
 public class ArtifactTracker {
 	
 	private static ArtifactTracker artifactTracker = null;
+	
+	/* Game items information */
 	private ArrayList<Crystal> crystalList = new ArrayList<Crystal>();
 	private ArrayList<MagicalItem> magicalItemList = new ArrayList<MagicalItem>();
 	private ArrayList<Character> characterList = new ArrayList<Character>();
 	
+	/* Thread for synchronizing item information with client datawarehouse */
+	private Thread artifactDataThread = new Thread();
+	/* Polling frequency for updates on artifacts */
+	private final int POLLING_FREQUENCY = 2000;
+	
 	private ArtifactTracker() {
-		
+		artifactDataThread.start();
 	}
 	
 	public static ArtifactTracker getInstance() {
@@ -33,6 +40,15 @@ public class ArtifactTracker {
 		}
 		
 		return artifactTracker;
+	}
+	
+	public void run() {
+		try {
+			// TODO : Update information from the client data warehouse
+			Thread.sleep(POLLING_FREQUENCY);
+		} catch (InterruptedException e) {
+			System.out.println("ArtifactTracker : "+e);
+		}
 	}
 	
 	public void addCrystal(Crystal crystalItem) {
@@ -48,9 +64,6 @@ public class ArtifactTracker {
 	}
 	
 	public void setMagicalItemList(ArrayList<MagicalItem> magicalItemList) {
-		
-
-		
 		this.magicalItemList = magicalItemList;
 	}
 	
@@ -81,6 +94,7 @@ public class ArtifactTracker {
 	public Artifact getArtifactsInProximity(Location location) {
 		Artifact artifactItem = null;
 		
+		// TODO : Update details of crystals and magical items from datawarehouse
 		/*
 		// Checking the crystal list
 		for(Crystal item : crystalList) {
@@ -106,5 +120,9 @@ public class ArtifactTracker {
 		return artifactItem;
 		*/
 		return new Crystal(location.getLatitude(), location.getLongitude());
+	}
+	
+	public void markItem(Item item) {
+		
 	}
 }
