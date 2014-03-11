@@ -69,6 +69,9 @@ public class Server {
 
 			@Override
 			public void onDataSynchronisationInstruction(InstructionEvent event) {}
+
+			@Override
+			public void onDataTransferInstruction(InstructionEvent event) {}
 		});
 	}
 	

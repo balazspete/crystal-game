@@ -35,6 +35,12 @@ public abstract class InstructionEventListener implements EventListener {
 	public abstract void onDataSynchronisationInstruction(InstructionEvent event);
 	
 	/**
+	 * Get data transfer instruction events
+	 * @param event The event
+	 */
+	public abstract void onDataTransferInstruction(InstructionEvent event);
+	
+	/**
 	 * Implementation of the eventHandlerHelper function of the listener manager
 	 * @param listener The listener
 	 * @param event The event

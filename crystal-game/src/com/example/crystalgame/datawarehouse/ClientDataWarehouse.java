@@ -1,8 +1,7 @@
 package com.example.crystalgame.datawarehouse;
 
+import java.io.File;
 import java.util.List;
-
-import android.util.Log;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
@@ -10,10 +9,10 @@ import com.db4o.ObjectContainer;
 import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.datawarehouse.DataWarehouse;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
+import com.example.crystalgame.library.datawarehouse.DataWrapper;
 import com.example.crystalgame.library.datawarehouse.Synchronizer;
 import com.example.crystalgame.library.events.InstructionEventListener;
 import com.example.crystalgame.library.instructions.DataSynchronisationInstruction;
-import com.example.crystalgame.library.util.RandomID;
 
 /**
  * The client version of the DB4OInterface
@@ -22,8 +21,7 @@ import com.example.crystalgame.library.util.RandomID;
  */
 public class ClientDataWarehouse extends DataWarehouse {
 
-	public static String DB_PATH;
-	public static String myID;
+	public static String DB_PATH, myID, groupID;
 	
 	protected ClientDataWarehouse(ObjectContainer store, Synchronizer synchroniser) {
 		super(store, synchroniser);
@@ -38,18 +36,7 @@ public class ClientDataWarehouse extends DataWarehouse {
 	 */
 	public static ClientDataWarehouse getInstance() {
 		if(instance == null) {
-			if (DB_PATH == null) {
-				Log.e("ClientDataWarehouse", "You must set the `DB_PATH` variable prior to using the DW");
-				return new NullDataWarehouse();
-			}
-			
-			if (myID == null) {
-				Log.e("ClientDataWarehouse", "You must set the `myID` variable prior to using the DW");
-				return new NullDataWarehouse();
-			}
-			
-			ObjectContainer c = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), DB_PATH + "/" + RandomID.getRandomId());
-			instance = new ClientDataWarehouse(c, new ClientSynchronizer(c, myID));
+			return new NullDataWarehouse();
 		}
 		
 		return instance;
@@ -105,6 +92,32 @@ public class ClientDataWarehouse extends DataWarehouse {
 		@Override
 		public void removeInstructionEventListener(InstructionEventListener listener) {}
 		
+	}
+	
+	public static void createFromWrappers(DataWrapper<HasID>[] wrappers) throws DataWarehouseException {
+		if (DB_PATH == null) {
+			throw DataWarehouseException.initialisationException("You must set the `DB_PATH` variable prior to using the DW");
+		}
+		
+		if (myID == null) {
+			throw DataWarehouseException.initialisationException("You must set the `myID` variable prior to using the DW");
+		}
+		
+		File f = new File(DB_PATH + "/" + groupID);
+		if (f.exists()) {
+			f.delete();
+		}
+		
+		ObjectContainer c = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), DB_PATH + "/" + groupID);
+		instance = new ClientDataWarehouse(c, new ClientSynchronizer(c, myID));
+		instance.updateWithWrappers(wrappers);
+	}
+	
+	private void updateWithWrappers(DataWrapper<HasID>[] wrappers) {
+		for (DataWrapper<HasID> wrapper : wrappers) {
+			db.store(wrapper);
+		}
+		db.commit();
 	}
 	
 }

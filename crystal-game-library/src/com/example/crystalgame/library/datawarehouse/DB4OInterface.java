@@ -7,6 +7,7 @@ import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
 import com.db4o.query.Query;
 import com.example.crystalgame.library.data.HasID;
+import com.sun.org.apache.bcel.internal.util.Class2HTML;
 
 /**
  * DB Connection class for Android
@@ -161,5 +162,17 @@ public class DB4OInterface implements KeyValueStore {
 	 */
 	public List<DataWrapper<HasID>> getPending() {
 		return pending;
+	}
+	
+	public List<DataWrapper<HasID>> getAllWrappers() {
+		DataWrapper<HasID> ex = new DataWrapper<HasID>();
+		
+		ObjectSet<DataWrapper<HasID>> result = db.queryByExample(ex);
+		List<DataWrapper<HasID>> list = new ArrayList<DataWrapper<HasID>>();
+		while (result.hasNext()) {
+			list.add(result.next());
+		}
+		
+		return list;
 	}
 }

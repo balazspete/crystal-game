@@ -23,4 +23,8 @@ public class DataWarehouseException extends Exception {
 		super(message);
 	}
 	
+	public static DataWarehouseException initialisationException(String message) {
+		return new DataWarehouseException("Failed to initialise: " + message);
+	}
+	
 }

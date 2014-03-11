@@ -25,6 +25,8 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	
 	private volatile transient ReentrantReadWriteLock lock;
 	
+	public DataWrapper() {}
+	
 	/**
 	 * Create a DataWapper user for query purposes
 	 * @param id The ID of the desired

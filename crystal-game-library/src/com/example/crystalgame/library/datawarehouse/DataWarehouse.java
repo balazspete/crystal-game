@@ -19,7 +19,7 @@ import com.example.crystalgame.library.instructions.DataSynchronisationInstructi
 public class DataWarehouse {
 
 	private Synchronizer synchronizer;
-	private ObjectContainer db;
+	protected ObjectContainer db;
 	private ExecutorService pool;
 	
 	protected DataWarehouse(ObjectContainer db, Synchronizer synchroniser) {

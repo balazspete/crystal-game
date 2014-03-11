@@ -103,6 +103,9 @@ public class JoinGroupActivity extends Activity {
 						if(instruction.arguments.length > 0) {
 							goToGroupUI();
 						}
+						break;
+					default:
+						//ignored
 				}
 			}
 
@@ -112,6 +115,8 @@ public class JoinGroupActivity extends Activity {
 			public void onGameInstruction(InstructionEvent event) {}
 			@Override
 			public void onDataSynchronisationInstruction(InstructionEvent event) {}
+			@Override
+			public void onDataTransferInstruction(InstructionEvent event) {}
 		};
 		game.getCommunication().in.addInstructionEventListener(listener);
 	}

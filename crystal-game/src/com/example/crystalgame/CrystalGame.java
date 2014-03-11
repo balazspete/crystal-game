@@ -1,7 +1,5 @@
 package com.example.crystalgame;
 
-import java.util.Arrays;
-
 import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,17 +10,18 @@ import com.example.crystalgame.communication.ClientCommunication;
 import com.example.crystalgame.communication.ClientCommunicationManager;
 import com.example.crystalgame.communication.ClientOutgoingMessages;
 import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
-import com.example.crystalgame.groups.GroupLobbyActivity;
 import com.example.crystalgame.library.communication.messages.IdMessage;
+import com.example.crystalgame.library.data.HasID;
+import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
+import com.example.crystalgame.library.datawarehouse.DataWrapper;
 import com.example.crystalgame.library.events.InstructionEvent;
 import com.example.crystalgame.library.events.InstructionEventListener;
 import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.events.MessageEventListener;
 import com.example.crystalgame.library.instructions.DataSynchronisationInstruction;
+import com.example.crystalgame.library.instructions.DataTransferInstruction;
 import com.example.crystalgame.library.instructions.GameInstruction;
-import com.example.crystalgame.library.instructions.GameInstruction.GameInstructionType;
 import com.example.crystalgame.library.instructions.GroupInstruction;
-import com.example.crystalgame.library.instructions.GroupStatusInstruction;
 import com.example.crystalgame.ui.CreateGameActivity;
 
 /**
@@ -41,7 +40,7 @@ public class CrystalGame extends Application {
 		super.onCreate();
 		addCommunication();
 		incomingCommunicationsSetup();
-		setupDataWarehouse(); // This will have to be called again when we get the client ID
+		setupDataWarehouse(); // This will have to be called again when we get the client ID or if we join a group
 	}
 	
 	/**
@@ -119,8 +118,6 @@ public class CrystalGame extends Application {
 				IdMessage message = (IdMessage) event.getMessage();
 				playerID = (String) message.getData();
 				Log.i("CrystalGame", "Client ID updated to " + playerID);
-				
-				setupDataWarehouse();
 			}
 		});
 		
@@ -141,7 +138,8 @@ public class CrystalGame extends Application {
 					case SUCCESS:
 						if(instruction.arguments.length > 0) {
 							groupID = (String) instruction.arguments[0];
-							Log.i("CrystalGame", "Group ID updated to " + groupID);
+							Log.i("CrystalGame", "Group ID updated to " + groupID + ". Initialising data warehouse...");
+							setupDataWarehouse();
 						}
 						
 						break;
@@ -160,18 +158,37 @@ public class CrystalGame extends Application {
 						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						startActivity(intent);
 						break;
+					default:
+						// ingored
+				}
+			}
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public void onDataTransferInstruction(InstructionEvent event) {
+				DataTransferInstruction instruction = (DataTransferInstruction) event.getInstruction();
+				switch (instruction.transferInstructionType) {
+					case DW_DOWNLOAD_REPLY:
+						try {
+							ClientDataWarehouse.createFromWrappers((DataWrapper<HasID>[]) instruction.arguments);
+						} catch (DataWarehouseException e) {
+							// This should not happen...
+							Log.e("CrystalGame", "Failed to create data warehouse - " + e.getMessage());
+						}
+						break;
+					default: 
+						// ignore
+						break;
 				}
 			}
 		});
 	}
 	
-	private void setupDataWarehouse() {
-		if (playerID == null) {
-			return;
-		}
-		
+	public void setupDataWarehouse() {
 		ClientDataWarehouse.DB_PATH = this.getExternalCacheDir().getAbsolutePath();
 		ClientDataWarehouse.myID = playerID;
+		ClientDataWarehouse.groupID = groupID;
+		
 		ClientDataWarehouse.getInstance().addInstructionEventListener(new InstructionEventListener() {
 			@Override
 			public void onDataSynchronisationInstruction(InstructionEvent event) {
@@ -186,7 +203,14 @@ public class CrystalGame extends Application {
 			public void onGroupInstruction(InstructionEvent event) {}
 			@Override
 			public void onGameInstruction(InstructionEvent event) {}
+
+			@Override
+			public void onDataTransferInstruction(InstructionEvent event) {
+				getCommunication().out.relayInstructionToServer(event.getInstruction());
+			}
 		});
+		
+		getCommunication().out.relayInstructionToServer(DataTransferInstruction.createDataWarehouseDownloadRequestInstruction());
 	}
 
 	public String getPlayerID()

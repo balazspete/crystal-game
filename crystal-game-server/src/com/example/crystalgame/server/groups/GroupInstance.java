@@ -23,6 +23,7 @@ import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.events.MessageEventListener;
 import com.example.crystalgame.library.game.GameManager;
 import com.example.crystalgame.library.instructions.DataSynchronisationInstruction;
+import com.example.crystalgame.library.instructions.DataTransferInstruction;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.Instruction;
 import com.example.crystalgame.server.datawarehouse.ServerDataWarehouse;
@@ -70,6 +71,8 @@ public class GroupInstance implements Runnable {
 			public void onGroupInstruction(InstructionEvent event) {}
 			@Override
 			public void onGameInstruction(InstructionEvent event) {}
+			@Override
+			public void onDataTransferInstruction(InstructionEvent event) {}
 		});
 		
 		// Add a sequencer event listener for local events
@@ -99,7 +102,7 @@ public class GroupInstance implements Runnable {
 			public void onInstructionRelayMessage(MessageEvent event) {
 				if (isMessageForServer(event)) {
 					// TODO
-					handleInstruction((Instruction) event.getMessage().getData());					
+					handleInstruction((Instruction) event.getMessage().getData(), event.getMessage().getSenderId());					
 				}
 			}
 
@@ -210,16 +213,20 @@ public class GroupInstance implements Runnable {
 		instructionEventListenerManager.removeEventListener(listener);
 	}
 	
-	private void handleInstruction(Instruction instruction) {
+	private void handleInstruction(Instruction instruction, String sender) {
 		switch(instruction.type) {
 			case GAME_INSTRUCTION:
 				handleGameInstruction((GameInstruction) instruction);
 				break;
 			case DATA_SYNCRONISATION:
 				handleDataSyncInstruction((DataSynchronisationInstruction) instruction);
-		default:
-			// Ignoring other cases, as they will not occur
-			break;
+				break;
+			case DATA_TRANSFER:
+				handleDataTransferInstruction((DataTransferInstruction) instruction, sender);
+				break;
+			default:
+				// Ignoring other cases, as they will not occur
+				break;
 		}
 	}
 	
@@ -277,4 +284,11 @@ public class GroupInstance implements Runnable {
 		dataWarehouse.passInstruction(instruction);
 	}
 	
+	private void handleDataTransferInstruction(DataTransferInstruction instruction, String sender) {
+		DataTransferInstruction reply = dataWarehouse.getDownloadReply(instruction);
+		InstructionRelayMessage message = new InstructionRelayMessage(sender);
+		message.setData(reply);
+		sequencer.sendMessageToOne(message);
+	}
+ 	
 }
