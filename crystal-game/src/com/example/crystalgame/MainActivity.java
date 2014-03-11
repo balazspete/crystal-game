@@ -73,7 +73,7 @@ public class MainActivity extends Activity {
 	
     // TODO: temporary solution - remove
     public void sendTestMessage(int option) {
-    	String text1 = ((EditText) findViewById(R.id.editText1)).getText().toString();
+    	String text1 = ((EditText) findViewById(R.id.group_name)).getText().toString();
     	String text2 = ((EditText) findViewById(R.id.editText2)).getText().toString();
     	String text3 = ((EditText) findViewById(R.id.editText2)).getText().toString();
 

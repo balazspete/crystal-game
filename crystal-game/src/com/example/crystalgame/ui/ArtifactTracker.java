@@ -48,6 +48,9 @@ public class ArtifactTracker {
 	}
 	
 	public void setMagicalItemList(ArrayList<MagicalItem> magicalItemList) {
+		
+
+		
 		this.magicalItemList = magicalItemList;
 	}
 	
@@ -57,6 +60,18 @@ public class ArtifactTracker {
 	
 	public void setCharacterList(ArrayList<Character> characterList) {
 		this.characterList = characterList;
+	}
+	
+	
+	public ArrayList<MagicalItem> getMagicalItemInfoList()
+	{
+		for(int i=0;i<5;i++)
+		{
+			MagicalItem item = new MagicalItem(23.0, 43.0);
+			item.setMagicalItemDescription("Item"+i);
+			magicalItemList.add(item);
+		}
+		return magicalItemList;
 	}
 	
 	/**

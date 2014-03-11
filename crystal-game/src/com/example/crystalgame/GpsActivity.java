@@ -2,6 +2,7 @@ package com.example.crystalgame;
 
 import com.example.crystalgame.communication.ClientCommunication;
 import com.example.crystalgame.library.data.Location;
+import com.example.crystalgame.ui.LocalMapPolygon;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;

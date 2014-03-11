@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
+import com.db4o.query.Predicate;
 import com.db4o.query.Query;
 import com.example.crystalgame.library.data.HasID;
 
@@ -138,6 +139,7 @@ public class DB4OInterface implements KeyValueStore {
 		query.descend("key").constrain(key);
 		
 		ObjectSet<DataWrapper<HasID>> result = query.execute();
+		
 		if(result.hasNext()) {
 			return result.next();
 		}

@@ -52,33 +52,33 @@
             android:value="AIzaSyBViFZgKDoeQPO6itlay7VA_nOOLg02Ccw" />
 
         <activity
-            android:name="com.example.crystalgame.MainActivity"
-            android:label="CrystalGame test" >
+            android:name="com.example.crystalgame.CrystalGameLaunchActivity"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.crystalgame.groups.JoinGroupActivity"
+            android:parentActivityName=".CrystalGameLaunchActivity" >
+        </activity>
+        <activity
+            android:name="com.example.crystalgame.groups.SelectPlayerActivity"
+            android:parentActivityName=".groups.JoinGroupActivity" >
         </activity>
         <activity
             android:name="com.example.crystalgame.GpsActivity"
             android:label="@string/title_activity_gps" >
         </activity>
-
-        <service
-            android:name="com.example.crystalgame.communication.CommunicationService"
-            android:enabled="true" >
-        </service>
-
         <activity
             android:name="com.example.crystalgame.SettingsActivity"
             android:label="@string/title_activity_settings" >
         </activity>
-        <activity android:name="com.example.crystalgame.ui.GameMenuActivity"
+        <activity
+            android:name="com.example.crystalgame.ui.GameMenuActivity"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name="com.example.crystalgame.ui.CreateGameActivity" >
         </activity>
@@ -86,15 +86,26 @@
         </activity>
         <activity android:name="com.example.crystalgame.ui.GameBoundaryActivity" >
         </activity>
-        
+        <activity android:name="com.example.crystalgame.ui.GameActivity" >
+        </activity>
+        <activity android:name="com.example.crystalgame.DataWarehouseTestActivity" >
+        </activity>
+
+        <!-- This activity is for testing -->
         <activity
-            android:name="com.example.crystalgame.ui.GameActivity"
-            android:label="@string/app_name" >
+            android:name="com.example.crystalgame.MainActivity"
+            android:label="@string/app_name_test" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
-            android:name="com.example.crystalgame.DataWarehouseTestActivity"
-            android:label="@string/title_activity_data_warehouse_test" >
+            android:name="com.example.crystalgame.groups.GroupLobbyActivity"
+            android:label="@string/title_activity_group_lobby" >
         </activity>
+        <service android:name=".ui.GPSTracker"></service>
     </application>
 
 </manifest>

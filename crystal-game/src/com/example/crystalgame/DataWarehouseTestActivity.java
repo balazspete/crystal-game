@@ -55,7 +55,7 @@ public class DataWarehouseTestActivity extends Activity {
 				str.append("No data in DW");
 			}
 			
-			((EditText) findViewById(R.id.editText1)).setText(str);
+			((EditText) findViewById(R.id.group_name)).setText(str);
 		} catch (DataWarehouseException e) {
 			Log.e("DataWarehouseTestActivity", e.getMessage());
 		}

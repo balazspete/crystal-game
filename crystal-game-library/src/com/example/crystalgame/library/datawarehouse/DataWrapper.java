@@ -139,5 +139,4 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
     	version = (long) stream.readLong();
     	lock = new ReentrantReadWriteLock(true);
     }
-    
 }

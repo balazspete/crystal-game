@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.R;
@@ -21,7 +22,6 @@ import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.data.Zone;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.InstructionFormatException;
-import com.google.android.gms.maps.model.LatLng;
 
 /**
  * 
@@ -67,6 +67,21 @@ public class CreateGameActivity extends Activity implements OnClickListener
 		    	}
 		} else if(view.getId() == R.id.btnSubmitCreateGame) {
 			ClientManager.getInstance().saveGameLocation(new GameBoundary(gameBoundary.getLocationList()));
+			
+			// Sending instruction to server
+			String name = ((EditText)findViewById(R.id.GameDuration)).getText().toString();
+	    	try {
+				appInstance.getCommunication().out.relayInstructionToServer(GameInstruction
+		    			.createCreateGameGameInstruction(name, 
+		    					gameBoundary.getLocation(0), 
+		    					gameBoundary.getLocation(1), 
+		    					gameBoundary.getLocation(2),
+		    					gameBoundary.getLocation(3)));
+			} catch (InstructionFormatException e) {
+				Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+			} catch (IndexOutOfBoundsException e) {
+				Toast.makeText(this, "Game location requires 4 points", Toast.LENGTH_SHORT).show();
+			}
 		} else if(view.getId() == R.id.btnResetCreateGame) {
 		    	resetFormValues();
 		} else {

@@ -50,6 +50,9 @@ public class GameMenuActivity extends Activity implements OnClickListener
         this.btnCreateGame.setOnClickListener(this);
         this.btnCreateGroup.setOnClickListener(this);
         this.btnJoinGame.setOnClickListener(this);
+        
+
+        
 	}
 	
 	protected void onStart() 
@@ -71,6 +74,7 @@ public class GameMenuActivity extends Activity implements OnClickListener
 		} else if(view.getId() == R.id.btnCreateGroup) {		    	
 		    	startActivity(new Intent(getApplicationContext(), CreateGroupActivity.class));
 		} else if(view.getId() == R.id.btnJoinGame) {
+			
 			
 		} else {	
 		}	

@@ -90,13 +90,13 @@ public class Location implements Serializable, HasID
 	public void setMarkerID(String markerID) {
 		this.markerID = markerID.intern();
 	}
-
+	
 	@Override
 	public String getID() {
 		return id;
 	}
 	
 	public Location getLocation() {
-		return new Location(lattitude, longitude);
+		return this;
 	}
 }

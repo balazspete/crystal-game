@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">Crystal Game</string>
+    <string name="app_name_test">Crystal Game Test Utility</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_gps">GpsActivity</string>
@@ -15,8 +16,16 @@
     <string name="CRYSTL">Crystal</string>
     <string name="MAGIC_ITEM">Magic</string>
     <string name="ENERGY">Energy</string>
-
     <string name="title_activity_data_warehouse_test">DataWarehouseTestActivity</string>
-
+    <string name="button_create_group">Create a group</string>
+    <string name="button_create_group2">Create the group</string>
+    <string name="button_join_group">Join a group</string>
+    <string name="button_join_group2">Join the group</string>
+    <string name="own_name_hint">Your desired alias</string>
+    <string name="player_name_hint">Search for player\'s alias</string>
+    <string name="group_name_hint">The name of your new group</string>
+    <string name="select_player">Select the other player</string>
+    <string name="title_activity_group_lobby">GroupLobbyActivity</string>
+    <string name="request_game_start">Request game start</string>
 	<string name="NameHint">player name</string>
 </resources>
