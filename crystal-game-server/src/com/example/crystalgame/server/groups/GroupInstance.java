@@ -290,9 +290,14 @@ public class GroupInstance implements Runnable {
 		
 			inGame = true;
 			
-			createCharacters();
-			sendGameStartSignal();
-		}
+			new Thread(new Runnable(){
+				@Override
+				public void run() {
+					createCharacters();
+					sendGameStartSignal();
+				}		
+			}).start();
+		}	
 	}
 	
 	/**

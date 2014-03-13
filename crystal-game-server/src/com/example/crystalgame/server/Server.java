@@ -56,23 +56,6 @@ public class Server {
 				// Server does not care about this...
 			}
 		});
-		c.in.addInstructionEventListener(new InstructionEventListener() {
-
-			@Override
-			public void onGroupInstruction(InstructionEvent event) {}
-
-			@Override
-			public void onGroupStatusInstruction(InstructionEvent event) {}
-
-			@Override
-			public void onGameInstruction(InstructionEvent event) {}
-
-			@Override
-			public void onDataSynchronisationInstruction(InstructionEvent event) {}
-
-			@Override
-			public void onDataTransferInstruction(InstructionEvent event) {}
-		});
 	}
 	
 	public static void main(String[] args) {
