@@ -46,7 +46,7 @@ public class Group {
 		clients = new ArrayList<Client>(maxPlayers);
 		clients.add(client);
 		
-		this.instance = new GroupInstance(this);
+		//this.instance = new GroupInstance(this);
 	}
 	
 	/**

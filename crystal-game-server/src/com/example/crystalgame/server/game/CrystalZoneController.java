@@ -1,5 +1,9 @@
-package com.example.crystalgame.library.game;
-
+package com.example.crystalgame.server.game;
+/**
+ * Crystal Zone Controller
+ * @author Chen Shen, Rajan verma
+ *
+ */
 import java.util.List;
 import com.example.crystalgame.library.data.CrystalZone;
 import com.example.crystalgame.library.datawarehouse.DB4OInterface;

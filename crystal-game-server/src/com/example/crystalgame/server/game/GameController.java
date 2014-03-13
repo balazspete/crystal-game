@@ -1,7 +1,9 @@
 package com.example.crystalgame.server.game;
-
-import com.example.crystalgame.library.communication.messages.InstructionRelayMessage;
-import com.example.crystalgame.library.instructions.Instruction;
+/**
+ * Game Controller
+ * @author Chen Shen, Rajan verma
+ *
+ */
 import com.example.crystalgame.server.sequencer.Sequencer;
 
 public class GameController extends Thread {
@@ -12,10 +14,6 @@ public class GameController extends Thread {
 		this.sequencer = sequencer;
 	}
 
-	public void sendInstructionToClient(String clientID, Instruction instruction) {
-		InstructionRelayMessage message = new InstructionRelayMessage(clientID);
-		message.setData(instruction);
-		sequencer.sendMessageToOne(message);
-	}
+
 	
 }

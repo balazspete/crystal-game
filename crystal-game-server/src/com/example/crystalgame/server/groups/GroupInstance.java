@@ -122,13 +122,13 @@ public class GroupInstance implements Runnable {
 			}
 		};
 		
-		try {
-			// Save the group related information
-			dataWarehouse.put(Information.class, new Information(Information.GROUP_NAME, group.getName()));
-			dataWarehouse.put(Information.class, new Information(Information.GROUP_MAX_PLAYERS, group.getMaxPlayers()));
-		} catch (DataWarehouseException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			// Save the group related information
+//			dataWarehouse.put(Information.class, new Information(Information.GROUP_NAME, group.getName()));
+//			dataWarehouse.put(Information.class, new Information(Information.GROUP_MAX_PLAYERS, group.getMaxPlayers()));
+//		} catch (DataWarehouseException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	@Override
