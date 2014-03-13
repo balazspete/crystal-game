@@ -3,12 +3,17 @@
  */
 package com.example.crystalgame.ui;
 
+import android.util.Log;
+
+import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.library.data.Artifact;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.events.ProximityEvent;
 import com.example.crystalgame.library.events.ProximityEvent.ArtifactType;
+import com.example.crystalgame.library.instructions.GameInstruction;
+import com.example.crystalgame.library.instructions.InstructionFormatException;
 
 
 /**
@@ -50,10 +55,36 @@ public class GameStateManager {
 	 */
 	public synchronized void itemProximityAlert(Artifact item) {
 		ProximityEvent proximityEvent = null;
+		CrystalGame gameObj = GameManager.getInstance().getApplicationObj();
+		
 		if(item instanceof Crystal) {
 			proximityEvent = new ProximityEvent(ArtifactType.CRYSTAL, item);
+			
+			if(null != gameObj) {
+				try {
+					gameObj.getCommunication()
+							.out
+							.relayInstructionToServer(
+									GameInstruction.createCrystalCaptureRequestInstruction(gameObj.getPlayerID(), item.getID())
+							);
+				} catch (InstructionFormatException e) {
+					Log.e("GameStateManager", e.toString());
+				}
+			}
 		} else if(item instanceof MagicalItem) {
 			proximityEvent = new ProximityEvent(ArtifactType.MAGICAL_ITEM, item);
+			
+			if(null != gameObj) {
+				try {
+					gameObj.getCommunication()
+							.out
+							.relayInstructionToServer(
+									GameInstruction.createMagicalItemCaptureRequestInstruction(gameObj.getPlayerID(), item.getID())
+							);
+				} catch (InstructionFormatException e) {
+					Log.e("GameStateManager", e.toString());
+				}
+			}
 		} else if(item instanceof Character) {
 			proximityEvent = new ProximityEvent(ArtifactType.CHARACTER, item);
 		}
@@ -61,6 +92,8 @@ public class GameStateManager {
 		// Passes the information to the GameState object
 		// to update the game information
 		GameState.getInstance().itemProximityAlert(proximityEvent);
+		
+		
 	}
 	
 	/**

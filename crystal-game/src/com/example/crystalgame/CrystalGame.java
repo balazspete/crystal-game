@@ -253,4 +253,5 @@ public class CrystalGame extends Application {
 	{
 		return UIController.getInstance().getGameLocationPoints();
 	}
+	
 }

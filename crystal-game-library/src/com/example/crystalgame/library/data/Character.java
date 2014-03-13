@@ -1,9 +1,11 @@
 package com.example.crystalgame.library.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Represents a Character
  * @author Balazs Pete, Shen Chen, Rajan Verma, Allen Thomas Varghese
- *
  */
 public abstract class Character extends Artifact {
 
@@ -11,7 +13,7 @@ public abstract class Character extends Artifact {
 	 * 
 	 */
 	private static final long serialVersionUID = -6302171104196819575L;
-	private double energy = 10;
+	
 	/**
 	 * Describes the type of the player
 	 * @author 
@@ -35,6 +37,12 @@ public abstract class Character extends Artifact {
 	public final PlayerType playerType;
 	public final CharacterType characterType;
 	public final String clientId;
+
+	private List<Crystal> crystalList = new ArrayList<Crystal>();
+	private List<MagicalItem> magicalItemList = new ArrayList<MagicalItem>();
+	
+	private double energy = 10;
+	private String energyLevel = null;
 	
 	/**
 	 * Create a Character
@@ -76,4 +84,62 @@ public abstract class Character extends Artifact {
 	}
 	
 	
+	/**
+	 * Add a crystal to the possession of the character
+	 * @param crystal A crystal object
+	 * @return true if addition of crystal is successful
+	 */
+	public boolean addCrystal(Crystal crystal) {
+		if(null != crystal) {
+			return this.crystalList.add(crystal);
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Retrieves the list of crystals available with the character
+	 * @return List of crystals
+	 */
+	public List<Crystal> getCrystals() {
+		return this.crystalList;
+	}
+	
+	/**
+	 * Add a crystal to the possession of the character
+	 * @param crystal A crystal object
+	 * @return true if addition of crystal is successful
+	 */
+	public boolean addMagicalItem(MagicalItem magicalItem) {
+		if(null != magicalItem) {
+			return this.magicalItemList.add(magicalItem);
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Retrieves the list of crystals available with the character
+	 * @return List of crystals
+	 */
+	public List<MagicalItem> getMagicalItems() {
+		return this.magicalItemList;
+	}
+	
+	/**
+	 * Set energy level of the player
+	 * @param energy level of the player
+	 */
+	public void setEnergyLevel(String energyLevel) {
+		this.energyLevel = energyLevel;
+	}
+	
+	/**
+	 * Get the energy level of the player
+	 * @return energy level of the player
+	 */
+	public String getEnergyLevel() {
+		return this.energyLevel;
+	}
+
 }

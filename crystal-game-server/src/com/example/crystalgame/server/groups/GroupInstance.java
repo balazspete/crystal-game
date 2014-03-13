@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.joda.time.DateTime;
@@ -13,8 +11,12 @@ import org.joda.time.DateTime;
 import com.example.crystalgame.library.communication.messages.InstructionRelayMessage;
 import com.example.crystalgame.library.communication.messages.MulticastMessage;
 import com.example.crystalgame.library.communication.messages.UnicastMessage;
+import com.example.crystalgame.library.data.Character;
+import com.example.crystalgame.library.data.Crystal;
+import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.data.Information;
 import com.example.crystalgame.library.data.Location;
+import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
 import com.example.crystalgame.library.events.InstructionEvent;
 import com.example.crystalgame.library.events.InstructionEventListener;
@@ -31,7 +33,7 @@ import com.example.crystalgame.server.sequencer.Sequencer;
 
 /**
  * An object handling a group instance
- * @author Balazs Pete, Shen Chen
+ * @author Balazs Pete, Shen Chen, Allen Thomas Varghese
  *
  */
 public class GroupInstance implements Runnable {
@@ -238,6 +240,15 @@ public class GroupInstance implements Runnable {
 			case CREATE_GAME:
 				handleCreateGame(instruction.arguments);
 				break;
+			case CAPTURE_CRYSTAL_REQUEST:
+				handleCaptureCrystalRequest(instruction.arguments);
+				break;
+			case CAPTURE_MAGICAL_ITEM_REQUEST :
+				handleCaptureMagicalItemRequest(instruction.arguments);
+				break;
+			case EXCHANGE_MAGICAL_ITEM :
+				handleExchangeMagicalItemsRequest(instruction.arguments);
+				break;
 			default:
 				// TODO: handle other cases
 				break;
@@ -277,6 +288,117 @@ public class GroupInstance implements Runnable {
 		
 		
 			inGame = true;
+		}
+	}
+	
+	/**
+	 * The crystal is checked to see if it is available in the common pool. If yes,
+	 * then it is associated with the player and removed from the pool.
+	 * 
+	 * @param data Player ID, Crystal ID
+	 */
+	private synchronized void handleCaptureCrystalRequest(Serializable[] data) {
+		String playerID = (String) data[0];
+		String crystalID = (String) data[1];
+		
+		try {
+			HasID resultObj = dataWarehouse.get(Crystal.class, crystalID);
+			
+			// Check if the crystal is available in the crystal pool
+			if(null != resultObj) {
+				HasID playerObj = dataWarehouse.get(Character.class, playerID);
+				
+				// If the player exists
+				if(null != playerObj) {
+					Character player = (Character) playerObj;
+					
+					// Add the crystal to the player
+					player.addCrystal((Crystal)resultObj);
+					
+					// Delete the crystal from the common pool
+					dataWarehouse.delete(Crystal.class, crystalID);
+					
+					// Add the updated player back to the data warehouse
+					dataWarehouse.put(Character.class, player);
+				}
+			}
+		} catch (DataWarehouseException e) {
+			// Ignored. No need to reply to client (Another client might have removed the crystal)
+		}
+	}
+	
+	/**
+	 * The magical item is checked to see if it is available in the common pool. If yes,
+	 * then it is associated with the player and removed from the pool.
+	 * 
+	 * @param data Player ID, Magical Item ID
+	 */
+	private synchronized void handleCaptureMagicalItemRequest(Serializable[] data) {
+		String playerID = (String) data[0];
+		String magicalItemID = (String) data[1];
+		
+		try {
+			HasID resultObj = dataWarehouse.get(MagicalItem.class, magicalItemID);
+			
+			// Check if the magical item is available in the crystal pool
+			if(null != resultObj) {
+				HasID playerObj = dataWarehouse.get(Character.class, playerID);
+				
+				// If the player exists
+				if(null != playerObj) {
+					Character player = (Character) playerObj;
+					
+					// Add the magical item to the player
+					player.addMagicalItem((MagicalItem)resultObj);
+					
+					// Delete the magical item from the common pool
+					dataWarehouse.delete(MagicalItem.class, magicalItemID);
+					
+					// Add the updated player back to the data warehouse
+					dataWarehouse.put(Character.class, player);
+				}
+			}
+		} catch (DataWarehouseException e) {
+			// Ignored. No need to reply to client (Another client might have removed the crystal)
+		}
+	}
+	
+	/**
+	 * Transfer a list of magical items from second player to the first player   
+	 * @param data Player1 ID, Player2 ID, List of Magical Item IDs
+	 */
+	@SuppressWarnings("unchecked")
+	private synchronized void handleExchangeMagicalItemsRequest(Serializable[] data) {
+		String player1ID = (String) data[0];
+		String player2ID = (String) data[1];
+		List<MagicalItem> magicalItemList = (ArrayList<MagicalItem>) data[2];
+		
+		try {
+			
+			// Fetch player information from the data warehouse
+			Character player1 = (Character)dataWarehouse.get(Character.class, player1ID);
+			Character player2 = (Character)dataWarehouse.get(Character.class, player2ID);
+			
+			// If any of the players are not available, return.
+			if(null == player1 || null == player2) {
+				return;
+			}
+			
+			// Add the magical items to Player 1
+			for(MagicalItem magicalItem : magicalItemList) {
+				player1.addMagicalItem(magicalItem);
+			}
+			
+			// Remove the magical items from Player 2
+			for(MagicalItem magicalItem : magicalItemList) {
+				player2.getMagicalItems().remove(magicalItem);
+			}
+			
+			// Add the updated players back to the data warehouse
+			dataWarehouse.put(Character.class, player1);
+			dataWarehouse.put(Character.class, player2);
+		} catch (DataWarehouseException e) {
+			// Ignored. No need to reply to client (Another client might have removed the crystal)
 		}
 	}
 	
