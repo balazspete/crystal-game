@@ -40,7 +40,7 @@ public class CrystalGame extends Application {
 		super.onCreate();
 		addCommunication();
 		incomingCommunicationsSetup();
-		setupDataWarehouse(); // This will have to be called again when we get the client ID or if we join a group
+		configDataWarehouse(); // This will have to be called again when we get the client ID or if we join a group
 	}
 	
 	/**
@@ -139,7 +139,7 @@ public class CrystalGame extends Application {
 						if(instruction.arguments.length > 0) {
 							groupID = (String) instruction.arguments[0];
 							Log.i("CrystalGame", "Group ID updated to " + groupID + ". Initialising data warehouse...");
-							setupDataWarehouse();
+							configDataWarehouse();
 						}
 						
 						break;
@@ -166,15 +166,12 @@ public class CrystalGame extends Application {
 			@SuppressWarnings("unchecked")
 			@Override
 			public void onDataTransferInstruction(InstructionEvent event) {
+				System.out.println("Data transfer instruction");
 				DataTransferInstruction instruction = (DataTransferInstruction) event.getInstruction();
 				switch (instruction.transferInstructionType) {
 					case DW_DOWNLOAD_REPLY:
-						try {
-							ClientDataWarehouse.createFromWrappers((DataWrapper<HasID>[]) instruction.arguments);
-						} catch (DataWarehouseException e) {
-							// This should not happen...
-							Log.e("CrystalGame", "Failed to create data warehouse - " + e.getMessage());
-						}
+						System.out.println("DOWNLOAD REPLY, " + instruction.arguments.length);
+						setupDataWarehouse(instruction);
 						break;
 					default: 
 						// ignore
@@ -184,33 +181,40 @@ public class CrystalGame extends Application {
 		});
 	}
 	
-	public void setupDataWarehouse() {
+	public void configDataWarehouse() {
 		ClientDataWarehouse.DB_PATH = this.getExternalCacheDir().getAbsolutePath();
 		ClientDataWarehouse.myID = playerID;
 		ClientDataWarehouse.groupID = groupID;
 		
-		ClientDataWarehouse.getInstance().addInstructionEventListener(new InstructionEventListener() {
-			@Override
-			public void onDataSynchronisationInstruction(InstructionEvent event) {
-				// Send the emitted instruction to the server
-				getCommunication().out.relayInstructionToServer(event.getInstruction());
-			}
-			
-			// Ignore these events as they will not be emitted
-			@Override
-			public void onGroupStatusInstruction(InstructionEvent event) {}
-			@Override
-			public void onGroupInstruction(InstructionEvent event) {}
-			@Override
-			public void onGameInstruction(InstructionEvent event) {}
-
-			@Override
-			public void onDataTransferInstruction(InstructionEvent event) {
-				getCommunication().out.relayInstructionToServer(event.getInstruction());
-			}
-		});
-		
 		getCommunication().out.relayInstructionToServer(DataTransferInstruction.createDataWarehouseDownloadRequestInstruction());
+	}
+	
+	public void setupDataWarehouse(DataTransferInstruction instruction) {
+		try {
+			ClientDataWarehouse.createFromWrappers(instruction.arguments);
+			ClientDataWarehouse.getInstance().addInstructionEventListener(new InstructionEventListener() {
+				@Override
+				public void onDataSynchronisationInstruction(InstructionEvent event) {
+					// Send the emitted instruction to the server
+					getCommunication().out.relayInstructionToServer(event.getInstruction());
+				}
+				
+				// Ignore these events as they will not be emitted
+				@Override
+				public void onGroupStatusInstruction(InstructionEvent event) {}
+				@Override
+				public void onGroupInstruction(InstructionEvent event) {}
+				@Override
+				public void onGameInstruction(InstructionEvent event) {}
+
+				@Override
+				public void onDataTransferInstruction(InstructionEvent event) {
+					getCommunication().out.relayInstructionToServer(event.getInstruction());
+				}
+			});
+		} catch (DataWarehouseException e) {
+			Log.e("CrystalGame", e.getMessage());
+		}
 	}
 
 	public String getPlayerID()

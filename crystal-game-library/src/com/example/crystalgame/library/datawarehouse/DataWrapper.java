@@ -36,7 +36,7 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 		this.key = id;
 		
 		version = 1;
-		lock = new ReentrantReadWriteLock(true);
+		createLock();
 	}
 	
 	/**
@@ -63,6 +63,7 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	 * @return The value
 	 */
 	public HasID getValue() {
+		createLock();
 		lock.readLock().lock();
 		try {
 			return value;
@@ -84,6 +85,8 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 			throw DataWarehouseException.MISMATCHING_TYPE_EXCEPTION;
 		}
 		
+		createLock();
+		
 		// Get the write lock
 		lock.readLock().lock();
 		lock.writeLock().lock();
@@ -103,6 +106,7 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	 * @return True if write locked
 	 */
 	public boolean isWriteLocked() {
+		createLock();
 		return lock.isWriteLocked();
 	}
 	
@@ -140,6 +144,12 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
     	value = (DATA) stream.readObject();
     	version = (long) stream.readLong();
     	lock = new ReentrantReadWriteLock(true);
+    }
+    
+    private void createLock() {
+    	if (lock == null) {
+    		lock = new ReentrantReadWriteLock(true);
+    	}
     }
     
 }

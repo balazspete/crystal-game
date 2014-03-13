@@ -60,6 +60,9 @@ public abstract class InstructionEventListener implements EventListener {
 			case DATA_SYNCRONISATION:
 				listener.onDataSynchronisationInstruction(event);
 				break;
+			case DATA_TRANSFER:
+				listener.onDataTransferInstruction(event);
+				break;
 			default:
 				return;
 		

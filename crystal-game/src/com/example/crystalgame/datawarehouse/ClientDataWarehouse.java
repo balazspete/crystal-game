@@ -1,6 +1,7 @@
 package com.example.crystalgame.datawarehouse;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.List;
 
 import com.db4o.Db4oEmbedded;
@@ -94,7 +95,7 @@ public class ClientDataWarehouse extends DataWarehouse {
 		
 	}
 	
-	public static void createFromWrappers(DataWrapper<HasID>[] wrappers) throws DataWarehouseException {
+	public static void createFromWrappers(Serializable[] data) throws DataWarehouseException {
 		if (DB_PATH == null) {
 			throw DataWarehouseException.initialisationException("You must set the `DB_PATH` variable prior to using the DW");
 		}
@@ -110,13 +111,18 @@ public class ClientDataWarehouse extends DataWarehouse {
 		
 		ObjectContainer c = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), DB_PATH + "/" + groupID);
 		instance = new ClientDataWarehouse(c, new ClientSynchronizer(c, myID));
-		instance.updateWithWrappers(wrappers);
+		
+		if (data.length > 0) {
+			instance.updateWithWrappers(data);
+		}
+		System.out.println("DW UPDATED");
 	}
 	
-	private void updateWithWrappers(DataWrapper<HasID>[] wrappers) {
-		for (DataWrapper<HasID> wrapper : wrappers) {
-			db.store(wrapper);
+	private void updateWithWrappers(Serializable[] data) {
+		for (Serializable wrapper : data) {
+			db.store((DataWrapper<HasID>) wrapper);
 		}
+		
 		db.commit();
 	}
 	

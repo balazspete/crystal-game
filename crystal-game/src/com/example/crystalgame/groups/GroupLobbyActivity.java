@@ -3,6 +3,9 @@ package com.example.crystalgame.groups;
 import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.DataWarehouseTestActivity;
 import com.example.crystalgame.R;
+import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
+import com.example.crystalgame.library.data.Information;
+import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
 import com.example.crystalgame.library.instructions.GameInstruction;
 
 import android.os.Bundle;
@@ -38,7 +41,21 @@ public class GroupLobbyActivity extends Activity {
 	}
 	
 	public void setTitle() {
-		//ClientDataWarehouse.getInstance().get()
+		String title = null;
+		try {
+			Information nameInfo = (Information) ClientDataWarehouse.getInstance().get(Information.class, Information.GROUP_NAME);
+			if (nameInfo != null) {
+				title = (String) (nameInfo).getValue();
+			}
+		} catch (DataWarehouseException e) {
+			// Handling it in finally
+		} finally {
+			if (title == null) {
+				title = "Group";
+			}
+		}
+		
+		this.setTitle(title);
 	}
 	
 
