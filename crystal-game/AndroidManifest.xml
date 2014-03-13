@@ -105,6 +105,7 @@
             android:name="com.example.crystalgame.groups.GroupLobbyActivity"
             android:label="@string/title_activity_group_lobby" >
         </activity>
+        <service android:name=".ui.GPSTracker"></service>
     </application>
 
 </manifest>

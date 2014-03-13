@@ -14,7 +14,7 @@
 	        class="com.google.android.gms.maps.MapFragment" />
     	
 	</LinearLayout>
-    <FrameLayout
+    <!-- <FrameLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" >
 
@@ -28,14 +28,14 @@
                 android:orientation="horizontal">
 
                 <RadioButton
-                    android:id="@+id/main_tab_addExam"
+                    android:id="@+id/main_tab_crystal"
                     style="@style/InformationPanelButton"
                     android:layout_weight="1.0"    
                     android:drawableTop="@drawable/bg_info_panel_icon_1"
                     android:text="CRYSTAL" />
 
                 <RadioButton
-                    android:id="@+id/main_tab_myExam"
+                    android:id="@+id/main_tab_magic"
                     style="@style/InformationPanelButton"
                     android:layout_weight="1.0"
                     android:checked="true"
@@ -43,14 +43,14 @@
                     android:text="MAGIC" />
 
                 <RadioButton
-                    android:id="@+id/main_tab_message"
+                    android:id="@+id/main_tab_energy"
                     style="@style/InformationPanelButton"
                     android:layout_weight="1.0"
                     android:drawableTop="@drawable/bg_infor_panel_icon_3"
                     android:text="ENERGY"  />
 
                 <RadioButton
-                    android:id="@+id/main_tab_settings"
+                    android:id="@+id/main_tab_time"
                     style="@style/InformationPanelButton"
                     android:layout_weight="1.0"   
                     android:drawableTop="@drawable/bg_info_panel_icon_4"
@@ -98,6 +98,6 @@
                 android:textSize="10sp"
                 android:visibility="gone" />
             
-        </FrameLayout>
+        </FrameLayout> -->
 
 </LinearLayout>

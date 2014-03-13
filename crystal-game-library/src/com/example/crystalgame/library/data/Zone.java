@@ -104,6 +104,11 @@ public class Zone implements Serializable, HasID
 	  double xVali, yVali, xValj, yValj, lng, lat, testX, testY;
 	  ArrayList<Location> tempDataList = new ArrayList<Location>();
 	  
+	  // If the list of locations is empty or null, do not process
+	  if(null == locationPoints || (null!=locationPoints && locationPoints.isEmpty())) {
+		  return false;
+	  }
+	  
 	  // Temporary ArrayList for easy iteration of points
 	  for(Location key : locationPoints)
 	  {

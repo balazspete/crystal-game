@@ -23,6 +23,14 @@ import com.example.crystalgame.library.instructions.DataTransferInstruction;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.GroupInstruction;
 import com.example.crystalgame.ui.CreateGameActivity;
+import com.example.crystalgame.library.data.Location;
+import com.example.crystalgame.library.data.MagicalItem;
+import com.example.crystalgame.ui.InformationPresenter;
+import com.example.crystalgame.ui.UIController;
+
+import java.util.Arrays;
+import java.util.ArrayList;
+
 
 /**
  * The Android application class for the CrystalGame project
@@ -235,5 +243,14 @@ public class CrystalGame extends Application {
 	public void setGroupID(String ID)
 	{
 		this.groupID = ID;
+	}
+	public ArrayList<Location> getGameBoundaryPoints()
+	{
+		return UIController.getInstance().getGameBoundaryPoints();
+		
+	}
+	public ArrayList<Location> getGameLocationPoints()
+	{
+		return UIController.getInstance().getGameLocationPoints();
 	}
 }

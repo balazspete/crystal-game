@@ -11,5 +11,5 @@ package com.example.crystalgame.ui;
 public interface GameUIComponentCommunicationListener {
 	public void updateGameCrystalInfo(int noOfCrystals);
 	public void updateGameMagicalItemInfo(int noOfMagicalItems);
-	public void updateGameEnergy(int noOfEnergyUnits);
+	
 }
