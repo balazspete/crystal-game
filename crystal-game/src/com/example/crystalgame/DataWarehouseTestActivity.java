@@ -63,7 +63,7 @@ public class DataWarehouseTestActivity extends Activity {
 		}
 	}
 	
-	public void onClick(MenuItem item) {
+	public void showSettings(MenuItem item) {
 		Toast.makeText(this, "not supported", Toast.LENGTH_SHORT).show();
 	}
 	
