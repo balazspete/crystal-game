@@ -287,4 +287,11 @@ public class Zone implements Serializable, HasID
 	{
 		return id;
 	}
+	
+	/**
+	 * Clear the zone definition
+	 */
+	public void clear() {
+		locationPoints.clear();
+	}
 }

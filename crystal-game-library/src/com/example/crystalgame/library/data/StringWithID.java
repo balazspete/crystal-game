@@ -21,6 +21,10 @@ public class StringWithID implements HasID, Serializable {
 	public String getValue() {
 		return value;
 	}
+	
+	public void setValue(String value) {
+		this.value = value;
+	}
 
 	@Override
 	public String getID() {

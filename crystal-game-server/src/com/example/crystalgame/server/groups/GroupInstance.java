@@ -13,7 +13,9 @@ import org.joda.time.DateTime;
 import com.example.crystalgame.library.communication.messages.InstructionRelayMessage;
 import com.example.crystalgame.library.communication.messages.MulticastMessage;
 import com.example.crystalgame.library.communication.messages.UnicastMessage;
+import com.example.crystalgame.library.data.Information;
 import com.example.crystalgame.library.data.Location;
+import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
 import com.example.crystalgame.library.events.InstructionEvent;
 import com.example.crystalgame.library.events.InstructionEventListener;
 import com.example.crystalgame.library.events.ListenerManager;
@@ -24,6 +26,7 @@ import com.example.crystalgame.library.instructions.DataSynchronisationInstructi
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.Instruction;
 import com.example.crystalgame.server.datawarehouse.ServerDataWarehouse;
+import com.example.crystalgame.server.game.GameController;
 import com.example.crystalgame.server.sequencer.Sequencer;
 
 /**
@@ -40,6 +43,7 @@ public class GroupInstance implements Runnable {
 	private boolean inGame = false;
 	private DateTime lastGameStartRequestTime = DateTime.now().minusMinutes(1);
 	private ServerDataWarehouse dataWarehouse;
+	private GameController controller;
 	
 	private ArrayBlockingQueue<GameManager> managerLock;
 	
@@ -53,6 +57,7 @@ public class GroupInstance implements Runnable {
 		this.group = group;
 		sequencer = new Sequencer(group);
 		this.managerLock = new ArrayBlockingQueue<GameManager>(1);
+		this.controller = new GameController(sequencer);
 		dataWarehouse = ServerDataWarehouse.getWarehouseForGroup(group);
 		dataWarehouse.addInstructionEventListener(new InstructionEventListener() {
 			@Override
@@ -116,6 +121,14 @@ public class GroupInstance implements Runnable {
 				InstructionEventListener.eventHandlerHelper(listener, event);
 			}
 		};
+		
+		try {
+			// Save the group related information
+			dataWarehouse.put(Information.class, new Information(Information.GROUP_NAME, group.getName()));
+			dataWarehouse.put(Information.class, new Information(Information.GROUP_MAX_PLAYERS, group.getMaxPlayers()));
+		} catch (DataWarehouseException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
