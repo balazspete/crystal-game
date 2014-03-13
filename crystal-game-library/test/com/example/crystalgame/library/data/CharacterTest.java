@@ -17,7 +17,7 @@ public class CharacterTest extends ArtifactTest {
 		latitude = 345;
 		longitude = 523;
 		radius = 234;
-		location = artifact = character = new Character(latitude, longitude, CharacterType.SAGE, PlayerType.PLAYER) {
+		location = artifact = character = new Character(latitude, longitude, CharacterType.SAGE, PlayerType.PLAYER, "C343") {
 		};
 	}
 	

@@ -18,8 +18,8 @@ public class Warrior extends Character {
 	 * @param longitude the longitude
 	 * @param playerType The player type
 	 */
-	public Warrior(double latitude, double longitude, PlayerType playerType) {
-		super(latitude, longitude, CharacterType.WARRIOR, playerType);
+	public Warrior(double latitude, double longitude, PlayerType playerType, String playerID) {
+		super(latitude, longitude, CharacterType.WARRIOR, playerType, playerID);
 	}
 
 }

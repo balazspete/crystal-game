@@ -18,8 +18,8 @@ public class Wizard extends Character {
 	 * @param longitude the longitude
 	 * @param type the player type
 	 */
-	public Wizard(double latitude, double longitude, PlayerType type) {
-		super(latitude, longitude, CharacterType.WIZARD, type);
+	public Wizard(double latitude, double longitude, PlayerType type, String playerID) {
+		super(latitude, longitude, CharacterType.WIZARD, type, playerID);
 	}
 
 }

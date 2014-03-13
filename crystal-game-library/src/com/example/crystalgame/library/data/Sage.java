@@ -18,8 +18,8 @@ public class Sage extends Character {
 	 * @param longitude the longitude
 	 * @param playerType the player type
 	 */
-	public Sage(double latitude, double longitude, PlayerType playerType) {
-		super(latitude, longitude, CharacterType.SAGE, playerType);
+	public Sage(double latitude, double longitude, PlayerType playerType, String playerID) {
+		super(latitude, longitude, CharacterType.SAGE, playerType, playerID);
 	}
 
 }
