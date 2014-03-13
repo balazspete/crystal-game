@@ -5,6 +5,7 @@ package com.example.crystalgame.ui;
 
 import android.util.Log;
 
+import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Crystal;
@@ -19,8 +20,7 @@ public class InventoryManager {
 
 	private static InventoryManager inventoryManager = null; 
 
-	private String playerID = null;
-	private String playerCharacterID = null;
+	private String clientID, playerCharacterID;
 	
 	/**
 	 * Private constructor
@@ -82,10 +82,10 @@ public class InventoryManager {
 	/**
 	 * Returns the player playing the game
 	 */
-	public synchronized Character getGamePlayer() {
-		if(null != playerCharacterID) {
+	public synchronized Character getCharacter() {
+		if(playerCharacterID == null) {
 			for(Character gamePlayer : getCharacters()) {
-				if(gamePlayer.getClientId().equals(playerID)) {
+				if(gamePlayer.getClientId().equals(CrystalGame.getClientID())) {
 					playerCharacterID = gamePlayer.getID();
 					return gamePlayer;
 				}
@@ -107,7 +107,7 @@ public class InventoryManager {
 	public synchronized void setEnergyLevel(String energyLevel) {
 		Character c;
 		try {
-			c = getGamePlayer();
+			c = getCharacter();
 			c.setEnergyLevel(energyLevel);
 			ClientDataWarehouse.getInstance().put(Character.class, c);
 		} catch (DataWarehouseException e) {

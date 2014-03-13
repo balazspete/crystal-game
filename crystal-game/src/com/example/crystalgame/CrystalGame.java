@@ -41,8 +41,8 @@ import java.util.ArrayList;
 public class CrystalGame extends Application {
 
 	private static ClientCommunication communication;
-	private String playerID;
-	private String groupID;
+	private static String clientID;
+	private static String groupID;
 	
 	@Override
 	public void onCreate() {
@@ -125,8 +125,8 @@ public class CrystalGame extends Application {
 			@Override
 			public void onIdMessageEvent(MessageEvent event) {
 				IdMessage message = (IdMessage) event.getMessage();
-				playerID = (String) message.getData();
-				Log.i("CrystalGame", "Client ID updated to " + playerID);
+				clientID = (String) message.getData();
+				Log.i("CrystalGame", "Client ID updated to " + clientID);
 			}
 		});
 		
@@ -203,7 +203,7 @@ public class CrystalGame extends Application {
 	
 	public void configDataWarehouse() {
 		ClientDataWarehouse.DB_PATH = this.getExternalCacheDir().getAbsolutePath();
-		ClientDataWarehouse.myID = playerID;
+		ClientDataWarehouse.myID = clientID;
 		ClientDataWarehouse.groupID = groupID;
 		
 		getCommunication().out.relayInstructionToServer(DataTransferInstruction.createDataWarehouseDownloadRequestInstruction());
@@ -237,24 +237,24 @@ public class CrystalGame extends Application {
 		}
 	}
 
-	public String getPlayerID()
+	public static String getClientID()
 	{
-		return this.playerID;
+		return clientID;
 	}
 	
-	public void setPlayerID(String ID)
+	public static void setClientID(String ID)
 	{
-		this.playerID = ID;
+		clientID = ID;
 	}
 	
-	public String getGroupID()
+	public static String getGroupID()
 	{
-		return this.groupID;
+		return groupID;
 	}
 	
-	public void setGroupID(String ID)
+	public static void setGroupID(String ID)
 	{
-		this.groupID = ID;
+		groupID = ID;
 	}
 	public ArrayList<Location> getGameBoundaryPoints()
 	{

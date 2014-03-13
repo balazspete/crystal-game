@@ -65,7 +65,7 @@ public class GameStateManager {
 					gameObj.getCommunication()
 							.out
 							.relayInstructionToServer(
-									GameInstruction.createCrystalCaptureRequestInstruction(gameObj.getPlayerID(), item.getID())
+									GameInstruction.createCrystalCaptureRequestInstruction(gameObj.getClientID(), item.getID())
 							);
 				} catch (InstructionFormatException e) {
 					Log.e("GameStateManager", e.toString());
@@ -79,7 +79,7 @@ public class GameStateManager {
 					gameObj.getCommunication()
 							.out
 							.relayInstructionToServer(
-									GameInstruction.createMagicalItemCaptureRequestInstruction(gameObj.getPlayerID(), item.getID())
+									GameInstruction.createMagicalItemCaptureRequestInstruction(gameObj.getClientID(), item.getID())
 							);
 				} catch (InstructionFormatException e) {
 					Log.e("GameStateManager", e.toString());
