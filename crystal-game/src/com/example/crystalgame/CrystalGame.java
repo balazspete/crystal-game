@@ -25,6 +25,7 @@ import com.example.crystalgame.library.instructions.GroupInstruction;
 import com.example.crystalgame.ui.CreateGameActivity;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
+import com.example.crystalgame.ui.GameActivity;
 import com.example.crystalgame.ui.InformationPresenter;
 import com.example.crystalgame.ui.UIController;
 
@@ -160,11 +161,22 @@ public class CrystalGame extends Application {
 			@Override
 			public void onGameInstruction(InstructionEvent event) {
 				GameInstruction instruction = (GameInstruction) event.getInstruction();
+				Intent intent;
 				switch (instruction.gameInstruction) {
 					case CREATE_GAME_REQUEST:
-						Intent intent = new Intent(getApplicationContext(), CreateGameActivity.class);
+						intent = new Intent(getApplicationContext(), CreateGameActivity.class);
 						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						startActivity(intent);
+						break;
+					case GAME_STARTED:
+						Log.i("CrystalGame", "Game Started");
+						intent = new Intent(getApplicationContext(), GameActivity.class);
+						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						startActivity(intent);
+						break;
+					case GAME_ENDED:
+						Log.i("CrystalGame", "Game Ended");
+						// TODO: show end game activity
 						break;
 					default:
 						// ingored

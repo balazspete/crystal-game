@@ -14,7 +14,8 @@ public class GameInstruction extends Instruction {
 	public enum GameInstructionType implements Serializable {
 		START_GAME_REQUEST, CREATE_GAME_REQUEST, CREATE_GAME,
 		GAME_BOUNDARY_OUTSIDE_RESPONSE, ENERGY_DISQUALIFY_RESPONSE,
-		CAPTURE_CRYSTAL_REQUEST, CAPTURE_MAGICAL_ITEM_REQUEST, EXCHANGE_MAGICAL_ITEM
+		CAPTURE_CRYSTAL_REQUEST, CAPTURE_MAGICAL_ITEM_REQUEST, EXCHANGE_MAGICAL_ITEM,
+		GAME_STARTED, GAME_ENDED
 	}
 	
 	public final GameInstructionType gameInstruction;
@@ -98,6 +99,22 @@ public class GameInstruction extends Instruction {
 			throw InstructionFormatException.NULL_ARGUMENT;
 		}
 		return new GameInstruction(GameInstructionType.CAPTURE_MAGICAL_ITEM_REQUEST, playerID, magicalItemID); 
+	}
+	
+	/**
+	 * Used to signal a game start
+	 * @return The instruction
+	 */
+	public static GameInstruction createGameStartedSignalInstruction() {
+		return new GameInstruction(GameInstructionType.GAME_STARTED);
+	}
+	
+	/**
+	 * Used to signal a game end
+	 * @return The instruction
+	 */
+	public static GameInstruction createGameEndedSignalInstruction() {
+		return new GameInstruction(GameInstructionType.GAME_ENDED);
 	}
 	
 }

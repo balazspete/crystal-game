@@ -11,8 +11,10 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * An activity for testing the data warehouse
@@ -59,6 +61,10 @@ public class DataWarehouseTestActivity extends Activity {
 		} catch (DataWarehouseException e) {
 			Log.e("DataWarehouseTestActivity", e.getMessage());
 		}
+	}
+	
+	public void onClick(MenuItem item) {
+		Toast.makeText(this, "not supported", Toast.LENGTH_SHORT).show();
 	}
 	
 }
