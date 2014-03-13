@@ -1,10 +1,10 @@
 package com.example.crystalgame.library.data;
 /**
  * Describes the crystal location
- * @author Balazs Pete, Shen Chen, Rajan Verma, Allen Thomas Varghese
+ * @author Shen Chen
  *
  */
-public class CrystalLocation extends Zone
+public class CrystalZone extends Zone
 {
 
 	/**
@@ -12,7 +12,7 @@ public class CrystalLocation extends Zone
 	 */
 	private static final long serialVersionUID = -7760332792277259727L;
 
-	public CrystalLocation() 
+	public CrystalZone() 
 	{
 		// TODO Auto-generated constructor stub
 	}

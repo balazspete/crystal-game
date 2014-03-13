@@ -11,7 +11,7 @@ public abstract class Character extends Artifact {
 	 * 
 	 */
 	private static final long serialVersionUID = -6302171104196819575L;
-
+	private double energy = 10;
 	/**
 	 * Describes the type of the player
 	 * @author 
@@ -46,5 +46,28 @@ public abstract class Character extends Artifact {
 		this.playerType = playerType;
 		this.characterType = characterType;
 	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public double getEnergy() {
+		return energy;
+	}
+
+	/**
+	 * 
+	 * @param energy
+	 */
+	public void setEnergy(double energy) {
+		this.energy = energy;
+	}
+	
+	@Override
+	public String getID() 
+	{
+		return id;
+	}
+	
 	
 }

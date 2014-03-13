@@ -23,8 +23,14 @@ public class GameManager implements Runnable {
 	public GameManager(String gameName, List<String> clientIDs, List<Location> locations) {
 		this.name = gameName;
 		this.clientIDs = clientIDs;
-		this.gameLocations = (GameLocation)locations;
-		// TODO: handle locations
+		this.gameLocations = new GameLocation();
+		for(Location location : locations) 
+		{
+			if(location != null)
+			{
+				this.gameLocations.addLocation(location);
+			}
+		}
 	}
 
 	@Override

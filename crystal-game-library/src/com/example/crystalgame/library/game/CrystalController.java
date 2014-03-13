@@ -12,17 +12,15 @@ public class CrystalController
 {	
 	private DB4OInterface store;
 	private Crystal crystal;
-	private GameLocation gameLocation;
 	
 	public CrystalController() 
 	{
 		
 	}
 
-	public CrystalController(Crystal crystal, GameLocation gameLocation) 
+	public CrystalController(Crystal crystal) 
 	{
 		this.crystal = crystal;
-		this.gameLocation = gameLocation;
 	}
 	/**
 	 * 

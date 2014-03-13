@@ -16,6 +16,7 @@
     <string name="CRYSTL">Crystal</string>
     <string name="MAGIC_ITEM">Magic</string>
     <string name="ENERGY">Energy</string>
+    <string name="title_activity_data_warehouse_test">DataWarehouseTestActivity</string>
     <string name="button_create_group">Create a group</string>
     <string name="button_create_group2">Create the group</string>
     <string name="button_join_group">Join a group</string>
@@ -30,4 +31,5 @@
     <string name="action_save_boundary">Save</string>
     
 
+	<string name="NameHint">player name</string>
 </resources>

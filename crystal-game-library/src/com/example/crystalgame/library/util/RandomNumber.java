@@ -10,9 +10,28 @@ import java.util.Random;
 public class RandomNumber 
 {
 
-	public static int getRandomNumber(int min, int max) 
+
+	/**
+	 * 
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public static int getRandomIntNumber(int start, int end) 
 	{
-	    return new Random().nextInt((max - min) + 1) + min;
+	    return new Random().nextInt((start - end) + 1) + end;
 	}
+	
+	/**
+	 * 
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public static double getRandomDoubleNumber(double start, double end) 
+	{
+		return  start + (new Random().nextDouble() * (end - start));
+	}
+
 
 }
