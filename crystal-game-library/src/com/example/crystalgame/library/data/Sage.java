@@ -11,6 +11,8 @@ public class Sage extends Character {
 	 * 
 	 */
 	private static final long serialVersionUID = -540232457389629765L;
+	
+	private final String originalID;
 
 	/**
 	 * Create a sage
@@ -18,8 +20,14 @@ public class Sage extends Character {
 	 * @param longitude the longitude
 	 * @param playerType the player type
 	 */
-	public Sage(double latitude, double longitude, PlayerType playerType, String clientId) {
-		super(latitude, longitude, CharacterType.SAGE, playerType,clientId);
+	public Sage(Character character, double latitude, double longitude) {
+		super(latitude, longitude, CharacterType.SAGE, character.playerType, character.getClientId());
+		this.originalID = character.id;
 	}
 
+	@Override
+	public String getID() {
+		return originalID;
+	}
+	
 }

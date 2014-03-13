@@ -12,14 +12,22 @@ public class Wizard extends Character {
 	 */
 	private static final long serialVersionUID = 1221320162223472002L;
 
+	private final String originalID;
+	
 	/**
 	 * Create a Wizard
 	 * @param latitude the latitude
 	 * @param longitude the longitude
 	 * @param type the player type
 	 */
-	public Wizard(double latitude, double longitude, PlayerType type,String clientId) {
-		super(latitude, longitude, CharacterType.WIZARD, type,clientId);
+	public Wizard(Character character, double latitude, double longitude) {
+		super(latitude, longitude, CharacterType.WIZARD, character.playerType, character.getClientId());
+		this.originalID = character.id;
+	}
+
+	@Override
+	public String getID() {
+		return originalID;
 	}
 
 }

@@ -93,7 +93,6 @@ public class DataWarehouse {
 	 */
 	public HasID get(@SuppressWarnings("rawtypes") Class type, String id) throws DataWarehouseException {
 		// Just read local copy
-		System.out.println("DataWarehouse|get: Retrieving desired value");
 		return new DB4OInterface(db).get(type, id);
 	}
 

@@ -12,6 +12,7 @@ import com.example.crystalgame.library.communication.messages.InstructionRelayMe
 import com.example.crystalgame.library.communication.messages.MulticastMessage;
 import com.example.crystalgame.library.communication.messages.UnicastMessage;
 import com.example.crystalgame.library.data.Character;
+import com.example.crystalgame.library.data.Character.UnknownPlayerCharacter;
 import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.data.Information;
@@ -126,11 +127,12 @@ public class GroupInstance implements Runnable {
 		
 		try {
 			// Save the group related information
-			dataWarehouse.put(Information.class, new Information(Information.GROUP_NAME, group.getName()));
-			dataWarehouse.put(Information.class, new Information(Information.GROUP_MAX_PLAYERS, group.getMaxPlayers()));
+			dataWarehouse.putDirect(Information.class, new Information(Information.GROUP_NAME, group.getName()));
+			dataWarehouse.putDirect(Information.class, new Information(Information.GROUP_MAX_PLAYERS, group.getMaxPlayers()));
 		} catch (DataWarehouseException e) {
 			e.printStackTrace();
 		}
+		
 	}
 
 	@Override
@@ -286,8 +288,10 @@ public class GroupInstance implements Runnable {
 		
 			new Thread(manager).start();
 		
-		
 			inGame = true;
+			
+			createCharacters();
+			sendGameStartSignal();
 		}
 	}
 	
@@ -412,5 +416,25 @@ public class GroupInstance implements Runnable {
 		message.setData(reply);
 		sequencer.sendMessageToOne(message);
 	}
+	
+	private void sendGameStartSignal() {
+		InstructionRelayMessage message = new InstructionRelayMessage(null);
+		message.setData(GameInstruction.createGameStartedSignalInstruction());
+		sequencer.sendMessageToAll(message);
+	}
  	
+	public void createCharacters() {
+		List<HasID> characters = new ArrayList<HasID>();
+		for (Client client : group.getClients()) {
+			characters.add(new UnknownPlayerCharacter(client.getId()));
+		}
+		
+		try {
+			dataWarehouse.putList(Character.class, characters);
+		} catch (DataWarehouseException e) {
+			System.err.println("Failed to create characters, retrying...");
+			createCharacters();
+		}
+	}
+	
 }

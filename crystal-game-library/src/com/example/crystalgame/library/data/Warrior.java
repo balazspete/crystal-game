@@ -11,6 +11,8 @@ public class Warrior extends Character {
 	 * 
 	 */
 	private static final long serialVersionUID = -3721553326307227208L;
+	
+	private final String originalID;
 
 	/**
 	 * Create a warrior
@@ -18,8 +20,14 @@ public class Warrior extends Character {
 	 * @param longitude the longitude
 	 * @param playerType The player type
 	 */
-	public Warrior(double latitude, double longitude, PlayerType playerType,String clientId) {
-		super(latitude, longitude, CharacterType.WARRIOR, playerType,clientId);
+	public Warrior(Character character, double latitude, double longitude) {
+		super(latitude, longitude, CharacterType.WARRIOR, character.playerType, character.getClientId());
+		this.originalID = character.id;
+	}
+
+	@Override
+	public String getID() {
+		return originalID;
 	}
 
 }

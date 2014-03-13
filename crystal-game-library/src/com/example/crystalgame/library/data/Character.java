@@ -29,7 +29,7 @@ public abstract class Character extends Artifact {
 	 *
 	 */
 	public enum CharacterType {
-		WARRIOR, SAGE, WIZARD
+		WARRIOR, SAGE, WIZARD, UNKNOWN
 	}
 	
 	public final static double RADIUS = 100;
@@ -50,7 +50,7 @@ public abstract class Character extends Artifact {
 	 * @param longitude The longitude
 	 * @param type the character's type
 	 */
-	protected Character(double latitude, double longitude, CharacterType characterType, PlayerType playerType,String clientId) {
+	protected Character(double latitude, double longitude, CharacterType characterType, PlayerType playerType, String clientId) {
 		super(latitude, longitude, RADIUS);
 		this.playerType = playerType;
 		this.characterType = characterType;
@@ -141,5 +141,15 @@ public abstract class Character extends Artifact {
 	public String getEnergyLevel() {
 		return this.energyLevel;
 	}
-
+	
+	/**
+	 * A character representation for a client until more information is known
+	 * @author Balazs Pete, Allen Thomas Varghese
+	 *
+	 */
+	public static class UnknownPlayerCharacter extends Character {
+		public UnknownPlayerCharacter(String clientId) {
+			super(0, 0, CharacterType.UNKNOWN, PlayerType.PLAYER, clientId);
+		}
+	}
 }

@@ -31,6 +31,7 @@ public class GameManager implements Runnable {
 				this.gameLocations.addLocation(location);
 			}
 		}
+		
 	}
 
 	@Override
