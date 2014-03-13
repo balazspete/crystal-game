@@ -37,8 +37,8 @@ public class GameStateInformation {
 		magicalItemList.add(new MagicalItem(53.34373266956245 ,-6.246914081275463));
 		magicalItemList.add(new MagicalItem(53.34363979327044, -6.246601939201355));
 		
-		characterList.add(new Wizard(53.34363338800144 ,-6.2468171864748, PlayerType.PLAYER,"C343")); 
-		characterList.add(new Warrior(53.34374948335228 ,-6.246790029108524, PlayerType.PLAYER, "C454"));
+//		characterList.add(new Wizard(53.34363338800144 ,-6.2468171864748, PlayerType.PLAYER,"C343")); 
+//		characterList.add(new Warrior(53.34374948335228 ,-6.246790029108524, PlayerType.PLAYER, "C454"));
 	}
 	
 	public ArrayList<Crystal> getCrystalList() {
