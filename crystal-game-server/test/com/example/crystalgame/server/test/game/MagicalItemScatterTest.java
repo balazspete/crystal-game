@@ -1,4 +1,4 @@
-package com.example.crystalgame.library.game;
+package com.example.crystalgame.server.test.game;
 
 import static org.junit.Assert.*;
 
@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import com.example.crystalgame.library.data.GameLocation;
 import com.example.crystalgame.library.data.Location;
+import com.example.crystalgame.server.game.MagicalItemScatter;
 
 public class MagicalItemScatterTest {
 

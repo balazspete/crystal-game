@@ -1,13 +1,14 @@
-package com.example.crystalgame.library.game;
-
+package com.example.crystalgame.server.game;
+/**
+ * Character Controller
+ * @author Chen Shen, Rajan verma
+ *
+ */
 import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.GameLocation;
 import com.example.crystalgame.library.datawarehouse.DB4OInterface;
 
-/**
- * @author Shen Chen
- *
- */
+
 public class CrystalController 
 {	
 	private DB4OInterface store;

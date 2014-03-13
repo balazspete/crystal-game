@@ -1,4 +1,9 @@
-package com.example.crystalgame.library.game;
+package com.example.crystalgame.server.game;
+/**
+ * Magical Item Controller
+ * @author Chen Shen, Rajan verma
+ *
+ */
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.datawarehouse.DB4OInterface;
 

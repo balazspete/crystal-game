@@ -1,5 +1,9 @@
-package com.example.crystalgame.library.game;
-
+package com.example.crystalgame.server.game;
+/**
+ * Crystal Scatter
+ * @author Chen Shen, Rajan verma
+ *
+ */
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +25,7 @@ public class CrystalScatter
 	 * 
 	 * @return
 	 */
-	public Crystal generateCrystal()
+	private Crystal generateCrystal()
 	{
 		new RandomNumber();
 		Double crystalLat = RandomNumber.getRandomDoubleNumber(crystalZone.getMinLattitudeValue(), 

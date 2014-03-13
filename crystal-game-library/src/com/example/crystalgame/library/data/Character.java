@@ -34,6 +34,7 @@ public abstract class Character extends Artifact {
 	
 	public final PlayerType playerType;
 	public final CharacterType characterType;
+	public final String clientId;
 	
 	/**
 	 * Create a Character
@@ -41,10 +42,11 @@ public abstract class Character extends Artifact {
 	 * @param longitude The longitude
 	 * @param type the character's type
 	 */
-	protected Character(double latitude, double longitude, CharacterType characterType, PlayerType playerType) {
+	protected Character(double latitude, double longitude, CharacterType characterType, PlayerType playerType,String clientId) {
 		super(latitude, longitude, RADIUS);
 		this.playerType = playerType;
 		this.characterType = characterType;
+		this.clientId = clientId;
 	}
 
 	/**
@@ -67,6 +69,10 @@ public abstract class Character extends Artifact {
 	public String getID() 
 	{
 		return id;
+	}
+
+	public String getClientId() {
+		return clientId;
 	}
 	
 	

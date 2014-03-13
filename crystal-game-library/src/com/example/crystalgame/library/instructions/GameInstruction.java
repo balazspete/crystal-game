@@ -12,7 +12,7 @@ public class GameInstruction extends Instruction {
 	private static final long serialVersionUID = 6267013751421768277L;
 
 	public enum GameInstructionType implements Serializable {
-		START_GAME_REQUEST, CREATE_GAME_REQUEST, CREATE_GAME
+		START_GAME_REQUEST, CREATE_GAME_REQUEST, CREATE_GAME, GAME_BOUNDARY_OUTSIDE_RESPONSE, ENERGY_DISQUALIFY_RESPONSE
 	}
 	
 	public final GameInstructionType gameInstruction;
@@ -56,6 +56,18 @@ public class GameInstruction extends Instruction {
 		}
 		
 		return new GameInstruction(GameInstructionType.CREATE_GAME, gameName, upperLeft, upperRight, lowerRight, lowerLeft);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public static GameInstruction createGameBoundaryDisqualifyInstruction() {
+		return new GameInstruction(GameInstructionType.GAME_BOUNDARY_OUTSIDE_RESPONSE);
+	}
+	
+	public static GameInstruction createEnergyDisqualifyInstruction() {
+		return new GameInstruction(GameInstructionType.ENERGY_DISQUALIFY_RESPONSE);
 	}
 	
 }

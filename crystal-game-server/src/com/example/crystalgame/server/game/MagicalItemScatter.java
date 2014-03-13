@@ -1,5 +1,9 @@
-package com.example.crystalgame.library.game;
-
+package com.example.crystalgame.server.game;
+/**
+ * Magical Item Scatter
+ * @author Chen Shen, Rajan verma
+ *
+ */
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,10 +16,7 @@ import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.datawarehouse.DB4OInterface;
 import com.example.crystalgame.library.util.RandomNumber;
 
-/**
- * @author Shen Chen
- *
- */
+
 public class MagicalItemScatter 
 {
 	private GameLocation gameLocation;
