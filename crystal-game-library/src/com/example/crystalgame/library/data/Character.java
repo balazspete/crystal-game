@@ -6,7 +6,6 @@ import java.util.List;
 /**
  * Represents a Character
  * @author Balazs Pete, Shen Chen, Rajan Verma, Allen Thomas Varghese
- *
  */
 public abstract class Character extends Artifact {
 
@@ -15,7 +14,10 @@ public abstract class Character extends Artifact {
 	 */
 	private static final long serialVersionUID = -6302171104196819575L;
 	private List<Crystal> crystalList = new ArrayList<Crystal>();
-
+	private List<MagicalItem> magicalItemList = new ArrayList<MagicalItem>();
+	private String energyLevel = null;
+	private String playerID = null;
+	
 	/**
 	 * Describes the type of the player
 	 * @author 
@@ -45,10 +47,11 @@ public abstract class Character extends Artifact {
 	 * @param longitude The longitude
 	 * @param type the character's type
 	 */
-	protected Character(double latitude, double longitude, CharacterType characterType, PlayerType playerType) {
+	protected Character(double latitude, double longitude, CharacterType characterType, PlayerType playerType, String playerID) {
 		super(latitude, longitude, RADIUS);
 		this.playerType = playerType;
 		this.characterType = characterType;
+		this.playerID = playerID;
 	}
 
 	/**
@@ -70,5 +73,50 @@ public abstract class Character extends Artifact {
 	 */
 	public List<Crystal> getCrystals() {
 		return this.crystalList;
+	}
+	
+	/**
+	 * Add a crystal to the possession of the character
+	 * @param crystal A crystal object
+	 * @return true if addition of crystal is successful
+	 */
+	public boolean addMagicalItem(MagicalItem magicalItem) {
+		if(null != magicalItem) {
+			return this.magicalItemList.add(magicalItem);
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Retrieves the list of crystals available with the character
+	 * @return List of crystals
+	 */
+	public List<MagicalItem> getMagicalItems() {
+		return this.magicalItemList;
+	}
+	
+	/**
+	 * Set energy level of the player
+	 * @param energy level of the player
+	 */
+	public void setEnergyLevel(String energyLevel) {
+		this.energyLevel = energyLevel;
+	}
+	
+	/**
+	 * Get the energy level of the player
+	 * @return energy level of the player
+	 */
+	public String getEnergyLevel() {
+		return this.energyLevel;
+	}
+
+	public String getPlayerID() {
+		return playerID;
+	}
+
+	public void setPlayerID(String playerID) {
+		this.playerID = playerID;
 	}
 }

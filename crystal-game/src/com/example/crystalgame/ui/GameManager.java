@@ -12,6 +12,7 @@ import com.example.crystalgame.library.data.MagicalItem;
 
 
 /**
+ * Game Manager
  * @author Allen Thomas Varghese, Rajan Verma
  *
  */
@@ -60,9 +61,14 @@ public class GameManager {
 		InformationPresenter.getInstance().zoneChangeCallBack(zoneChangeEvent);
 	}
 	
+	/**
+	 * Propagate energy change across different components
+	 * @param energyLevel
+	 */
 	public synchronized void energyChangeCallBack(double energyLevel) {
 		GameStateManager.getInstance().energyChangeCallBack(energyLevel);
 		InformationPresenter.getInstance().energyChangeCallBack(energyLevel);
+		
 	}
 	
 	public synchronized void energyLowCallBack(EnergyEvent energyEvent)

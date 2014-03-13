@@ -25,13 +25,7 @@ public class ArtifactTracker {
 	private ArrayList<MagicalItem> magicalItemList = new ArrayList<MagicalItem>();
 	private ArrayList<Character> characterList = new ArrayList<Character>();
 	
-	/* Thread for synchronizing item information with client datawarehouse */
-	private Thread artifactDataThread = new Thread();
-	/* Polling frequency for updates on artifacts */
-	private final int POLLING_FREQUENCY = 2000;
-	
 	private ArtifactTracker() {
-		artifactDataThread.start();
 	}
 	
 	public static ArtifactTracker getInstance() {
@@ -40,15 +34,6 @@ public class ArtifactTracker {
 		}
 		
 		return artifactTracker;
-	}
-	
-	public void run() {
-		try {
-			// TODO : Update information from the client data warehouse
-			Thread.sleep(POLLING_FREQUENCY);
-		} catch (InterruptedException e) {
-			System.out.println("ArtifactTracker : "+e);
-		}
 	}
 	
 	public void addCrystal(Crystal crystalItem) {

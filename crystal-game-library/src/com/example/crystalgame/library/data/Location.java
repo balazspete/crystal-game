@@ -99,4 +99,5 @@ public class Location implements Serializable, HasID
 	public Location getLocation() {
 		return this;
 	}
+	
 }

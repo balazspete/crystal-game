@@ -43,4 +43,17 @@ public class MagicalItem extends Item {
 		this.icon = icon;
 	}
 
+	/**
+	 * Compare two Magical Item objects using ID
+	 * 
+	 * @param obj MagicalItem object
+	 * @return true or false
+	 */
+	public boolean equals(MagicalItem obj) {
+		return (
+				obj != null
+			&&	obj.getID().equals(id)
+			&&	obj.getClass().equals(getClass())
+			);
+	}
 }

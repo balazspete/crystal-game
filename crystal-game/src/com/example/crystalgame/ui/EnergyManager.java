@@ -65,9 +65,11 @@ public class EnergyManager extends Thread {
 				
 				energyRemaining -= inLocationTime * IN_LOCATION_MULTIPLIER + outLocationTime * OUT_LOCATION_MULTIPLIER;
 				
+				// Update the inventory manager with energy level of the game player
+				InventoryManager.getInstance().setEnergyLevel(getEnergyLevel());
+				
 				// Pushing the new energy level to Game Manager
 				GameManager.getInstance().energyChangeCallBack(energyRemaining);
-				
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

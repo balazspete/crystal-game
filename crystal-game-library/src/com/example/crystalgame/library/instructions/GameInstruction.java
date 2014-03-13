@@ -14,6 +14,8 @@ public class GameInstruction extends Instruction {
 	public enum GameInstructionType implements Serializable {
 		START_GAME_REQUEST, CREATE_GAME_REQUEST, CREATE_GAME
 		, CAPTURE_CRYSTAL_REQUEST
+		, CAPTURE_MAGICAL_ITEM_REQUEST
+		, EXCHANGE_MAGICAL_ITEM
 	}
 	
 	public final GameInstructionType gameInstruction;
@@ -71,5 +73,19 @@ public class GameInstruction extends Instruction {
 			throw InstructionFormatException.NULL_ARGUMENT;
 		}
 		return new GameInstruction(GameInstructionType.CAPTURE_CRYSTAL_REQUEST, playerID, crystalID); 
+	}
+	
+	/**
+	 * Used to request capture of a magical item
+	 * @param playerID Player ID
+	 * @param crystalID Magical Item ID
+	 * @return The instruction
+	 * @throws InstructionFormatException
+	 */
+	public static GameInstruction createMagicalItemCaptureRequestInstruction(String playerID, String magicalItemID) throws InstructionFormatException {
+		if(null == playerID || null == magicalItemID) {
+			throw InstructionFormatException.NULL_ARGUMENT;
+		}
+		return new GameInstruction(GameInstructionType.CAPTURE_MAGICAL_ITEM_REQUEST, playerID, magicalItemID); 
 	}
 }

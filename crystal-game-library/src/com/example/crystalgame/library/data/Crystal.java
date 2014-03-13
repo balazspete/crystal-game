@@ -31,4 +31,17 @@ public class Crystal extends Item {
 		return zoneID;
 	}
 
+	/**
+	 * Compare two Crystal objects using ID
+	 * 
+	 * @param obj Crystal object
+	 * @return true or false
+	 */
+	public boolean equals(Crystal obj) {
+		return (
+				obj != null
+			&&	obj.getID().equals(id)
+			&&	obj.getClass().equals(getClass())
+			);
+	}
 }
