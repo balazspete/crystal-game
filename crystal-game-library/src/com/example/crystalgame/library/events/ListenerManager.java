@@ -2,6 +2,8 @@ package com.example.crystalgame.library.events;
 
 import java.util.ArrayList;
 import java.util.EventListener;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * A module to manage event listeners
@@ -13,12 +15,14 @@ import java.util.EventListener;
 public abstract class ListenerManager<LISTENER extends EventListener, EVENT extends Event> {
 
 	private ArrayList<LISTENER> listeners;
+	private ExecutorService pool;
 	
 	/**
 	 * Create a listener manager
 	 */
 	public ListenerManager() {
 		listeners = new ArrayList<LISTENER>();
+		pool = Executors.newSingleThreadExecutor();
 	}
 	
 	/**
@@ -41,11 +45,16 @@ public abstract class ListenerManager<LISTENER extends EventListener, EVENT exte
 	 * Send a DATA to all listeners
 	 * @param data The DATA to send
 	 */
-	public synchronized void send(EVENT data) {
+	public synchronized void send(final EVENT data) {
 		// Call the handler function for each listener
-		for (LISTENER listener : listeners) {
-			eventHandlerHelper(listener, data);
-		}
+		pool.execute(new Runnable(){
+			@Override
+			public void run() {
+				for (LISTENER listener : listeners) {
+					eventHandlerHelper(listener, data);
+				}
+			}
+		});
 	}
 	
 	/**
