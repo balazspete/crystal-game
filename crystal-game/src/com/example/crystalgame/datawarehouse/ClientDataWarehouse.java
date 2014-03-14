@@ -3,6 +3,7 @@ package com.example.crystalgame.datawarehouse;
 import java.io.File;
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.FutureTask;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
@@ -55,12 +56,12 @@ public class ClientDataWarehouse extends DataWarehouse {
 		}
 		
 		@Override
-		public HasID put(@SuppressWarnings("rawtypes") Class type, HasID value) throws DataWarehouseException {
+		public FutureTask<Boolean> put(@SuppressWarnings("rawtypes") Class type, HasID value) throws DataWarehouseException {
 			throw DataWarehouseException.NULL_WAREHOUSE;
 		}
 		
 		@Override
-		public List<HasID> putList(@SuppressWarnings("rawtypes") Class type, List<HasID> value) throws DataWarehouseException {
+		public FutureTask<Boolean> putList(@SuppressWarnings("rawtypes") Class type, List<HasID> value) throws DataWarehouseException {
 			throw DataWarehouseException.NULL_WAREHOUSE;
 		}
 
@@ -70,12 +71,12 @@ public class ClientDataWarehouse extends DataWarehouse {
 		}
 
 		@Override
-		public boolean delete(@SuppressWarnings("rawtypes") Class type, String id) throws DataWarehouseException {
+		public FutureTask<Boolean> delete(@SuppressWarnings("rawtypes") Class type, String id) throws DataWarehouseException {
 			throw DataWarehouseException.NULL_WAREHOUSE;
 		}
 		
 		@Override
-		public boolean deleteList(@SuppressWarnings("rawtypes") Class type, List<String> ids) throws DataWarehouseException {
+		public FutureTask<Boolean> deleteList(@SuppressWarnings("rawtypes") Class type, List<String> ids) throws DataWarehouseException {
 			throw DataWarehouseException.NULL_WAREHOUSE;
 		}
 
