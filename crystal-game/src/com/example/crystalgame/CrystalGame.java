@@ -10,6 +10,7 @@ import com.example.crystalgame.communication.ClientCommunication;
 import com.example.crystalgame.communication.ClientCommunicationManager;
 import com.example.crystalgame.communication.ClientOutgoingMessages;
 import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
+import com.example.crystalgame.game.CharacterSelectionActivity;
 import com.example.crystalgame.library.communication.messages.IdMessage;
 import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
@@ -170,7 +171,7 @@ public class CrystalGame extends Application {
 						break;
 					case GAME_STARTED:
 						Log.i("CrystalGame", "Game Started");
-						intent = new Intent(getApplicationContext(), GameActivity.class);
+						intent = new Intent(getApplicationContext(), CharacterSelectionActivity.class);
 						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						startActivity(intent);
 						break;

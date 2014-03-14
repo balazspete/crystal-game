@@ -35,6 +35,9 @@
     <string name="reset_game_info">Game settings cleared</string>
     <string name="action_save_boundary">Save</string>
     <string name="choose_character_button_label">Choose</string>
-    <string name="title_activity_character_selection">Choose Character</string>
+	<string name="title_activity_character_selection">Choose Character</string>
+	<string name="select_character_warning">Select a character!</string>  
 
+	<string name="communication_failure">Failed to communicate with the server. Try again!</string>
+	
 </resources>
