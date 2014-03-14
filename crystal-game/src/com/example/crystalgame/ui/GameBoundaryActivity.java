@@ -2,6 +2,13 @@ package com.example.crystalgame.ui;
 
 import java.io.Serializable;
 
+import android.content.Intent;
+import android.location.LocationListener;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.view.Menu;
+import android.view.MenuItem;
+
 import com.example.crystalgame.R;
 import com.example.crystalgame.SettingsActivity;
 import com.example.crystalgame.library.data.Location;
@@ -16,20 +23,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import android.location.Criteria;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.content.Context;
-import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.Toast;
-
 /**
  * Activity for defining a boundary
  * @author Chen Shen, Allen Thomas Varghese
@@ -37,14 +30,8 @@ import android.widget.Toast;
  */
 public class GameBoundaryActivity extends FragmentActivity implements LocationListener, OnMapClickListener, OnMarkerDragListener
 {
-	private LocationManager locationManager;
-	private String locationFind;
-	private Button btnSavePoints;
 	private GoogleMap map;
 	private Zone gameBoundary = new Zone();
-	
-	private ClientManager clientManager;
-	//private ArrayList<LatLng> boundaryPoints = new ArrayList<LatLng>();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -56,15 +43,7 @@ public class GameBoundaryActivity extends FragmentActivity implements LocationLi
         this.map = ((MapFragment) getFragmentManager().findFragmentById(R.id.GameBoundaryMap)).getMap();
         this.map.setMyLocationEnabled(true);
         
-        /*location manager class to get current location latitude and longitude values*/
-        this.locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);	
-        Criteria criteria = new Criteria();
-        
-        /*Returns the name of the provider that best matches the given criteria*/
-        this.locationFind = this.locationManager.getBestProvider(criteria, false);
-        
-        android.location.Location location = locationManager.getLastKnownLocation(locationFind);
-        LatLng newLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        LatLng newLatLng = new LatLng(GPSTracker.getInstance().getLatitude(), GPSTracker.getInstance().getLongitude());
         this.map.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng, 17));
         this.map.setOnMapClickListener(this);
 		
