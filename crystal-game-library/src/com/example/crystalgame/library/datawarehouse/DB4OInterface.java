@@ -88,9 +88,7 @@ public class DB4OInterface implements KeyValueStore {
 		List<HasID> results = new ArrayList<HasID>();
 		while(result.hasNext()) {
 			DataWrapper<HasID> entry = result.next();
-			if (!entry.isWriteLocked()) {
-				results.add(entry.getValue());
-			}
+			results.add(entry.getValue());
 		}
 		
 		return results;

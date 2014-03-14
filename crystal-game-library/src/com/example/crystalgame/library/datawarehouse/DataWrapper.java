@@ -23,8 +23,6 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	private DATA value;
 	private long version;
 	
-	private volatile transient ReentrantReadWriteLock lock;
-	
 	public DataWrapper() {}
 	
 	/**
@@ -80,14 +78,6 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 		
 		this.value = value;
 		version++;
-	}
-	
-	/**
-	 * Is the wrapper write locked?
-	 * @return True if write locked
-	 */
-	public boolean isWriteLocked() {
-		return lock.isWriteLocked();
 	}
 	
 	/**
