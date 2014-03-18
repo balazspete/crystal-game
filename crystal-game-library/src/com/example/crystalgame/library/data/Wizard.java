@@ -1,5 +1,6 @@
 package com.example.crystalgame.library.data;
 
+import com.example.crystalgame.library.data.Character.CharacterType;
 import com.example.crystalgame.library.data.Character.PlayerType;
 
 /**
@@ -15,6 +16,10 @@ public class Wizard extends Character {
 	private static final long serialVersionUID = 1221320162223472002L;
 
 	private String originalID;
+	
+	public Wizard() {
+		super(0, 0, CharacterType.WIZARD, null, null);
+	}
 	
 	/**
 	 * Create a Wizard

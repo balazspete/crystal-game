@@ -1,5 +1,6 @@
 package com.example.crystalgame.library.data;
 
+import com.example.crystalgame.library.data.Character.CharacterType;
 import com.example.crystalgame.library.data.Character.PlayerType;
 
 /**
@@ -16,6 +17,10 @@ public class Warrior extends Character {
 	
 	private String originalID;
 
+	public Warrior() {
+		super(0, 0, CharacterType.WARRIOR, null, null);
+	}
+	
 	/**
 	 * Create a warrior
 	 * @param latitude the latitude
