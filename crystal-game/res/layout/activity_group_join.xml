@@ -49,6 +49,7 @@
         android:layout_alignRight="@+id/button_get_player_alias"
         android:layout_below="@+id/button_get_player_alias"
         android:layout_marginTop="20dp"
+        android:onClick="createBoundary"
         android:text="Set game boundary" />
 
     <Button
