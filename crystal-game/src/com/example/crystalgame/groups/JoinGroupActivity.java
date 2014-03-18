@@ -46,6 +46,7 @@ public class JoinGroupActivity extends Activity {
 		} else {
 			this.findViewById(R.id.group_name).setVisibility(View.INVISIBLE);
 			this.findViewById(R.id.button_create).setVisibility(View.INVISIBLE);
+			this.findViewById(R.id.boundary_select).setVisibility(View.INVISIBLE);
 		}
 	}
 	
