@@ -1,5 +1,6 @@
 package com.example.crystalgame.library.data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public abstract class Character extends Artifact {
 	 * @author 
 	 *
 	 */
-	public enum PlayerType {
+	public enum PlayerType implements Serializable {
 		PLAYER, NPC
 	}
 	
@@ -28,7 +29,7 @@ public abstract class Character extends Artifact {
 	 * @author 
 	 *
 	 */
-	public enum CharacterType {
+	public enum CharacterType implements Serializable {
 		WARRIOR, SAGE, WIZARD, UNKNOWN
 	}
 	

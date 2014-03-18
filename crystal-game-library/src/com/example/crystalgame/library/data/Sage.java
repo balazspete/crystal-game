@@ -12,7 +12,7 @@ public class Sage extends Character {
 	 */
 	private static final long serialVersionUID = -540232457389629765L;
 	
-	private final String originalID;
+	private String originalID;
 
 	/**
 	 * Create a sage

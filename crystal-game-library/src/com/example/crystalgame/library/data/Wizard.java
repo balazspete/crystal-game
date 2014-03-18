@@ -12,7 +12,7 @@ public class Wizard extends Character {
 	 */
 	private static final long serialVersionUID = 1221320162223472002L;
 
-	private final String originalID;
+	private String originalID;
 	
 	/**
 	 * Create a Wizard
@@ -30,4 +30,7 @@ public class Wizard extends Character {
 		return originalID;
 	}
 
+	
+	
+	
 }
