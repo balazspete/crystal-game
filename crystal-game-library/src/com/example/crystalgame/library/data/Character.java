@@ -35,9 +35,9 @@ public abstract class Character extends Artifact {
 	
 	public final static double RADIUS = 100;
 	
-	public final PlayerType playerType;
-	public final CharacterType characterType;
-	public final String clientId;
+	protected PlayerType playerType;
+	protected CharacterType characterType;
+	protected String clientId;
 
 	private List<Crystal> crystalList = new ArrayList<Crystal>();
 	private List<MagicalItem> magicalItemList = new ArrayList<MagicalItem>();
@@ -143,6 +143,13 @@ public abstract class Character extends Artifact {
 		return this.energyLevel;
 	}
 	
+	/**
+	 * @return the playerType
+	 */
+	public PlayerType getPlayerType() {
+		return playerType;
+	}
+
 	/**
 	 * A character representation for a client until more information is known
 	 * @author Balazs Pete, Allen Thomas Varghese
