@@ -86,7 +86,7 @@ public class GroupInstanceManager {
 		
 		Group group;
 		do {
-			group = new Group(groupName, initiator);
+			group = new Group(groupName, initiator, boundary);
 			// If another group with the same ID exists, regenerate group
 		} while (groups.get(group.groupId) != null);
 		
@@ -95,7 +95,6 @@ public class GroupInstanceManager {
 		groups.put(group.groupId, group);
 		
 		group.getGroupInstance().addMessageEventListener(groupMessageEventListener);
-		group.setGameBoundary(boundary);
 		
 		groupInstancePool.execute(group.getGroupInstance());
 		

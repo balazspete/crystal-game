@@ -27,8 +27,8 @@ public class Group {
 	 * Create a group with a name
 	 * @param name The name of the group
 	 */
-	public Group(String name, Client client) {
-		this(name, DEFAULT_MAX_PLAYERS, client);
+	public Group(String name, Client client, GameBoundary boundary) {
+		this(name, DEFAULT_MAX_PLAYERS, client, boundary);
 	}
 	
 	/**
@@ -36,10 +36,12 @@ public class Group {
 	 * @param name The name of the group
 	 * @param maxPlayers The maximum number of players
 	 */
-	public Group(String name, int maxPlayers, Client client) {
+	public Group(String name, int maxPlayers, Client client, GameBoundary boundary) {
 		groupId = RandomID.getRandomId();
 		this.name = name;
 		this.maxPlayers = maxPlayers;
+		
+		this.gameBoundary = boundary;
 		
 		if (maxPlayers < 2) {
 			maxPlayers = 2;
