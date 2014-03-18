@@ -39,6 +39,7 @@ public class Sage extends Character {
 		s.playerType = PlayerType.PLAYER;
 		s.setLatitude(latitude);
 		s.setLongitude(longitude);
+		s.setEnergy(10);
 		return s;
 	}
 	

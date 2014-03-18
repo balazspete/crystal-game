@@ -42,6 +42,7 @@ public class Warrior extends Character {
 		w.playerType = PlayerType.PLAYER;
 		w.setLatitude(latitude);
 		w.setLongitude(longitude);
+		w.setEnergy(10);
 		return w;
 	}
 	
