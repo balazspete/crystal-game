@@ -52,7 +52,6 @@ public class CrystalScatter
 		return Crystals;
 	}
 	
-	
 
 
 }

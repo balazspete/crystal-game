@@ -3,6 +3,7 @@ package com.example.crystalgame.server.groups;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.util.RandomID;
 
 /**
@@ -18,6 +19,7 @@ public class Group {
 	private String name;
 	private int maxPlayers = -1;
 	private GroupInstance instance;
+	private GameBoundary gameBoundary;
 	
 	private List<Client> clients;
 	
@@ -137,5 +139,19 @@ public class Group {
 	 */
 	public GroupInstance getGroupInstance() {
 		return instance;
+	}
+
+	/**
+	 * @return the gameBoundary
+	 */
+	public GameBoundary getGameBoundary() {
+		return gameBoundary;
+	}
+
+	/**
+	 * @param gameBoundary the gameBoundary to set
+	 */
+	public void setGameBoundary(GameBoundary gameBoundary) {
+		this.gameBoundary = gameBoundary;
 	}
 }

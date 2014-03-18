@@ -1,5 +1,6 @@
 package com.example.crystalgame.server.groups;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,6 +13,8 @@ import com.example.crystalgame.library.communication.messages.InstructionRelayMe
 import com.example.crystalgame.library.communication.messages.Message;
 import com.example.crystalgame.library.communication.messages.MulticastMessage;
 import com.example.crystalgame.library.communication.messages.UnicastMessage;
+import com.example.crystalgame.library.data.GameBoundary;
+import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.events.ListenerManager;
 import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.events.MessageEventListener;
@@ -59,8 +62,8 @@ public class GroupInstanceManager {
 	 * @return The created group's ID
 	 * @throws GroupException Thrown in case the maximum limit for the number of groups has been reached
 	 */
-	public String createGroup(String groupName, Client initiator) throws GroupException {
-		return createGroup(groupName, Group.DEFAULT_MAX_PLAYERS, initiator);
+	public String createGroup(String groupName, Client initiator, GameBoundary boundary) throws GroupException {
+		return createGroup(groupName, Group.DEFAULT_MAX_PLAYERS, initiator, boundary);
 	}
 	
 	/**
@@ -71,7 +74,7 @@ public class GroupInstanceManager {
 	 * @return The group ID
 	 * @throws GroupException Thrown in case the maximum limit for the number of groups has been reached
 	 */
-	public String createGroup(String groupName, int maxPlayers, Client initiator) throws GroupException {
+	public String createGroup(String groupName, int maxPlayers, Client initiator, GameBoundary boundary) throws GroupException {
 		if (groups.size() >= MAX_GROUPS) {
 			throw GroupException.CANNOT_CREATE_LIMIT;
 		}
@@ -92,6 +95,7 @@ public class GroupInstanceManager {
 		groups.put(group.groupId, group);
 		
 		group.getGroupInstance().addMessageEventListener(groupMessageEventListener);
+		group.setGameBoundary(boundary);
 		
 		groupInstancePool.execute(group.getGroupInstance());
 		
@@ -207,9 +211,17 @@ public class GroupInstanceManager {
 			case CREATE:
 				int maxPlayers = Integer.parseInt((String) instruction.arguments[1]);
 				try {
+					ArrayList<Location> locations = new ArrayList<Location>();
+					locations.add((Location) instruction.arguments[3]);
+					locations.add((Location) instruction.arguments[4]);
+					locations.add((Location) instruction.arguments[5]);
+					locations.add((Location) instruction.arguments[6]);
+					
+					GameBoundary gameBoundary = new GameBoundary(locations);
 					groupId = this.createGroup(
 							(String) instruction.arguments[0], maxPlayers, 
-							new Client(message.getSenderId(), (String) instruction.arguments[2]));
+							new Client(message.getSenderId(), (String) instruction.arguments[2]),
+							gameBoundary);
 					// Return group ID if we have succeeded
 					reply = GroupInstruction.successReply(groupId);
 				} catch (GroupException e) {
