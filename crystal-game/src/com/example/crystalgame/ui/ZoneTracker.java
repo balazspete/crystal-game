@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package com.example.crystalgame.ui;
 
 import java.util.ArrayList;
