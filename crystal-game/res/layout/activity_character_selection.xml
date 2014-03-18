@@ -28,7 +28,7 @@
        <RadioButton
            android:id="@+id/warriorImage"
            style="@style/InformationPanelButton"
-           android:layout_weight="1.0"
+           android:layout_height="wrap_content"
            android:drawableTop="@drawable/warrior"
            android:text="Warrior" />
 
@@ -44,18 +44,18 @@
        android:id="@+id/textViewCharacterType"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:layout_alignLeft="@+id/main_tab_group"
-       android:layout_centerVertical="true"
-       android:layout_marginLeft="90dp"
-        />
+       android:layout_above="@+id/buttonChooseCharacter"
+       android:layout_alignParentLeft="true"
+       android:layout_alignParentRight="true"
+       android:layout_below="@+id/select_character_group" />
 
    <Button
        android:id="@+id/buttonChooseCharacter"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:layout_alignLeft="@+id/textViewCharacterType"
-       android:layout_below="@+id/textViewCharacterType"
-       android:layout_marginTop="23dp"
-       android:text="@string/choose_character_button_label"/>
+       android:layout_alignParentBottom="true"
+       android:layout_alignParentLeft="true"
+       android:layout_alignParentRight="true"
+       android:text="@string/choose_character_button_label" />
 
 </RelativeLayout>

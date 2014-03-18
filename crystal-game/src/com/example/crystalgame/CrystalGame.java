@@ -11,6 +11,7 @@ import com.example.crystalgame.communication.ClientCommunicationManager;
 import com.example.crystalgame.communication.ClientOutgoingMessages;
 import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
 import com.example.crystalgame.game.CharacterSelectionActivity;
+import com.example.crystalgame.game.CreateGameActivity;
 import com.example.crystalgame.library.communication.messages.IdMessage;
 import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
@@ -23,9 +24,9 @@ import com.example.crystalgame.library.instructions.DataSynchronisationInstructi
 import com.example.crystalgame.library.instructions.DataTransferInstruction;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.GroupInstruction;
-import com.example.crystalgame.ui.CreateGameActivity;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
+import com.example.crystalgame.ui.GPSTracker;
 import com.example.crystalgame.ui.GameActivity;
 import com.example.crystalgame.ui.InformationPresenter;
 import com.example.crystalgame.ui.UIController;
@@ -257,11 +258,12 @@ public class CrystalGame extends Application {
 	{
 		groupID = ID;
 	}
+	
 	public ArrayList<Location> getGameBoundaryPoints()
 	{
-		return UIController.getInstance().getGameBoundaryPoints();
-		
+		return UIController.getInstance().getGameBoundaryPoints();	
 	}
+	
 	public ArrayList<Location> getGameLocationPoints()
 	{
 		return UIController.getInstance().getGameLocationPoints();

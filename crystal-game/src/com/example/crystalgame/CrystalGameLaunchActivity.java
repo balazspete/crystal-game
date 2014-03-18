@@ -2,6 +2,7 @@ package com.example.crystalgame;
 
 import com.example.crystalgame.groups.GroupLobbyActivity;
 import com.example.crystalgame.groups.JoinGroupActivity;
+import com.example.crystalgame.ui.GPSTracker;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -16,6 +17,8 @@ public class CrystalGameLaunchActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_launch);
+		
+		startService(new Intent(this, GPSTracker.class));
 	}
 	
 	protected void onResume() {

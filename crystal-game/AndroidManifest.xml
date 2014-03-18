@@ -80,7 +80,7 @@
             android:name="com.example.crystalgame.ui.GameMenuActivity"
             android:label="@string/app_name" >
         </activity>
-        <activity android:name="com.example.crystalgame.ui.CreateGameActivity" >
+        <activity android:name="com.example.crystalgame.game.CreateGameActivity" >
         </activity>
         <activity android:name="com.example.crystalgame.ui.CreateGroupActivity" >
         </activity>
@@ -104,6 +104,10 @@
         <activity
             android:name="com.example.crystalgame.groups.GroupLobbyActivity"
             android:label="@string/title_activity_group_lobby" >
+        </activity>
+         <activity
+            android:name="com.example.crystalgame.game.CharacterSelectionActivity"
+            android:label="@string/title_activity_character_selection" >
         </activity>
         <service android:name=".ui.GPSTracker"></service>
     </application>
