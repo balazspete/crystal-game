@@ -94,18 +94,19 @@ public class CharacterSelectionActivity extends Activity implements OnCheckedCha
 		}
 		
 		Location location = GPSTracker.getInstance().getLocation();
+		System.out.println("location:" + location + " " + GPSTracker.getInstance().getLatitude());
 		
 		Character character = InventoryManager.getInstance().getCharacter();
 		Character myCharacter;
 		switch(checkedButton) {
 			case 0: 
-				myCharacter = new Sage(character, location.getLatitude(), location.getLongitude());
+				myCharacter = Sage.create(character, location.getLatitude(), location.getLongitude());
 				break;
 			case 1:
-				myCharacter = new Warrior(character, location.getLatitude(), location.getLongitude());
+				myCharacter = Warrior.create(character, location.getLatitude(), location.getLongitude());
 				break;
 			default:
-				myCharacter = new Wizard(character, location.getLatitude(), location.getLongitude());
+				myCharacter = Wizard.create(character, location.getLatitude(), location.getLongitude());
 				break;
 		}
 		

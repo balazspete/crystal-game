@@ -52,7 +52,7 @@ public class CharacterManager
 			result = Zone.inQuadZone( locationPoints, character.getLocation());
 			if(!(result))
 			{
-				if(character.playerType.equals(PlayerType.PLAYER))
+				if(character.getPlayerType().equals(PlayerType.PLAYER))
 				{
 					sendInstructionToClient(character.getClientId(),GameInstruction.createGameBoundaryDisqualifyInstruction());
 				}
@@ -74,7 +74,7 @@ public class CharacterManager
 		{
 			if(character.getEnergy()<=0)
 			{
-				if(character.playerType.equals(PlayerType.PLAYER))
+				if(character.getPlayerType().equals(PlayerType.PLAYER))
 				{
 					sendInstructionToClient(character.getClientId(),GameInstruction.createEnergyDisqualifyInstruction());
 				}
