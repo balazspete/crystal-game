@@ -298,7 +298,9 @@ public class GroupInstance implements Runnable {
 				@Override
 				public void run() {
 					createCharacters();
+					System.out.println("created characters");
 					manager.createCrystals();
+					System.out.println("created crystals");
 					sendGameStartSignal();
 				}		
 			}).start();
