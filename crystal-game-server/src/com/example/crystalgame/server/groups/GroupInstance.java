@@ -24,12 +24,12 @@ import com.example.crystalgame.library.events.InstructionEventListener;
 import com.example.crystalgame.library.events.ListenerManager;
 import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.events.MessageEventListener;
-import com.example.crystalgame.library.game.GameManager;
 import com.example.crystalgame.library.instructions.DataSynchronisationInstruction;
 import com.example.crystalgame.library.instructions.DataTransferInstruction;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.Instruction;
 import com.example.crystalgame.server.datawarehouse.ServerDataWarehouse;
+import com.example.crystalgame.server.game.GameManager;
 import com.example.crystalgame.server.sequencer.Sequencer;
 
 /**

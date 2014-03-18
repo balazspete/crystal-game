@@ -1,4 +1,4 @@
-package com.example.crystalgame.library.game;
+package com.example.crystalgame.server.game;
 
 import java.util.Arrays;
 import java.util.List;

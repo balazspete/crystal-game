@@ -39,5 +39,6 @@
 	<string name="select_character_warning">Select a character!</string>  
 
 	<string name="communication_failure">Failed to communicate with the server. Try again!</string>
+	<string name="action_leave_group">Leave group</string> 
 	
 </resources>

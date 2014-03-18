@@ -24,6 +24,7 @@ import com.example.crystalgame.library.instructions.DataSynchronisationInstructi
 public class ClientDataWarehouse extends DataWarehouse {
 
 	public static String DB_PATH, myID, groupID;
+	public static boolean isNull = true;
 	
 	protected ClientDataWarehouse(ObjectContainer store, Synchronizer synchroniser) {
 		super(store, synchroniser);
@@ -41,6 +42,7 @@ public class ClientDataWarehouse extends DataWarehouse {
 			return new NullDataWarehouse();
 		}
 		
+		isNull = false;
 		return instance;
 	}
 

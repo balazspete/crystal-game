@@ -1,8 +1,9 @@
-package com.example.crystalgame.library.game;
+package com.example.crystalgame.server.test.game;
 
 import static org.junit.Assert.*;
 
 import com.example.crystalgame.library.data.Location;
+import com.example.crystalgame.server.game.GameManager;
 
 import java.util.List;
 import java.util.LinkedList;
