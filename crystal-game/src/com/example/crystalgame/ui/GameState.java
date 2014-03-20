@@ -45,7 +45,7 @@ public class GameState extends Thread {
 	 * Game State initialization
 	 */
 	public void initializeGameState() {
-		this.start();
+		//this.start();
 	}
 	
 	/**

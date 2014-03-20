@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.R;
+import com.example.crystalgame.groups.GroupLobbyActivity;
 import com.example.crystalgame.library.data.Zone;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.Instruction;
@@ -84,6 +85,7 @@ public class CreateGameActivity extends Activity {
 		}
 		
 		((CrystalGame) getApplication()).getCommunication().out.relayInstructionToServer(instruction);
+		startActivity(new Intent(this, GroupLobbyActivity.class));
 	}
 	
 	private void showErrorToast() {
