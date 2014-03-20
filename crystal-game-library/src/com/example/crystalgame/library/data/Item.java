@@ -1,5 +1,7 @@
 package com.example.crystalgame.library.data;
 
+import java.io.Serializable;
+
 /**
  * Describes an item
  * @author Balazs Pete, Shen Chen, Rajan Verma, Allen Thomas Varghese
@@ -12,7 +14,7 @@ public abstract class Item extends Artifact {
 	 */
 	private static final long serialVersionUID = 6807516195771430780L;
 	
-	public enum ItemType {
+	public enum ItemType implements Serializable {
 		CRYSTAL, MAGICAL_ITEM
 	}
 	

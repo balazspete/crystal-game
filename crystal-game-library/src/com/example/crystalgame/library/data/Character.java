@@ -39,8 +39,8 @@ public abstract class Character extends Artifact {
 	protected CharacterType characterType;
 	protected String clientId;
 
-	private List<Crystal> crystalList = new ArrayList<Crystal>();
-	private List<MagicalItem> magicalItemList = new ArrayList<MagicalItem>();
+	private ArrayList<Crystal> crystalList = new ArrayList<Crystal>();
+	private ArrayList<MagicalItem> magicalItemList = new ArrayList<MagicalItem>();
 	
 	private double energy = 10;
 	private String energyLevel = null;
