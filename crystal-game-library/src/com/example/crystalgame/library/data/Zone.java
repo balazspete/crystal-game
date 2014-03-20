@@ -40,7 +40,6 @@ public class Zone implements Serializable, HasID
 
 	public Zone() 
 	{
-
 		id = RandomID.getRandomId();
 	}
 	
@@ -104,7 +103,6 @@ public class Zone implements Serializable, HasID
 	 * @return boolean
 	 */
 	public static boolean inQuadZone(ArrayList<Location> locationPoints, Location location){
-
 	  int i;
 	  int j;
 	  boolean result = false;
@@ -171,9 +169,7 @@ public class Zone implements Serializable, HasID
 		return null;
 	}
 	
-	public ArrayList<Location> getLocationList()
-	{
-		
+	public ArrayList<Location> getLocationList() {
 		return locationPoints;
 	}
 	
@@ -210,8 +206,7 @@ public class Zone implements Serializable, HasID
 	 * To check if there are any locations marked as part of a zone
 	 * @return true if zone if not defined
 	 */
-	public boolean isEmpty() 
-	{
+	public boolean isEmpty() {
 		return this.locationPoints != null 
 				&& this.locationPoints.isEmpty();
 	}
@@ -220,29 +215,36 @@ public class Zone implements Serializable, HasID
 	 * 
 	 * @return
 	 */
-	public double getMinLattitudeValue()
-	{
-		new ListController();
-		return ListController.findMinDoubleNumber(getZoneLattitudes());
+	public double getMinLattitudeValue() {
+		double minLatitude = Double.POSITIVE_INFINITY;
+		for (Location l : locationPoints) {
+			minLatitude = Math.min(minLatitude, l.getLongitude());
+		}
+		return minLatitude;
 	}
 	/**
 	 * 
 	 * @return
 	 */
-	public double getMinLongitudeValue()
-	{
-		new RandomNumber();
-		return ListController.findMinDoubleNumber(getZoneLongitudes());
+	public double getMinLongitudeValue() {
+		double minLongitude = Double.POSITIVE_INFINITY;
+		for (Location l : locationPoints) {
+			minLongitude = Math.min(minLongitude, l.getLongitude());
+		}
+		return minLongitude;
 	}
 	
 	/**
 	 * 
 	 * @return
 	 */
-	public double getMaxLattitudeValue()
-	{
-		new ListController();
-		return ListController.findMaxDoubleNumner(getZoneLattitudes());
+	public double getMaxLattitudeValue() {
+		double maxLatitude = Double.NEGATIVE_INFINITY;
+		System.err.println("location points "+locationPoints.size());
+		for (Location l : locationPoints) {
+			maxLatitude = Math.max(maxLatitude, l.getLatitude());
+		}
+		return maxLatitude;
 	}
 	/**
 	 * 
@@ -250,36 +252,11 @@ public class Zone implements Serializable, HasID
 	 */
 	public double getMaxLongitudeValue()
 	{
-		new RandomNumber();
-		return ListController.findMaxDoubleNumner(getZoneLongitudes());
-	}
-	
-	
-	/**
-	 * 
-	 * @return
-	 */
-	public ArrayList<Double> getZoneLattitudes()
-	{
-		ArrayList<Double> LattitudeList = new ArrayList<Double>();
-		for(Location location : locationPoints) 
-		{
-			LattitudeList.add(location.getLatitude());
+		double maxLongitude = Double.NEGATIVE_INFINITY;
+		for (Location l : locationPoints) {
+			maxLongitude = Math.max(maxLongitude, l.getLongitude());
 		}
-		return LattitudeList;
-	}
-	/**
-	 * 
-	 * @return
-	 */
-	public ArrayList<Double> getZoneLongitudes()
-	{
-		ArrayList<Double> LongitudeList = new ArrayList<Double>();
-		for(Location location : locationPoints) 
-		{
-			LongitudeList.add(location.getLongitude());
-		}
-		return LongitudeList;
+		return maxLongitude;
 	}
 	
 	@Override

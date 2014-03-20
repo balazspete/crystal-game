@@ -275,6 +275,7 @@ public class GroupInstance implements Runnable {
 	
 	private synchronized void handleCreateGame(Serializable[] data) {
 		if (!inGame) {
+			System.err.println("Starting the game!");
 			String gameName = (String) data[0];
 			
 			List<String> clientIDs = new ArrayList<String>();
@@ -288,22 +289,10 @@ public class GroupInstance implements Runnable {
 			locations.add((Location) data[3]);
 			locations.add((Location) data[4]);
 			
-			final GameManager manager = new GameManager(dataWarehouse, gameName, clientIDs, locations);
-		
+			final GameManager manager = new GameManager(dataWarehouse, sequencer, gameName, clientIDs, locations);
 			new Thread(manager).start();
 		
 			inGame = true;
-			
-			new Thread(new Runnable(){
-				@Override
-				public void run() {
-					createCharacters();
-					System.out.println("created characters");
-					manager.createCrystals();
-					System.out.println("created crystals");
-					sendGameStartSignal();
-				}		
-			}).start();
 		}	
 	}
 	
@@ -427,26 +416,6 @@ public class GroupInstance implements Runnable {
 		InstructionRelayMessage message = new InstructionRelayMessage(sender);
 		message.setData(reply);
 		sequencer.sendMessageToOne(message);
-	}
-	
-	private void sendGameStartSignal() {
-		InstructionRelayMessage message = new InstructionRelayMessage(null);
-		message.setData(GameInstruction.createGameStartedSignalInstruction());
-		sequencer.sendMessageToAll(message);
-	}
- 	
-	public void createCharacters() {
-		List<HasID> characters = new ArrayList<HasID>();
-		for (Client client : group.getClients()) {
-			characters.add(new UnknownPlayerCharacter(client.getId()));
-		}
-		
-		try {
-			dataWarehouse.putList(Character.class, characters);
-		} catch (DataWarehouseException e) {
-			System.err.println("Failed to create characters, retrying...");
-			createCharacters();
-		}
 	}
 	
 }

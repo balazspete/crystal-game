@@ -19,7 +19,8 @@ public class RandomNumber
 	 */
 	public static int getRandomIntNumber(int start, int end) 
 	{
-	    return new Random().nextInt((start - end) + 1) + end;
+	    int random = (int)(Math.random() * (end - start));
+	    return random + start;
 	}
 	
 	/**

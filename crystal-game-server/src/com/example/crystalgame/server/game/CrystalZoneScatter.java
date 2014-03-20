@@ -31,7 +31,6 @@ public class CrystalZoneScatter
 	
 	public ArrayList<CrystalZone> generateCrystalMetrics()
 	{
-		gameLocation = new GameLocation();
 		CrystalZone crystalZone ;
 		double zLow = 0.0 , kLow=0.0, zHigh=0.0,kHigh = 0.0;
 		zLow=gameLocation.getMinLongitudeValue();
@@ -90,11 +89,10 @@ public class CrystalZoneScatter
 	public ArrayList<CrystalZone> generateCrystalZones(int range)
 	{
 		CrystalZone crystalZone;
-		ArrayList<CrystalZone> crystalMetrics = new ArrayList<CrystalZone>();
 		crystalMetrics = generateCrystalMetrics();
 		for(int i = 0; i < range; i++)
 		{
-			crystalZone =  crystalMetrics.get(new RandomNumber().getRandomIntNumber(1, crystalMetrics.size()));
+			crystalZone =  crystalMetrics.get(RandomNumber.getRandomIntNumber(1, crystalMetrics.size()));
 			if(!(crystalZones.contains(crystalZone)))
 			{
 				crystalZones.add(crystalZone);
