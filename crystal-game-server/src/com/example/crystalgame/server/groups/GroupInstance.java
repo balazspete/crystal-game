@@ -12,9 +12,7 @@ import com.example.crystalgame.library.communication.messages.InstructionRelayMe
 import com.example.crystalgame.library.communication.messages.MulticastMessage;
 import com.example.crystalgame.library.communication.messages.UnicastMessage;
 import com.example.crystalgame.library.data.Character;
-import com.example.crystalgame.library.data.Character.UnknownPlayerCharacter;
 import com.example.crystalgame.library.data.Crystal;
-import com.example.crystalgame.library.data.CrystalZone;
 import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.data.Information;
@@ -31,7 +29,6 @@ import com.example.crystalgame.library.instructions.DataTransferInstruction;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.Instruction;
 import com.example.crystalgame.server.datawarehouse.ServerDataWarehouse;
-import com.example.crystalgame.server.game.CrystalZoneScatter;
 import com.example.crystalgame.server.game.GameManager;
 import com.example.crystalgame.server.sequencer.Sequencer;
 
@@ -60,6 +57,7 @@ public class GroupInstance implements Runnable {
 	 */
 	public GroupInstance(Group group) {
 		this.group = group;
+		
 		sequencer = new Sequencer(group);
 		this.managerLock = new ArrayBlockingQueue<GameManager>(1);
 		dataWarehouse = ServerDataWarehouse.getWarehouseForGroup(group);
@@ -128,20 +126,13 @@ public class GroupInstance implements Runnable {
 			}
 		};
 		
-		try {
-			// Save the group related information
-			dataWarehouse.putDirect(Information.class, new Information(Information.GROUP_NAME, group.getName()));
-			dataWarehouse.putDirect(Information.class, new Information(Information.GROUP_MAX_PLAYERS, group.getMaxPlayers()));
-			dataWarehouse.putDirect(GameBoundary.class, group.getGameBoundary());
-		} catch (DataWarehouseException e) {
-			e.printStackTrace();
-		}
-		
 	}
 
 	@Override
 	public void run() {
-		System.out.println(group.groupId);
+		sleep(10000);
+		setup();
+		
 		// TODO: do group stuff here
 		while(running) {
 			try {
@@ -163,6 +154,20 @@ public class GroupInstance implements Runnable {
 	public void stopInstance() {
 		running = false;
 		// TODO: Stop child threads here
+	}
+	
+	private void setup() {
+		try {
+			// Save the group related information
+			List<HasID> information = new ArrayList<HasID>();
+			information.add(new Information(Information.GROUP_NAME, group.getName()));
+			information.add(new Information(Information.GROUP_MAX_PLAYERS, group.getMaxPlayers()));
+			
+			dataWarehouse.putList(Information.class, information);
+			dataWarehouse.put(GameBoundary.class, group.getGameBoundary());
+		} catch (DataWarehouseException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	/**
@@ -416,6 +421,20 @@ public class GroupInstance implements Runnable {
 		InstructionRelayMessage message = new InstructionRelayMessage(sender);
 		message.setData(reply);
 		sequencer.sendMessageToOne(message);
+	}
+	
+	public void sleep(int millisecs) {
+		boolean proceed = false;
+		while (!proceed){
+			synchronized(this) {
+				try {
+					wait(millisecs);
+					proceed = true;
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 }

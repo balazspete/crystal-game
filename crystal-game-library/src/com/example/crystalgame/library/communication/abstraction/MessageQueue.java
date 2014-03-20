@@ -35,8 +35,8 @@ public class MessageQueue extends Thread {
 	 * @param message The message
 	 * @return True of added
 	 */
-	public synchronized boolean put(String communicationId, Message message) {
-		return put(new MessageQueueElement(communicationId, message));
+	public synchronized boolean put(String clientID, Message message) {
+		return put(new MessageQueueElement(clientID, message));
 	}
 	
 	private synchronized boolean put(MessageQueueElement element) {
@@ -76,7 +76,13 @@ public class MessageQueue extends Thread {
 			
 			try {
 				// try to send the data
-				manager.sendData(element.communicationId, element.message);
+				String communication = element.getCommunicationID();
+				System.err.println(element.clientID);
+				if (communication == null) {
+					throw new CommunicationFailureException("Client disconnected");
+				}
+				
+				manager.sendData(communication, element.message);
 			} catch (CommunicationFailureException e) {
 				System.err.println(e.getMessage());
 				boolean success = false;
@@ -105,12 +111,20 @@ public class MessageQueue extends Thread {
 	 */
 	public class MessageQueueElement {
 		
-		public final String communicationId;
-		public final Message message;
+		public String clientID;
+		public Message message;
 		
-		public MessageQueueElement(String communicationId, Message message) {
-			this.communicationId = communicationId;
+		public MessageQueueElement(String clientID, Message message) {
+			this.clientID = clientID;
 			this.message = message;
+		}
+		
+		public Message getMessage() {
+			return message;
+		}
+		
+		public String getCommunicationID() {
+			return AbstractionModule.clientToCommunicationMap.get(clientID);
 		}
 		
 	}
