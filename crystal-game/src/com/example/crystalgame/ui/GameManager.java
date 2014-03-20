@@ -89,7 +89,7 @@ public class GameManager {
 	
 	public synchronized ArrayList<MagicalItem> getMagicalItemInfoList()
 	{
-		return LocationManager.getInstance().getMagicalItemInfoList();
+		return (ArrayList<MagicalItem>)InventoryManager.getInstance().getCharacter().getMagicalItems();
 	}
 	
 	/**

@@ -113,9 +113,4 @@ public class LocationManager {
 		return false;
 	}
 	
-	public ArrayList<MagicalItem> getMagicalItemInfoList()
-	{
-		
-		return ArtifactTracker.getInstance().getMagicalItemInfoList();
-	}
 }

@@ -11,6 +11,7 @@ import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.Item;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
+import com.example.crystalgame.library.data.Zone;
 
 /**
  * Tracker class for crystals and magical items
@@ -21,9 +22,9 @@ public class ArtifactTracker {
 	private static ArtifactTracker artifactTracker = null;
 	
 	/* Game items information */
-	private ArrayList<Crystal> crystalList = new ArrayList<Crystal>();
-	private ArrayList<MagicalItem> magicalItemList = new ArrayList<MagicalItem>();
-	private ArrayList<Character> characterList = new ArrayList<Character>();
+	private Crystal[] crystalList = null;
+	private MagicalItem[] magicalItemList = null;
+	private Character[] characterList = null;
 	
 	private ArtifactTracker() {
 	}
@@ -36,42 +37,6 @@ public class ArtifactTracker {
 		return artifactTracker;
 	}
 	
-	public void addCrystal(Crystal crystalItem) {
-		crystalList.add(crystalItem);
-	}
-	
-	public void setCrystalList(ArrayList<Crystal> crystalList) {
-		this.crystalList = crystalList;
-	}
-	
-	public void addMagicalItem(MagicalItem magicalItem) {
-		magicalItemList.add(magicalItem);
-	}
-	
-	public void setMagicalItemList(ArrayList<MagicalItem> magicalItemList) {
-		this.magicalItemList = magicalItemList;
-	}
-	
-	public void addCharacter(Character character) {
-		characterList.add(character);
-	}
-	
-	public void setCharacterList(ArrayList<Character> characterList) {
-		this.characterList = characterList;
-	}
-	
-	
-	public ArrayList<MagicalItem> getMagicalItemInfoList()
-	{
-		for(int i=0;i<5;i++)
-		{
-			MagicalItem item = new MagicalItem(23.0, 43.0);
-			item.setMagicalItemDescription("Item"+i);
-			magicalItemList.add(item);
-		}
-		return magicalItemList;
-	}
-	
 	/**
 	 * Finds the artifact/character in proximity.
 	 * @return the first artifact in proximity
@@ -79,8 +44,8 @@ public class ArtifactTracker {
 	public Artifact getArtifactsInProximity(Location location) {
 		Artifact artifactItem = null;
 		
-		// TODO : Update details of crystals and magical items from datawarehouse
-		/*
+		crystalList = InventoryManager.getInstance().getCrystals();
+		
 		// Checking the crystal list
 		for(Crystal item : crystalList) {
 			if(Zone.inRadialZone(item.getLocation(), location)) {
@@ -88,12 +53,16 @@ public class ArtifactTracker {
 			}
 		}
 		
+		magicalItemList = InventoryManager.getInstance().getMagicalItems();
+		
 		// Checking the magical item list
 		for(MagicalItem item : magicalItemList) {
 			if(Zone.inRadialZone(item.getLocation(), location)) {
 				return item;
 			}
 		}
+		
+		characterList = InventoryManager.getInstance().getCharacters();
 		
 		// Checking the character list
 		for(Character item : characterList) {
@@ -103,8 +72,6 @@ public class ArtifactTracker {
 		}
 		
 		return artifactItem;
-		*/
-		return new Crystal(location.getLatitude(), location.getLongitude());
 	}
 	
 	public void markItem(Item item) {
