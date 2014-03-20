@@ -93,6 +93,14 @@ public class UIController {
 	}
 
 	/**
+	 * Current game character
+	 * @return Character
+	 */
+	public synchronized com.example.crystalgame.library.data.Character getGameCharacter() {
+		return InformationPresenter.getInstance().getGameCharacter();
+	}
+	
+	/**
 	 * Update number of crystals
 	 * @param noOfCrystals
 	 */

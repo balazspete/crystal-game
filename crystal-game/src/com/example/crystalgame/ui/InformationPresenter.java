@@ -8,6 +8,7 @@ import android.util.Log;
 import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
+import com.example.crystalgame.library.data.ThroneRoom;
 
 /**
  * 
@@ -75,6 +76,22 @@ public class InformationPresenter {
 	{
 		
 		return GameManager.getInstance().getMagicalItemInfoList();
+	}
+	
+	/**
+	 * Current Game Character
+	 * @return Character
+	 */
+	public synchronized com.example.crystalgame.library.data.Character getGameCharacter() {
+		return GameManager.getInstance().getGameCharacter();
+	}
+	
+	/**
+	 * The ThroneRoom
+	 * @return ThroneRoom
+	 */
+	public synchronized ThroneRoom getThroneRoom() {
+		return GameManager.getInstance().getThroneRoom();
 	}
 	
 	/**

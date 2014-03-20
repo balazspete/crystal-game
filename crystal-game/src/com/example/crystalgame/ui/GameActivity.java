@@ -31,8 +31,10 @@ import android.widget.Toast;
 
 import com.example.crystalgame.R;
 import com.example.crystalgame.library.data.Character.PlayerType;
+import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
+import com.example.crystalgame.library.data.ThroneRoom;
 import com.example.crystalgame.library.data.Warrior;
 import com.example.crystalgame.library.data.Wizard;
 import com.example.crystalgame.ui.ZoneChangeEvent.ZoneType;
@@ -90,8 +92,10 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 		SupportMapFragment supportMapFragment = (SupportMapFragment)fragmentManager.findFragmentById(R.id.map);
 		map = supportMapFragment.getMap();
         mapView = supportMapFragment.getView();
+        
         /*Set my location true on map*/
         map.setMyLocationEnabled(true);
+        
         //Chen Shen - Action Bar
         Crystal_Label=(TextView) findViewById(R.id.Crystal_message);  
         Crystal_Label.setVisibility(View.VISIBLE);  
@@ -182,66 +186,95 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 		super.onStart();
         LocalMapInformation mapInformation = (LocalMapInformation)UIController.getInstance().loadGamePlayData(GamePlayState.LOCAL_MAP);
         
-        gameBoundaryPoints = UIController.getInstance().getGameBoundaryPoints();
-        
-        for(Location location: gameBoundaryPoints)
-        {
-        	  map.addMarker(new MarkerOptions()
-	        	.position(new LatLng(location.getLatitude(),location.getLongitude()))
-	        	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
-	        );
-        }
-        gameLocationPoints = UIController.getInstance().getGameLocationPoints();
-        
-        for(Location location: gameLocationPoints)
-        {
-        	  map.addMarker(new MarkerOptions()
-	        	.position(new LatLng(location.getLatitude(),location.getLongitude()))
-	        	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
-	        );
-        }
-        
-        // Displaying Crystals
-        for(Location location : mapInformation.getCrystalList()) {
-	        map.addMarker(new MarkerOptions()
-	        	.position(new LatLng(location.getLatitude(),location.getLongitude()))
-	        	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
-	        );
-        }
-        
-        // Displaying Magical Items
-        for(Location location2 : mapInformation.getMagicalItemList()){
-	        map.addMarker(new MarkerOptions()
-		    	.position(new LatLng(location2.getLatitude(),location2.getLongitude()))
-		    	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-	        );
-        }
-        
-        com.example.crystalgame.library.data.Character gameCharacter = null;
-        
-        // Displaying Characters
-        for(Location location3 : mapInformation.getCharacterList()) {
-        	gameCharacter = mapInformation.gameStateInformation.getGameCharacter();
-        	
-        	if(gameCharacter instanceof Warrior) {
-        		map.addMarker(new MarkerOptions()
-		    	.position(new LatLng(location3.getLatitude(),location3.getLongitude()))
+        if(null != mapInformation) {
+		    
+        	gameBoundaryPoints = UIController.getInstance().getGameBoundaryPoints();
+		    
+		    if(null != gameBoundaryPoints) {
+			    for(Location location: gameBoundaryPoints)
+			    {
+			    	  map.addMarker(new MarkerOptions()
+			        	.position(new LatLng(location.getLatitude(),location.getLongitude()))
+			        	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
+			        );
+			    }
+		    }
+		    
+		    gameLocationPoints = UIController.getInstance().getGameLocationPoints();
+		    
+		    if(null != gameLocationPoints) {
+			    for(Location location: gameLocationPoints)
+			    {
+			    	  map.addMarker(new MarkerOptions()
+			        	.position(new LatLng(location.getLatitude(),location.getLongitude()))
+			        	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
+			        );
+			    }
+		    }
+		    
+		    Crystal[] crystals = mapInformation.getCrystalList();
+		    
+		    if(null != crystals) {
+			    // Displaying Crystals
+			    for(Location location : crystals) {
+			        map.addMarker(new MarkerOptions()
+			        	.position(new LatLng(location.getLatitude(),location.getLongitude()))
+			        	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+			        );
+			    }
+		    }
+		    
+		    MagicalItem[] magicalItems = mapInformation.getMagicalItemList();
+		    if(null != magicalItems) {
+			    // Displaying Magical Items
+			    for(Location location : magicalItems){
+			        map.addMarker(new MarkerOptions()
+				    	.position(new LatLng(location.getLatitude(),location.getLongitude()))
+				    	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+			        );
+			    }
+		    }
+		    
+		    com.example.crystalgame.library.data.Character gameCharacter = null;
+		    gameCharacter = mapInformation.gameStateInformation.getGameCharacter();
+		    
+		    // Display different markers based on player types
+	    	if(gameCharacter instanceof Warrior) {
+	    		map.addMarker(new MarkerOptions()
+		    	.position(new LatLng(gameCharacter.getLatitude(),gameCharacter.getLongitude()))
 		    	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-        		);
-        	} else if(gameCharacter instanceof Wizard && gameCharacter.getPlayerType().equals(PlayerType.NPC)) {
-        		map.addMarker(new MarkerOptions()
-		    	.position(new LatLng(location3.getLatitude(),location3.getLongitude()))
-		    	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
-        		);
-        	} else {
+	    		);
+	    	}
+		    
+		    // Displaying Characters
+		    for(com.example.crystalgame.library.data.Character player : mapInformation.getCharacterList()) {
+		    	// If the character is same as the game character, skip
+		    	if(gameCharacter.getID().equals(player.getID())) {
+		    		continue;
+		    	} else if(gameCharacter instanceof Wizard && player.getPlayerType().equals(PlayerType.NPC)) {
+		    		map.addMarker(new MarkerOptions()
+			    	.position(new LatLng(gameCharacter.getLatitude(),gameCharacter.getLongitude()))
+			    	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
+		    		);
+		    	} else {
+			        map.addMarker(new MarkerOptions()
+				    	.position(new LatLng(player.getLatitude(),player.getLongitude()))
+				    	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+			        ); 
+		    	}
+		    }
+		    
+		    // Adding throne room to the current location of the host
+		    ThroneRoom throneRoom = UIController.getInstance().getThroneRoom();
+		    if(null != throneRoom) {
+		        Location location = throneRoom.getLocation();
 		        map.addMarker(new MarkerOptions()
-			    	.position(new LatLng(location3.getLatitude(),location3.getLongitude()))
-			    	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
-		        ); 
-        	}
+		    		.position(new LatLng(location.getLatitude(),location.getLongitude()))
+		    		.icon(BitmapDescriptorFactory.fromResource(R.drawable.throne))
+		        );
+		    }
         }
-
-	   }
+	}
     
 	@Override
 	public void zoneChanged(final ZoneChangeEvent zoneChangeEvent) {

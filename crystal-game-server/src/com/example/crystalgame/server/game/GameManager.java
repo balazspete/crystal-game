@@ -9,6 +9,7 @@ import com.example.crystalgame.library.data.CrystalZone;
 import com.example.crystalgame.library.data.GameLocation;
 import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.data.Location;
+import com.example.crystalgame.library.data.ThroneRoom;
 import com.example.crystalgame.library.datawarehouse.DataWarehouse;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
 import com.example.crystalgame.library.events.InstructionEvent;
@@ -24,16 +25,18 @@ public class GameManager implements Runnable {
 	private final String name;
 	private List<String> clientIDs;
 	private GameLocation gameLocation;
+	private ThroneRoom throneRoom;
 	
 	private volatile boolean running = true; 
 	private ListenerManager<InstructionEventListener, InstructionEvent> manager;
 	
-	public GameManager(DataWarehouse dw, String gameName, List<String> clientIDs, List<Location> locations) {
+	public GameManager(DataWarehouse dw, String gameName, List<String> clientIDs, List<Location> locations, ThroneRoom throneRoom) {
 		this.dataWarehouse = dw;
 		
 		this.name = gameName;
 		this.clientIDs = clientIDs;
 		this.gameLocation = new GameLocation();
+		this.throneRoom = throneRoom;
 		
 		for(Location location : locations) 
 		{
@@ -42,6 +45,7 @@ public class GameManager implements Runnable {
 		
 		try {
 			dw.put(GameLocation.class, gameLocation);
+			dw.put(ThroneRoom.class, this.throneRoom);
 		} catch (DataWarehouseException e) {
 			e.printStackTrace();
 		}

@@ -21,6 +21,7 @@ import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.Instruction;
 import com.example.crystalgame.library.instructions.InstructionFormatException;
 import com.example.crystalgame.ui.GameBoundaryActivity;
+import com.example.crystalgame.ui.UIController;
 
 /**
  * 
@@ -73,11 +74,14 @@ public class CreateGameActivity extends Activity {
 		
 		Instruction instruction;
 		try {
-			instruction = GameInstruction.createCreateGameGameInstruction(name, 
-					gameBoundary.getLocation(0), 
-					gameBoundary.getLocation(1), 
-					gameBoundary.getLocation(2), 
-					gameBoundary.getLocation(3));
+			instruction = GameInstruction.createCreateGameGameInstruction(
+					name 															// Name of game
+				,	gameBoundary.getLocation(0) 									// Game Location Top-Left
+				,	gameBoundary.getLocation(1)  									// Game Location Top-Right
+				,	gameBoundary.getLocation(2)  									// Game Location Bottom-Right
+				,	gameBoundary.getLocation(3) 									// Game Location Bottom-Left
+				,	UIController.getInstance().getGameCharacter().getLocation()		// Pass the location of the client who initiates create game
+			);
 		} catch (InstructionFormatException e) {
 			showErrorToast();
 			return;

@@ -14,12 +14,12 @@ import com.example.crystalgame.library.communication.messages.UnicastMessage;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Character.UnknownPlayerCharacter;
 import com.example.crystalgame.library.data.Crystal;
-import com.example.crystalgame.library.data.CrystalZone;
 import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.data.Information;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
+import com.example.crystalgame.library.data.ThroneRoom;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
 import com.example.crystalgame.library.events.InstructionEvent;
 import com.example.crystalgame.library.events.InstructionEventListener;
@@ -31,7 +31,6 @@ import com.example.crystalgame.library.instructions.DataTransferInstruction;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.Instruction;
 import com.example.crystalgame.server.datawarehouse.ServerDataWarehouse;
-import com.example.crystalgame.server.game.CrystalZoneScatter;
 import com.example.crystalgame.server.game.GameManager;
 import com.example.crystalgame.server.sequencer.Sequencer;
 
@@ -288,7 +287,9 @@ public class GroupInstance implements Runnable {
 			locations.add((Location) data[3]);
 			locations.add((Location) data[4]);
 			
-			final GameManager manager = new GameManager(dataWarehouse, gameName, clientIDs, locations);
+			ThroneRoom throneRoom = new ThroneRoom(((Character)data[5]).getLocation());
+			
+			final GameManager manager = new GameManager(dataWarehouse, gameName, clientIDs, locations, throneRoom);
 		
 			new Thread(manager).start();
 		
