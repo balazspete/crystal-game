@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
+import com.example.crystalgame.library.data.ThroneRoom;
 
 import android.util.Log;
 
@@ -98,6 +99,14 @@ public class UIController {
 	 */
 	public synchronized com.example.crystalgame.library.data.Character getGameCharacter() {
 		return InformationPresenter.getInstance().getGameCharacter();
+	}
+
+	/**
+	 * The ThroneRoom
+	 * @return ThroneRoom
+	 */
+	public synchronized ThroneRoom getThroneRoom() {
+		return InformationPresenter.getInstance().getThroneRoom();
 	}
 	
 	/**
