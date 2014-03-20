@@ -49,7 +49,7 @@
             android:value="4030500" />
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBViFZgKDoeQPO6itlay7VA_nOOLg02Ccw" />
+            android:value="AIzaSyDqHXD71OHSJ4hnmLk4t3Np_G5RktYSQXg" />
 
         <activity
             android:name="com.example.crystalgame.CrystalGameLaunchActivity"

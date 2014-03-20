@@ -9,6 +9,7 @@ import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
+import com.example.crystalgame.library.data.ThroneRoom;
 
 
 /**
@@ -89,7 +90,11 @@ public class GameManager {
 	
 	public synchronized ArrayList<MagicalItem> getMagicalItemInfoList()
 	{
-		return LocationManager.getInstance().getMagicalItemInfoList();
+		return (ArrayList<MagicalItem>)InventoryManager.getInstance().getCharacter().getMagicalItems();
+	}
+	
+	public synchronized com.example.crystalgame.library.data.Character getGameCharacter() {
+		return InventoryManager.getInstance().getCharacter();
 	}
 	
 	/**
@@ -106,5 +111,9 @@ public class GameManager {
 	
 	public synchronized void magicalItemCaptureCallBack(int noOfMagicalItems) {
 		InformationPresenter.getInstance().magicalItemCaptureCallBack(noOfMagicalItems);
+	}
+	
+	public synchronized ThroneRoom getThroneRoom() {
+		return InventoryManager.getInstance().getThroneRoom();
 	}
 }

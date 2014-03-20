@@ -12,6 +12,7 @@ import com.example.crystalgame.library.data.GameLocation;
 import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.Character.UnknownPlayerCharacter;
+import com.example.crystalgame.library.data.ThroneRoom;
 import com.example.crystalgame.library.datawarehouse.DataWarehouse;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
 import com.example.crystalgame.library.events.InstructionEvent;
@@ -19,9 +20,7 @@ import com.example.crystalgame.library.events.InstructionEventListener;
 import com.example.crystalgame.library.events.ListenerManager;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.Instruction;
-import com.example.crystalgame.server.groups.Client;
 import com.example.crystalgame.server.sequencer.Sequencer;
-
 
 public class GameManager implements Runnable {
 
@@ -31,21 +30,24 @@ public class GameManager implements Runnable {
 	private final String name;
 	private List<String> clientIDs;
 	private GameLocation gameLocation;
+	private ThroneRoom throneRoom;
 	
 	private volatile boolean running = true; 
 	private ListenerManager<InstructionEventListener, InstructionEvent> manager;
-	
-	public GameManager(DataWarehouse dw, Sequencer sequencer, String gameName, List<String> clientIDs, List<Location> locations) {
+
+	public GameManager(DataWarehouse dw, Sequencer sequencer, String gameName, List<String> clientIDs, List<Location> locations, ThroneRoom throneRoom) {
 		this.dataWarehouse = dw;
 		this.sequencer = sequencer;
 		
 		this.name = gameName;
 		this.clientIDs = clientIDs;
 		this.gameLocation = new GameLocation();
+		this.throneRoom = throneRoom;
 		
 		for(Location location : locations) {
 			this.gameLocation.addLocation(location);
 		}
+		
 	}
 
 	@Override
@@ -152,6 +154,7 @@ public class GameManager implements Runnable {
 	private void saveGameLocation() {
 		try {
 			dataWarehouse.blockingPut(GameLocation.class, gameLocation);
+			dataWarehouse.blockingPut(ThroneRoom.class, throneRoom);
 		} catch (DataWarehouseException e) {
 			e.printStackTrace();
 		}

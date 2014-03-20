@@ -18,6 +18,7 @@ import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.data.Information;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
+import com.example.crystalgame.library.data.ThroneRoom;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
 import com.example.crystalgame.library.events.InstructionEvent;
 import com.example.crystalgame.library.events.InstructionEventListener;
@@ -294,7 +295,9 @@ public class GroupInstance implements Runnable {
 			locations.add((Location) data[3]);
 			locations.add((Location) data[4]);
 			
-			final GameManager manager = new GameManager(dataWarehouse, sequencer, gameName, clientIDs, locations);
+			ThroneRoom throneRoom = new ThroneRoom(((Character) data[5]).getLocation());
+			
+			final GameManager manager = new GameManager(dataWarehouse, sequencer, gameName, clientIDs, locations, throneRoom);
 			new Thread(manager).start();
 		
 			inGame = true;

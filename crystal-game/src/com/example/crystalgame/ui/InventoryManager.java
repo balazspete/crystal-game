@@ -10,6 +10,7 @@ import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.MagicalItem;
+import com.example.crystalgame.library.data.ThroneRoom;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
 
 /**
@@ -122,5 +123,20 @@ public class InventoryManager {
 			Log.e("InventoryManager:setEnergyLevel(val)",e.toString());
 		}
 		
+	}
+	
+	/**
+	 * Get ThroneRoom information 
+	 * @return ThroneRoom
+	 */
+	public synchronized ThroneRoom getThroneRoom() {
+		ThroneRoom throneRoom = null;
+		try {
+			throneRoom = (ThroneRoom)ClientDataWarehouse.getInstance().getList(ThroneRoom.class).get(0);
+		} catch (DataWarehouseException e) {
+			Log.e("InventoryManager:getThroneRoom()",e.toString());
+		}
+		
+		return throneRoom;
 	}
 }

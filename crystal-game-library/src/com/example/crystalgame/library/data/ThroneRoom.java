@@ -7,9 +7,19 @@ package com.example.crystalgame.library.data;
  */
 public class ThroneRoom extends Zone {
 
+	private Location location;
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 6016443257484436243L;
 
+	public ThroneRoom(Location location) {
+		this.location = location;
+	}
+
+	public Location getLocation() {
+		return location;
+	}
+	
 }

@@ -3,9 +3,7 @@ package com.example.crystalgame.library.data;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.example.crystalgame.library.util.ListController;
 import com.example.crystalgame.library.util.RandomID;
-import com.example.crystalgame.library.util.RandomNumber;
 
 /**
  * Describes a rectangular area

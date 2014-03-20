@@ -3,6 +3,7 @@ package com.example.crystalgame.library.instructions;
 import java.io.Serializable;
 
 import com.example.crystalgame.library.data.Location;
+import com.example.crystalgame.library.data.Character;
 
 public class GameInstruction extends Instruction {
 
@@ -50,15 +51,16 @@ public class GameInstruction extends Instruction {
 	 * @param upperRight Second corner of the game location
 	 * @param lowerRight Third corner of the game location
 	 * @param lowerLeft Fourth corner of the game location
+	 * @param gameCharacter The game character that sends the create game request
 	 * @return The instruction
 	 * @throws InstructionFormatException Thrown if an argument was null
 	 */
-	public static GameInstruction createCreateGameGameInstruction(String gameName, Location upperLeft, Location upperRight, Location lowerRight, Location lowerLeft) throws InstructionFormatException {
+	public static GameInstruction createCreateGameGameInstruction(String gameName, Location upperLeft, Location upperRight, Location lowerRight, Location lowerLeft, Location throneRoom) throws InstructionFormatException {
 		if (upperLeft == null || upperRight == null || lowerLeft == null || lowerRight == null) {
 			throw InstructionFormatException.NULL_ARGUMENT;
 		}
 		
-		return new GameInstruction(GameInstructionType.CREATE_GAME, gameName, upperLeft, upperRight, lowerRight, lowerLeft);
+		return new GameInstruction(GameInstructionType.CREATE_GAME, gameName, upperLeft, upperRight, lowerRight, lowerLeft, throneRoom);
 	}
 	
 	/**
