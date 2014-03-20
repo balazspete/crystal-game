@@ -88,4 +88,21 @@ public class InformationPresenter {
 		}
 		return null;
 	}
+	
+	/**
+	 * Update number of crystals
+	 * @param noOfCrystals
+	 */
+	public synchronized void crystalCaptureCallBack(int noOfCrystals) {
+		UIController.getInstance().crystalCaptureCallBack(noOfCrystals);
+	}
+	
+	/**
+	 * Update number of magical items
+	 * @param noOfMagicalItems
+	 */
+	public synchronized void magicalItemCaptureCallBack(int noOfMagicalItems) {
+		UIController.getInstance().magicalItemCaptureCallBack(noOfMagicalItems);
+	}
+	
 }

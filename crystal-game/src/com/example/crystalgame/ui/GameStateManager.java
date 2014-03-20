@@ -46,7 +46,7 @@ public class GameStateManager {
 	 * Start the components that is part of this block
 	 */
 	public void startComponents() {
-		GameState.getInstance().initializeGameState();
+		//GameState.getInstance().initializeGameState();
 		GameAgent.getInstance().initializeGameAgent();
 	}
 	
@@ -67,6 +67,9 @@ public class GameStateManager {
 							.relayInstructionToServer(
 									GameInstruction.createCrystalCaptureRequestInstruction(gameObj.getClientID(), item.getID())
 							);
+					
+					// Send the latest count of crystals
+					GameManager.getInstance().crystalCaptureCallBack(InventoryManager.getInstance().getCharacter().getCrystals().size());
 				} catch (InstructionFormatException e) {
 					Log.e("GameStateManager", e.toString());
 				}
@@ -81,6 +84,9 @@ public class GameStateManager {
 							.relayInstructionToServer(
 									GameInstruction.createMagicalItemCaptureRequestInstruction(gameObj.getClientID(), item.getID())
 							);
+					
+					// Send the latest count of magical items
+					GameManager.getInstance().magicalItemCaptureCallBack(InventoryManager.getInstance().getCharacter().getMagicalItems().size());
 				} catch (InstructionFormatException e) {
 					Log.e("GameStateManager", e.toString());
 				}
@@ -88,12 +94,7 @@ public class GameStateManager {
 		} else if(item instanceof Character) {
 			proximityEvent = new ProximityEvent(ArtifactType.CHARACTER, item);
 		}
-		
-		// Passes the information to the GameState object
-		// to update the game information
-		GameState.getInstance().itemProximityAlert(proximityEvent);
-		
-		
+				
 	}
 	
 	/**

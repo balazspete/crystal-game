@@ -15,7 +15,7 @@ public class EnergyManager extends Thread {
 	private static EnergyManager energyManager = null;
 	private final double OUT_LOCATION_MULTIPLIER = 1/300;
 	private final double IN_LOCATION_MULTIPLIER = 2/300;
-	private final double INITIAL_ENERGY_LEVEL  = 1.5;
+	private final double INITIAL_ENERGY_LEVEL  = 10.00;
 	private final int CRYSTAL_ENERGY_GAIN = 2;
 	private double energyRemaining = INITIAL_ENERGY_LEVEL;
 	private double inLocationTime = 0.0;

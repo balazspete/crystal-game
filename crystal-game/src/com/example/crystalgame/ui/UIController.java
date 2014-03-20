@@ -31,9 +31,7 @@ public class UIController {
 	}
 	
 	public MapInformation loadGamePlayData(GamePlayState gamePlayState) {
-		MapInformation mapInformation = InformationPresenter.getInstance().getGamePlayData(gamePlayState);
-		
-		return mapInformation;
+		return InformationPresenter.getInstance().getGamePlayData(gamePlayState);
 	}
 	
 	public void startComponents() {
@@ -93,5 +91,28 @@ public class UIController {
 		
 		return InformationPresenter.getInstance().getMagicalItemInfoList();
 	}
+
+	/**
+	 * Update number of crystals
+	 * @param noOfCrystals
+	 */
+	public synchronized void crystalCaptureCallBack(int noOfCrystals) {
+		if (currentActivity == null) {
+			return;
+		}
+		
+		currentActivity.updateGameCrystalInfo(noOfCrystals);
+	}
 	
+	/**
+	 * Update number of magical items
+	 * @param noOfMagicalItems
+	 */
+	public synchronized void magicalItemCaptureCallBack(int noOfMagicalItems) {
+		if (currentActivity == null) {
+			return;
+		}
+		
+		currentActivity.updateGameMagicalItemInfo(noOfMagicalItems);
+	}
 }
