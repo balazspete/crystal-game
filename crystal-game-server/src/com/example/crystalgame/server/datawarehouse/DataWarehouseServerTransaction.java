@@ -36,9 +36,7 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 			List<String> clientIDs) {
 		super(synchronizer, queue, container);
 		clientMap = new HashMap<String, State>();
-		for (String id : clientIDs) {
-			clientMap.put(id, State.INITIAL);
-		}
+		
 		count = 0;
 		myState = State.INITIAL;
 	}
@@ -142,8 +140,6 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 			// Don't accept the instruction, if we are not in the right state...
 			return;
 		}
-		
-		System.out.println("commit"+instruction.getDataSynchronisationInstructiontype());
 		
 		// Let's get the details contained in the instruction
 		// For formatting, check the class
