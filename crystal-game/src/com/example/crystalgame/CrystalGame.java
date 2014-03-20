@@ -1,8 +1,10 @@
 package com.example.crystalgame;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -10,6 +12,9 @@ import com.example.crystalgame.communication.ClientCommunication;
 import com.example.crystalgame.communication.ClientCommunicationManager;
 import com.example.crystalgame.communication.ClientOutgoingMessages;
 import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
+import com.example.crystalgame.game.CharacterSelectionActivity;
+import com.example.crystalgame.game.CreateGameActivity;
+import com.example.crystalgame.library.communication.abstraction.AbstractionModule;
 import com.example.crystalgame.library.communication.messages.IdMessage;
 import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
@@ -22,9 +27,9 @@ import com.example.crystalgame.library.instructions.DataSynchronisationInstructi
 import com.example.crystalgame.library.instructions.DataTransferInstruction;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.GroupInstruction;
-import com.example.crystalgame.ui.CreateGameActivity;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
+import com.example.crystalgame.ui.GPSTracker;
 import com.example.crystalgame.ui.GameActivity;
 import com.example.crystalgame.ui.InformationPresenter;
 import com.example.crystalgame.ui.UIController;
@@ -40,13 +45,23 @@ import java.util.ArrayList;
  */
 public class CrystalGame extends Application {
 
+	public static final String 
+		CLIENT_ID_KEY = "com.example.crystalgame.client_id",
+		GROUP_ID_KEY = "com.example.crystalgame.group_id";
+	
 	private static ClientCommunication communication;
 	private static String clientID;
 	private static String groupID;
 	
+	private SharedPreferences preferences;
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		
+		this.preferences = getSharedPreferences("crystal-game", Context.MODE_PRIVATE);
+		restoreValues();
+		
 		addCommunication();
 		incomingCommunicationsSetup();
 		configDataWarehouse(); // This will have to be called again when we get the client ID or if we join a group
@@ -125,7 +140,7 @@ public class CrystalGame extends Application {
 			@Override
 			public void onIdMessageEvent(MessageEvent event) {
 				IdMessage message = (IdMessage) event.getMessage();
-				clientID = (String) message.getData();
+				setClientID((String) message.getData());
 				Log.i("CrystalGame", "Client ID updated to " + clientID);
 			}
 		});
@@ -145,12 +160,17 @@ public class CrystalGame extends Application {
 				GroupInstruction instruction = (GroupInstruction) event.getInstruction();
 				switch(instruction.groupInstructionType) {
 					case SUCCESS:
-						if(instruction.arguments.length > 0) {
-							groupID = (String) instruction.arguments[0];
+						System.out.println("Group SUCCESS: " + instruction.arguments);
+						if(instruction.arguments != null && instruction.arguments.length > 0 && instruction.arguments[0] != null) {
+							setGroupID((String) instruction.arguments[0]);
 							Log.i("CrystalGame", "Group ID updated to " + groupID + ". Initialising data warehouse...");
 							configDataWarehouse();
+						} else {
+							setGroupID(null);
+							Intent intent = new Intent(getApplicationContext(), CrystalGameLaunchActivity.class);
+							intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+							startActivity(intent);
 						}
-						
 						break;
 					default:
 						System.out.println("Unhandled group instruction");
@@ -170,7 +190,7 @@ public class CrystalGame extends Application {
 						break;
 					case GAME_STARTED:
 						Log.i("CrystalGame", "Game Started");
-						intent = new Intent(getApplicationContext(), GameActivity.class);
+						intent = new Intent(getApplicationContext(), CharacterSelectionActivity.class);
 						intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						startActivity(intent);
 						break;
@@ -242,9 +262,13 @@ public class CrystalGame extends Application {
 		return clientID;
 	}
 	
-	public static void setClientID(String ID)
+	public void setClientID(String ID)
 	{
 		clientID = ID;
+		
+		Editor e = preferences.edit();
+		e.putString(CLIENT_ID_KEY, clientID);
+		e.apply();
 	}
 	
 	public static String getGroupID()
@@ -252,18 +276,36 @@ public class CrystalGame extends Application {
 		return groupID;
 	}
 	
-	public static void setGroupID(String ID)
+	public void setGroupID(String ID)
 	{
 		groupID = ID;
+		
+		Editor e = preferences.edit();
+		e.putString(GROUP_ID_KEY, groupID);
+		e.apply();
 	}
+	
 	public ArrayList<Location> getGameBoundaryPoints()
 	{
-		return UIController.getInstance().getGameBoundaryPoints();
-		
+		return UIController.getInstance().getGameBoundaryPoints();	
 	}
+	
 	public ArrayList<Location> getGameLocationPoints()
 	{
 		return UIController.getInstance().getGameLocationPoints();
+	}
+	
+	private void restoreValues() {
+		AbstractionModule.myId = clientID = preferences.getString(CLIENT_ID_KEY, null);
+		groupID = preferences.getString(GROUP_ID_KEY, null);	
+		
+		System.out.println("Restored preferences: " + clientID + " " + groupID);
+		if (clientID != null && groupID != null) {
+//			configDataWarehouse();
+			System.out.println("Restoring application state, downloading data warehouse...");
+		} else {
+			System.out.println("Nothing to restore");
+		}
 	}
 	
 }

@@ -3,7 +3,7 @@
  * 
  * @author Chen Shen, Allen Thomas Varghese
  */
-package com.example.crystalgame.ui;
+package com.example.crystalgame.game;
 
 import java.io.Serializable;
 
@@ -20,6 +20,7 @@ import com.example.crystalgame.library.data.Zone;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.Instruction;
 import com.example.crystalgame.library.instructions.InstructionFormatException;
+import com.example.crystalgame.ui.GameBoundaryActivity;
 
 /**
  * 

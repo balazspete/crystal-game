@@ -50,6 +50,10 @@ public class GPSTracker extends Service implements LocationListener {
  
     private static GPSTracker gpsTracker = null;
     
+    public GPSTracker() {
+    	super();
+    	gpsTracker = this;
+    }
     
     public static GPSTracker getInstance() {
     	return gpsTracker;

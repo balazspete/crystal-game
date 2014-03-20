@@ -18,8 +18,9 @@ import com.example.crystalgame.library.util.RandomID;
  */
 public class AbstractionModule {
 
+	public static String myId;
+	
 	private MessageQueue queue;
-	private static String myId;
 	
 	private CommunicationManager manager;
 	private ListenerManager<MessageEventListener, MessageEvent> listenerManager;

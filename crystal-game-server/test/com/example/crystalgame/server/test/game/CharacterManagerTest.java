@@ -39,9 +39,10 @@ public class CharacterManagerTest
 			}
 		}
 		Client client  = new Client("1222","chen");
-		Group group = new Group("Chen", client);
-		this.sequencer = new Sequencer(group);
-		characterManager = new CharacterManager(gameLocation, sequencer);
+		throw new UnsupportedOperationException();
+//		Group group = new Group("Chen", client);
+//		this.sequencer = new Sequencer(group);
+//		characterManager = new CharacterManager(gameLocation, sequencer);
 		
 		
 	}

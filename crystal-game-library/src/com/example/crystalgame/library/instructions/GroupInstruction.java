@@ -41,11 +41,6 @@ public class GroupInstruction extends Instruction {
 	}
 	
 	/**
-
-	 * @param upp
-	 * @return The instruction
-	 */
-	/**
 	 * 
 	 * Create a group CREATE instruction
 	 * @param groupName The desired group name

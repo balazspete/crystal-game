@@ -14,6 +14,8 @@ import com.example.crystalgame.library.communication.messages.UnicastMessage;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Character.UnknownPlayerCharacter;
 import com.example.crystalgame.library.data.Crystal;
+import com.example.crystalgame.library.data.CrystalZone;
+import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.data.Information;
 import com.example.crystalgame.library.data.Location;
@@ -24,12 +26,13 @@ import com.example.crystalgame.library.events.InstructionEventListener;
 import com.example.crystalgame.library.events.ListenerManager;
 import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.events.MessageEventListener;
-import com.example.crystalgame.library.game.GameManager;
 import com.example.crystalgame.library.instructions.DataSynchronisationInstruction;
 import com.example.crystalgame.library.instructions.DataTransferInstruction;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.Instruction;
 import com.example.crystalgame.server.datawarehouse.ServerDataWarehouse;
+import com.example.crystalgame.server.game.CrystalZoneScatter;
+import com.example.crystalgame.server.game.GameManager;
 import com.example.crystalgame.server.sequencer.Sequencer;
 
 /**
@@ -129,6 +132,7 @@ public class GroupInstance implements Runnable {
 			// Save the group related information
 			dataWarehouse.putDirect(Information.class, new Information(Information.GROUP_NAME, group.getName()));
 			dataWarehouse.putDirect(Information.class, new Information(Information.GROUP_MAX_PLAYERS, group.getMaxPlayers()));
+			dataWarehouse.putDirect(GameBoundary.class, group.getGameBoundary());
 		} catch (DataWarehouseException e) {
 			e.printStackTrace();
 		}
@@ -284,7 +288,7 @@ public class GroupInstance implements Runnable {
 			locations.add((Location) data[3]);
 			locations.add((Location) data[4]);
 			
-			GameManager manager = new GameManager(gameName, clientIDs, locations);
+			final GameManager manager = new GameManager(dataWarehouse, gameName, clientIDs, locations);
 		
 			new Thread(manager).start();
 		
@@ -294,6 +298,9 @@ public class GroupInstance implements Runnable {
 				@Override
 				public void run() {
 					createCharacters();
+					System.out.println("created characters");
+					manager.createCrystals();
+					System.out.println("created crystals");
 					sendGameStartSignal();
 				}		
 			}).start();

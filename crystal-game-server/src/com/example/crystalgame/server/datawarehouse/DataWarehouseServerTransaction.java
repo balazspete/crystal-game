@@ -48,7 +48,9 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 		while (running) {
 			try {
 				// Listen to instructions
+				System.out.println("DWST: waiting...");
 				DataSynchronisationInstruction instruction = queue.poll(Long.MAX_VALUE, TimeUnit.DAYS);
+				System.out.println("DWST: got instruction: " + instruction.getDataSynchronisationInstructiontype());
 				
 				switch (instruction.getDataSynchronisationInstructiontype()) {
 					case COMMIT_REPLY:
@@ -132,6 +134,7 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 		
 		// Change the state
 		myState = State.PREPARED;
+		System.out.println("Prepared");
 	}
 	
 	private void commitTransaction(DataSynchronisationInstruction instruction) {

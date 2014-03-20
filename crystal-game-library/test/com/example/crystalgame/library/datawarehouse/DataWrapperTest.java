@@ -50,11 +50,6 @@ public class DataWrapperTest {
 	}
 
 	@Test
-	public void testIsWriteLocked() {
-		assertFalse(dw.isWriteLocked());
-	}
-
-	@Test
 	public void testGetVersion() {
 		assertTrue(dw.getVersion() >= 0);
 	}

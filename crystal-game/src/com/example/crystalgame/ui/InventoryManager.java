@@ -92,7 +92,12 @@ public class InventoryManager {
 			}
 		} else  {
 			try {
-				return (Character) ClientDataWarehouse.getInstance().get(Character.class, playerCharacterID);
+				Character c = (Character) ClientDataWarehouse.getInstance().get(Character.class, playerCharacterID);
+				if (c == null) {
+					playerCharacterID = null;
+					c = getCharacter();
+				}
+				return c;
 			} catch (DataWarehouseException e) {
 				Log.e("InventoryManager:getGamePlayer()",e.toString());
 			}
@@ -108,6 +113,9 @@ public class InventoryManager {
 		Character c;
 		try {
 			c = getCharacter();
+			if (c == null) {
+				return;
+			}
 			c.setEnergyLevel(energyLevel);
 			ClientDataWarehouse.getInstance().put(Character.class, c);
 		} catch (DataWarehouseException e) {

@@ -52,16 +52,28 @@ public class UIController {
 	public void zoneChangeCallBack(ZoneChangeEvent zoneChangeEvent)
 	{
 		System.out.println("Calling Activity : "+currentActivity);
+		if (currentActivity == null) {
+			return;
+		}
+		
 		currentActivity.zoneChanged(zoneChangeEvent);
 	}
 	
-	public  void energyLowCallBack(EnergyEvent energyEvent)
+	public void energyLowCallBack(EnergyEvent energyEvent)
 	{
+		if (currentActivity == null) {
+			return;
+		}
+		
 		currentActivity.energyLow(energyEvent);
 		Log.d("UIController","energyLowCallBack() : "+energyEvent.toString());
 	}
 	
 	public synchronized void energyChangeCallBack(double energyLevel) {
+		if (currentActivity == null) {
+			return;
+		}
+		
 		currentActivity.energyChangeCallBack(energyLevel);
 	}
 	

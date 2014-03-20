@@ -3,6 +3,7 @@ package com.example.crystalgame.server.groups;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.util.RandomID;
 
 /**
@@ -18,6 +19,7 @@ public class Group {
 	private String name;
 	private int maxPlayers = -1;
 	private GroupInstance instance;
+	private GameBoundary gameBoundary;
 	
 	private List<Client> clients;
 	
@@ -25,8 +27,8 @@ public class Group {
 	 * Create a group with a name
 	 * @param name The name of the group
 	 */
-	public Group(String name, Client client) {
-		this(name, DEFAULT_MAX_PLAYERS, client);
+	public Group(String name, Client client, GameBoundary boundary) {
+		this(name, DEFAULT_MAX_PLAYERS, client, boundary);
 	}
 	
 	/**
@@ -34,10 +36,12 @@ public class Group {
 	 * @param name The name of the group
 	 * @param maxPlayers The maximum number of players
 	 */
-	public Group(String name, int maxPlayers, Client client) {
+	public Group(String name, int maxPlayers, Client client, GameBoundary boundary) {
 		groupId = RandomID.getRandomId();
 		this.name = name;
 		this.maxPlayers = maxPlayers;
+		
+		this.gameBoundary = boundary;
 		
 		if (maxPlayers < 2) {
 			maxPlayers = 2;
@@ -137,5 +141,19 @@ public class Group {
 	 */
 	public GroupInstance getGroupInstance() {
 		return instance;
+	}
+
+	/**
+	 * @return the gameBoundary
+	 */
+	public GameBoundary getGameBoundary() {
+		return gameBoundary;
+	}
+
+	/**
+	 * @param gameBoundary the gameBoundary to set
+	 */
+	public void setGameBoundary(GameBoundary gameBoundary) {
+		this.gameBoundary = gameBoundary;
 	}
 }

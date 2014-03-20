@@ -21,6 +21,7 @@ public class CrystalZoneScatter
 	ArrayList<CrystalZone> crystalMetrics = new ArrayList<CrystalZone>();
 	ArrayList<CrystalZone> crystalZones= new ArrayList<CrystalZone>();
 	ArrayList<Location> locationList;
+	
 	public CrystalZoneScatter(GameLocation gameLocation, int range)
 	{
 		this.gameLocation = gameLocation;

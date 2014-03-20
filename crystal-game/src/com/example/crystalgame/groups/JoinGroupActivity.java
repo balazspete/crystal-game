@@ -1,10 +1,14 @@
 package com.example.crystalgame.groups;
 
+import java.io.Serializable;
+
 import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.R;
+import com.example.crystalgame.library.data.Zone;
 import com.example.crystalgame.library.events.InstructionEvent;
 import com.example.crystalgame.library.events.InstructionEventListener;
 import com.example.crystalgame.library.instructions.GroupInstruction;
+import com.example.crystalgame.ui.GameBoundaryActivity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -15,11 +19,13 @@ import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class JoinGroupActivity extends Activity {
-	
+	private Zone gameBoundary = new Zone();
 	public static final String 
 		LAUNCH_INTENT_FIELD = "com.example.crystalgame.joingameactivity.launch_intent",
 		LAUNCH_INTENT_CREATE = "CREATE",
@@ -46,8 +52,30 @@ public class JoinGroupActivity extends Activity {
 		} else {
 			this.findViewById(R.id.group_name).setVisibility(View.INVISIBLE);
 			this.findViewById(R.id.button_create).setVisibility(View.INVISIBLE);
+			this.findViewById(R.id.boundary_select).setVisibility(View.INVISIBLE);
 		}
 	}
+	
+    public void createBoundary(View view) {
+    	//launchJoinGroupActivity(JoinGroupActivity.LAUNCH_INTENT_JOIN);
+    	Toast.makeText(this, "Hi", Toast.LENGTH_SHORT).show();
+		if(this.gameBoundary.isEmpty())
+    	{
+    		startActivityForResult(new Intent(getApplicationContext(), GameBoundaryActivity.class),2);
+    	}
+    	else
+    	{
+    		Intent intent = new Intent(getApplicationContext(), GameBoundaryActivity.class);
+	    	intent.putExtra("locations", (Serializable) gameBoundary);
+	    	startActivityForResult(intent,2);
+    	}
+    }
+    
+    public void launchJoinGroupActivity(String extra) {
+    	Intent intent = new Intent(this, JoinGroupActivity.class);
+    	intent.putExtra(JoinGroupActivity.LAUNCH_INTENT_FIELD, extra);
+    	startActivity(intent);
+    }
 	
 	private void setupActionBar() {
 		getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -78,6 +106,14 @@ public class JoinGroupActivity extends Activity {
 				((Button) this.findViewById(R.id.button_get_player_alias)).setText(otherName);
 			}
 		}
+		if (requestCode == 2)
+		{
+			if(resultCode == RESULT_OK)
+			{
+				Bundle extras = data.getExtras();
+				this.gameBoundary = (Zone) extras.getSerializable("locations");
+			}
+		}
 	}
 	
 	public void joinGroup(View view) {
@@ -88,9 +124,15 @@ public class JoinGroupActivity extends Activity {
 	public void createGroup(View view) {
 		String name = ((EditText) findViewById(R.id.player_name)).getText().toString();
 		String groupName = ((EditText) findViewById(R.id.group_name)).getText().toString();
-		sendInstruction(GroupInstruction.createGroup(groupName, 20, name, null, null, null, null));
+		if(gameBoundary!=null && name !=null && groupName!=null)
+		{
+			sendInstruction(GroupInstruction.createGroup(groupName, 20, name, gameBoundary.getLocation(0), gameBoundary.getLocation(1), gameBoundary.getLocation(2), gameBoundary.getLocation(3)));	
+		}
+		else
+		{
+			Toast.makeText(this, "Provide full info", Toast.LENGTH_SHORT).show();
+		}
 	}
-	
 	private void sendInstruction(GroupInstruction instruction) {
 		CrystalGame game = ((CrystalGame) getApplication());
 		game.getCommunication().out.sendGroupInstructionToServer(instruction);
@@ -128,5 +170,6 @@ public class JoinGroupActivity extends Activity {
 		Intent intent = new Intent(this, GroupLobbyActivity.class);
 		startActivity(intent);
 	}
+
 	
 }

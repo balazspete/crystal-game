@@ -12,15 +12,19 @@ public class Sage extends Character {
 	 */
 	private static final long serialVersionUID = -540232457389629765L;
 	
-	private final String originalID;
+	private String originalID;
 
+	public Sage() {
+		super(0, 0, CharacterType.SAGE, null, null);
+	}
+	
 	/**
 	 * Create a sage
 	 * @param latitude the latitude
 	 * @param longitude the longitude
 	 * @param playerType the player type
 	 */
-	public Sage(Character character, double latitude, double longitude) {
+	protected Sage(Character character, double latitude, double longitude) {
 		super(latitude, longitude, CharacterType.SAGE, character.playerType, character.getClientId());
 		this.originalID = character.id;
 	}
@@ -28,6 +32,15 @@ public class Sage extends Character {
 	@Override
 	public String getID() {
 		return originalID;
+	}
+	
+	public static Sage create(Character character, double latitude, double longitude) {
+		Sage s = new Sage();
+		s.playerType = PlayerType.PLAYER;
+		s.setLatitude(latitude);
+		s.setLongitude(longitude);
+		s.setEnergy(10);
+		return s;
 	}
 	
 }

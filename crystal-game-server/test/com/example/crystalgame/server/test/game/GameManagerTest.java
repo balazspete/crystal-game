@@ -1,8 +1,11 @@
-package com.example.crystalgame.library.game;
+package com.example.crystalgame.server.test.game;
 
 import static org.junit.Assert.*;
 
 import com.example.crystalgame.library.data.Location;
+import com.example.crystalgame.server.datawarehouse.ServerDataWarehouse;
+import com.example.crystalgame.server.game.GameManager;
+import com.example.crystalgame.server.test.datawarehouse.ServerDataWarehouseTest;
 
 import java.util.List;
 import java.util.LinkedList;
@@ -29,7 +32,8 @@ public class GameManagerTest {
 		locations.add(new Location(2, 3));
 		locations.add(new Location(2, 2));
 		
-		manager = new GameManager("NAME", clientIds, locations);
+		throw new UnsupportedOperationException();
+//		manager = new GameManager(new ServerDataWarehouse(), "NAME", clientIds, locations);
 	}
 	
 	
