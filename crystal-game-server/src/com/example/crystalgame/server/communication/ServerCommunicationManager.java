@@ -82,7 +82,7 @@ public class ServerCommunicationManager extends CommunicationManager {
 			try {
 				// A new connection! Create a handler for it... (ConnectionID != ClientID)
 				String id = getRandomId();
-				ConnectionHandler connection = new ConnectionHandler(abstraction, id, serverSocket.accept());
+				ConnectionHandler connection = new ConnectionHandler(abstraction, "SERVER", id, serverSocket.accept());
 				connections.put(id, connection);
 				pool.execute(connection);
 			} catch (IOException e) {

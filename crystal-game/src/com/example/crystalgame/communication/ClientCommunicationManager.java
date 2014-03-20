@@ -10,9 +10,13 @@ import java.net.UnknownHostException;
 
 import android.util.Log;
 
+import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.library.communication.CommunicationFailureException;
 import com.example.crystalgame.library.communication.CommunicationManager;
 import com.example.crystalgame.library.communication.ConnectionHandler;
+import com.example.crystalgame.library.communication.abstraction.AbstractionModule;
+import com.example.crystalgame.library.communication.messages.IdMessage;
+import com.example.crystalgame.library.communication.messages.Message;
 
 /**
  * Client side implementation of {@link CommunicationManager}
@@ -59,7 +63,7 @@ public class ClientCommunicationManager extends CommunicationManager {
 				
 				// Establish a connection...
 				socket = new Socket(address, port);
-				handler = new ConnectionHandler(this.abstraction, "SERVER", socket);
+				handler = new ConnectionHandler(this.abstraction, CrystalGame.getClientID(), "SERVER", socket);
 				
 				Log.i("ComunicationManager", "Connection to " + address + " successful!");
 				
@@ -95,4 +99,5 @@ public class ClientCommunicationManager extends CommunicationManager {
 	public void sendId(String id, String nodeId) {
 		// Ignored
 	}
+	
 }

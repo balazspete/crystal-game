@@ -22,36 +22,41 @@ import android.widget.Toast;
 
 public class GroupLobbyActivity extends Activity {
 
+	public static final String KEY_LOAD_DW = "com.example.crystalgame.groups.LOAD_DW";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_group_lobby);
 		
-		final Toast toast = Toast.makeText(this, "Loading group information...", Toast.LENGTH_LONG);
-		toast.show();
-		new Thread(new Runnable(){
-			@Override
-			public void run() {
-				while (ClientDataWarehouse.isNull) {
-					try {
-						synchronized(this) {
-							this.wait(100);
+		Boolean loadDw = getIntent().getExtras().getBoolean(KEY_LOAD_DW);
+		if (loadDw != null && loadDw) {
+			final Toast toast = Toast.makeText(this, "Loading group information...", Toast.LENGTH_LONG);
+			toast.show();
+			new Thread(new Runnable(){
+				@Override
+				public void run() {
+					while (ClientDataWarehouse.isNull) {
+						try {
+							synchronized(this) {
+								this.wait(100);
+							}
+						} catch (InterruptedException e) {
 						}
-					} catch (InterruptedException e) {
+						System.out.println("Waiting");
 					}
-					System.out.println("Waiting");
+					
+					runOnUiThread(new Runnable(){
+						@Override
+						public void run() {
+							switchToGameIfNeeded();
+							setTitle();
+							toast.cancel();
+						}
+					});
 				}
-				
-				runOnUiThread(new Runnable(){
-					@Override
-					public void run() {
-						switchToGameIfNeeded();
-						setTitle();
-						toast.cancel();
-					}
-				});
-			}
-		}).start();
+			}).start();
+		}
 	}
 
 	@Override

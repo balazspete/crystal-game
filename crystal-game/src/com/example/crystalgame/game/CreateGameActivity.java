@@ -85,7 +85,9 @@ public class CreateGameActivity extends Activity {
 		}
 		
 		((CrystalGame) getApplication()).getCommunication().out.relayInstructionToServer(instruction);
-		startActivity(new Intent(this, GroupLobbyActivity.class));
+		Intent intent = new Intent(this, GroupLobbyActivity.class);
+		intent.putExtra(GroupLobbyActivity.KEY_LOAD_DW, false);
+		startActivity(intent);
 	}
 	
 	private void showErrorToast() {

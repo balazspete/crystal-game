@@ -56,6 +56,7 @@ public class ZoneTracker {
 			boundaryPoints = gameBoundary.getLocationList();
 		} catch (DataWarehouseException e) {
 			// Ignore
+			System.out.println("ZoneTracker:getBoundaryPoints() => "+e);
 		}
 		
 		return boundaryPoints;

@@ -168,6 +168,7 @@ public class JoinGroupActivity extends Activity {
 		game.getCommunication().in.removeInstructionEventListener(listener);
 		
 		Intent intent = new Intent(this, GroupLobbyActivity.class);
+		intent.putExtra(GroupLobbyActivity.KEY_LOAD_DW, false);
 		startActivity(intent);
 	}
 

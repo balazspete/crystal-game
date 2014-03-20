@@ -98,7 +98,7 @@ public class ClientDataWarehouse extends DataWarehouse {
 		
 	}
 	
-	public static void createFromWrappers(Serializable[] data) throws DataWarehouseException {
+	public static void create() throws DataWarehouseException {
 		if (DB_PATH == null) {
 			throw DataWarehouseException.initialisationException("You must set the `DB_PATH` variable prior to using the DW");
 		}
@@ -114,6 +114,11 @@ public class ClientDataWarehouse extends DataWarehouse {
 		
 		ObjectContainer c = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), DB_PATH + "/" + groupID);
 		instance = new ClientDataWarehouse(c, new ClientSynchronizer(c, myID));
+	}
+	
+	
+	public static void createFromWrappers(Serializable[] data) throws DataWarehouseException {
+		create();
 		
 		if (data.length > 0) {
 			instance.updateWithWrappers(data);
@@ -121,7 +126,8 @@ public class ClientDataWarehouse extends DataWarehouse {
 		System.out.println("DW UPDATED");
 	}
 	
-	private void updateWithWrappers(Serializable[] data) {
+	@SuppressWarnings("unchecked")
+	public void updateWithWrappers(Serializable[] data) {
 		for (Serializable wrapper : data) {
 			db.store((DataWrapper<HasID>) wrapper);
 		}

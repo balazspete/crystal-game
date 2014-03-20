@@ -8,6 +8,8 @@ import java.io.Serializable;
 import java.net.Socket;
 
 import com.example.crystalgame.library.communication.abstraction.AbstractionModule;
+import com.example.crystalgame.library.communication.messages.IdMessage;
+import com.example.crystalgame.library.communication.messages.Message;
 
 /**
  * A runnable to handle individual client connections
@@ -16,7 +18,7 @@ import com.example.crystalgame.library.communication.abstraction.AbstractionModu
  */
 public class ConnectionHandler implements Runnable {
 
-	private String id;
+	private String id, myID;
 	private Socket socket;
 	private AbstractionModule abstraction;
 	
@@ -29,8 +31,9 @@ public class ConnectionHandler implements Runnable {
 	 * @param id The ID of the client
 	 * @param socket The socket associated with the client
 	 */
-	public ConnectionHandler(AbstractionModule absraction, String id, Socket socket) {
+	public ConnectionHandler(AbstractionModule absraction, String myID, String id, Socket socket) {
 		this.id = id;
+		this.myID = myID;
 		this.socket = socket;
 		this.abstraction = absraction;
 	}
@@ -94,6 +97,9 @@ public class ConnectionHandler implements Runnable {
 	public void run() {
 		try {
 			out = new ObjectOutputStream(socket.getOutputStream());
+			if (myID != null) {
+				sendMyID();
+			}
 			receive();
 		} catch (EOFException e) {
 			System.err.println(e.getMessage());
@@ -112,5 +118,18 @@ public class ConnectionHandler implements Runnable {
 			}
 		}
 	}
-
+	
+	private int tries = 0;
+	private void sendMyID() {
+		Message message = new IdMessage(id);
+		message.setSenderId(myID);
+		
+		try {
+			send(message);
+		} catch (CommunicationFailureException e) {
+			if (++tries < 100) {
+				sendMyID();
+			}
+		}
+	}
 }

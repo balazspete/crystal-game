@@ -24,8 +24,10 @@ public class CrystalGameLaunchActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		
-		if (CrystalGame.getClientID() != null && CrystalGame.getGroupID() != null) {	
-			startActivity(new Intent(this, GroupLobbyActivity.class));
+		if (CrystalGame.getClientID() != null && CrystalGame.getGroupID() != null) {
+			Intent intent = new Intent(this, GroupLobbyActivity.class);
+			intent.putExtra(GroupLobbyActivity.KEY_LOAD_DW, true);
+			startActivity(intent);
 		}
 	}
 
