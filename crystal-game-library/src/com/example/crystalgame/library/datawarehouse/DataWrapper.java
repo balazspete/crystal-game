@@ -21,7 +21,7 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	
 	private String key, type;
 	private DATA value;
-	private long version;
+	private int version;
 	
 	public DataWrapper() {}
 	
@@ -95,24 +95,5 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	public String getType() {
 		return type;
 	}
-	
-	/*********
-	 * SERIALISATION OVERRIDE
-	 *********/
-	
-	private void writeObject(java.io.ObjectOutputStream stream) throws IOException {
-		stream.writeObject(type);
-		stream.writeObject(key);
-		stream.writeObject(value);
-		stream.writeLong(version);
-    }
 
-    @SuppressWarnings("unchecked")
-	private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    	type = (String) stream.readObject();
-    	key = (String) stream.readObject();
-    	value = (DATA) stream.readObject();
-    	version = (long) stream.readLong();
-    }
-    
 }
