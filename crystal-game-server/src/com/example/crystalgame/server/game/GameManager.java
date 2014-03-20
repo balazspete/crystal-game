@@ -46,16 +46,11 @@ public class GameManager implements Runnable {
 		for(Location location : locations) {
 			this.gameLocation.addLocation(location);
 		}
-		
-		try {
-			dw.put(GameLocation.class, gameLocation);
-		} catch (DataWarehouseException e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
 	public void run() {
+		saveGameLocation();
 		createCharacters();
 		createCrystals();
 		sendGameStartSignal();
@@ -93,6 +88,9 @@ public class GameManager implements Runnable {
 		
 		clientIDs.remove(clientId);
 		System.out.println(Arrays.toString(clientIDs.toArray()));
+		if (clientIDs.size() == 0) {
+			stopGame();
+		}
 		return !clientIDs.contains(clientId);
 	}
 	
@@ -112,7 +110,7 @@ public class GameManager implements Runnable {
 		CrystalZoneScatter crystalZoneScatter = new CrystalZoneScatter(gameLocation, 5);
 		List<CrystalZone> zones = crystalZoneScatter.generateCrystalZones(3);
 		try {
-			dataWarehouse.putList(CrystalZone.class, new ArrayList<HasID>(zones));
+			dataWarehouse.blockingPutList(CrystalZone.class, new ArrayList<HasID>(zones));
 		} catch (DataWarehouseException e) {
 			e.printStackTrace();
 		}
@@ -125,7 +123,7 @@ public class GameManager implements Runnable {
 		}
 
 		try {
-			dataWarehouse.putList(Crystal.class, new ArrayList<HasID>(crystals));
+			dataWarehouse.blockingPutList(Crystal.class, new ArrayList<HasID>(crystals));
 		} catch (DataWarehouseException e) {
 			e.printStackTrace();
 		}
@@ -149,6 +147,14 @@ public class GameManager implements Runnable {
 		InstructionRelayMessage message = new InstructionRelayMessage(null);
 		message.setData(GameInstruction.createGameStartedSignalInstruction());
 		sequencer.sendMessageToAll(message);
+	}
+	
+	private void saveGameLocation() {
+		try {
+			dataWarehouse.blockingPut(GameLocation.class, gameLocation);
+		} catch (DataWarehouseException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

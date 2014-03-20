@@ -25,7 +25,7 @@ public class AbstractionModule {
 	private CommunicationManager manager;
 	private ListenerManager<MessageEventListener, MessageEvent> listenerManager;
 	
-	private HashMap<String, String> clientToCommunicationMap;
+	public static HashMap<String, String> clientToCommunicationMap;
 	
 	/**
 	 * Initialise the module.
@@ -33,7 +33,7 @@ public class AbstractionModule {
 	 */
 	public void initialise(CommunicationManager manager) {
 		this.manager = manager;
-		this.clientToCommunicationMap = new HashMap<String, String>();
+		clientToCommunicationMap = new HashMap<String, String>();
 		
 		// Create an listener manager to be able to emit events
 		this.listenerManager = new ListenerManager<MessageEventListener, MessageEvent>() {
@@ -66,7 +66,7 @@ public class AbstractionModule {
 		}
 		
 		// Queue up message to send
-		queue.put(clientToCommunicationMap.get(message.getReceiverId()), message);
+		queue.put(message.getReceiverId(), message);
 	}
 	
 	/**
@@ -77,6 +77,8 @@ public class AbstractionModule {
 	public void forwardData(String id, Object data) {
 		Message message = (Message) data;
 		String senderId = message.getSenderId();
+		
+		System.out.println("Message: (" + message.getSenderId() + ")" + message.getMessageType());
 		
 		if (message.getMessageType() == MessageType.ID_MESSAGE) {
 			// If the message is an ID assignment
