@@ -1,10 +1,12 @@
 package com.example.crystalgame.ui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
 import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.data.GameLocation;
+import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.Zone;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
@@ -44,22 +46,16 @@ public class ZoneTracker {
 	 * @return List of locations
 	 */
 	public ArrayList<Location> getBoundaryPoints() {
-		/*
-		boundaryPoints = new ArrayList<Location>();
-		boundaryPoints.add(new Location(53.34373266956245, -6.247414081275463));
-		boundaryPoints.add(new Location(53.34372426266502 ,-6.247033790433407));
-		boundaryPoints.add(new Location(53.34363979327044, -6.247001939201355));
-		boundaryPoints.add(new Location(53.34363338800144, -6.2474171864748));
-		if(boundaryPoints!=null)
-		{
-			Log.d("Not null","OK");
-		}
-		*/
 		try {
-			GameBoundary gameBoundary = (GameBoundary)ClientDataWarehouse.getInstance().getList(GameBoundary.class);
+			List<HasID> boundaries = ClientDataWarehouse.getInstance().getList(GameBoundary.class);
+			if (boundaries == null || boundaries.size() == 0) {
+				return boundaryPoints;
+			}
+			
+			GameBoundary gameBoundary = (GameBoundary) boundaries.get(0);
 			boundaryPoints = gameBoundary.getLocationList();
 		} catch (DataWarehouseException e) {
-			e.printStackTrace();
+			// Ignore
 		}
 		
 		return boundaryPoints;
@@ -74,16 +70,13 @@ public class ZoneTracker {
 	 * @return List of locations
 	 */
 	public ArrayList<Location> getGameLocationPoints() {
-		/*
-		gameLocationPoints = new ArrayList<Location>();
-		gameLocationPoints.add(new Location(53.34373266956245, -6.247314081275463));
-		gameLocationPoints.add(new Location(53.34372426266502 ,-6.247133790433407));
-		gameLocationPoints.add(new Location(53.34363979327044, -6.247101939201355));
-		gameLocationPoints.add(new Location(53.34363338800144, -6.2473171864748));
-		*/
 		try {
-			GameLocation gameLocation = (GameLocation)ClientDataWarehouse.getInstance().getList(GameLocation.class);
-			gameLocationPoints = gameLocation.getLocationList();
+			List<HasID> locations = ClientDataWarehouse.getInstance().getList(GameLocation.class);
+			if (locations == null || locations.size() == 0) {
+				return gameLocationPoints;
+			}
+			
+			gameLocationPoints = ((GameLocation) locations.get(0)).getLocationList();
 		} catch (DataWarehouseException e) {
 			e.printStackTrace();
 		}
