@@ -61,8 +61,11 @@ public class GameState extends Thread {
 		Log.d("GameState", "Proximity Detected...");
 	}
 	
+	/**
+	 * Returns the latest list of crystal, magical items and characters
+	 * @return Game state information
+	 */
 	public GameStateInformation getGameState() {
-		// TODO : Get the latest representation of GameState
 		return new GameStateInformation();
 	}
 	

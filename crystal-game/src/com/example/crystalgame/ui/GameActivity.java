@@ -10,7 +10,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.location.Criteria;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -30,10 +29,12 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.R;
+import com.example.crystalgame.library.data.Character.PlayerType;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
+import com.example.crystalgame.library.data.Warrior;
+import com.example.crystalgame.library.data.Wizard;
 import com.example.crystalgame.ui.ZoneChangeEvent.ZoneType;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,7 +48,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * 
  * @author Allen Thomas Varghese, Rajan Verma
  */
-public class GameActivity extends FragmentActivity implements GameUIComponentCommunicationListener, UIControllerHelperInter,LocationListener {
+public class GameActivity extends FragmentActivity implements UIControllerHelperInter,LocationListener {
 
 	GoogleMap map;
     private TextView Energy_Label = null; 
@@ -94,15 +95,15 @@ public class GameActivity extends FragmentActivity implements GameUIComponentCom
         //Chen Shen - Action Bar
         Crystal_Label=(TextView) findViewById(R.id.Crystal_message);  
         Crystal_Label.setVisibility(View.VISIBLE);  
-        Crystal_Label.setText("5");  
+        Crystal_Label.setText("0");  
         
         Energy_Label=(TextView) findViewById(R.id.Energy_message);  
         Energy_Label.setVisibility(View.VISIBLE);  
-        Energy_Label.setText("5");  
+        Energy_Label.setText("10");  
 
         Magic_Label=(TextView) findViewById(R.id.Magic_message);  
         Magic_Label.setVisibility(View.VISIBLE);  
-        Magic_Label.setText("10");
+        Magic_Label.setText("0");
         
       //  this.map = ((MapFragment) getFragmentManager().findFragmentById(R.id.GameMap)).getMap();
        // this.map.setMyLocationEnabled(true);
@@ -179,15 +180,15 @@ public class GameActivity extends FragmentActivity implements GameUIComponentCom
 	@Override
 	protected void onStart() {
 		super.onStart();
-        LocalMapInformation gameObjectList = (LocalMapInformation)UIController.getInstance().loadGamePlayData(GamePlayState.LOCAL_MAP);
-         
+        LocalMapInformation mapInformation = (LocalMapInformation)UIController.getInstance().loadGamePlayData(GamePlayState.LOCAL_MAP);
+        
         gameBoundaryPoints = UIController.getInstance().getGameBoundaryPoints();
         
         for(Location location: gameBoundaryPoints)
         {
         	  map.addMarker(new MarkerOptions()
 	        	.position(new LatLng(location.getLatitude(),location.getLongitude()))
-	        	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+	        	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
 	        );
         }
         gameLocationPoints = UIController.getInstance().getGameLocationPoints();
@@ -196,46 +197,52 @@ public class GameActivity extends FragmentActivity implements GameUIComponentCom
         {
         	  map.addMarker(new MarkerOptions()
 	        	.position(new LatLng(location.getLatitude(),location.getLongitude()))
-	        	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+	        	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
 	        );
         }
         
         // Displaying Crystals
-/*        for(Location location : gameObjectList.getCrystalList()) {
+        for(Location location : mapInformation.getCrystalList()) {
 	        map.addMarker(new MarkerOptions()
 	        	.position(new LatLng(location.getLatitude(),location.getLongitude()))
-	        	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+	        	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
 	        );
         }
         
         // Displaying Magical Items
-        for(Location location2 : gameObjectList.getMagicalItemList()){
+        for(Location location2 : mapInformation.getMagicalItemList()){
 	        map.addMarker(new MarkerOptions()
 		    	.position(new LatLng(location2.getLatitude(),location2.getLongitude()))
 		    	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
 	        );
         }
         
+        com.example.crystalgame.library.data.Character gameCharacter = null;
+        
         // Displaying Characters
-        for(Location location3 : gameObjectList.getCharacterList()){
-	        map.addMarker(new MarkerOptions()
+        for(Location location3 : mapInformation.getCharacterList()) {
+        	gameCharacter = mapInformation.gameStateInformation.getGameCharacter();
+        	
+        	if(gameCharacter instanceof Warrior) {
+        		map.addMarker(new MarkerOptions()
 		    	.position(new LatLng(location3.getLatitude(),location3.getLongitude()))
-		    	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
-	        ); 
-        }*/
+		    	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+        		);
+        	} else if(gameCharacter instanceof Wizard && gameCharacter.getPlayerType().equals(PlayerType.NPC)) {
+        		map.addMarker(new MarkerOptions()
+		    	.position(new LatLng(location3.getLatitude(),location3.getLongitude()))
+		    	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
+        		);
+        	} else {
+		        map.addMarker(new MarkerOptions()
+			    	.position(new LatLng(location3.getLatitude(),location3.getLongitude()))
+			    	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+		        ); 
+        	}
+        }
 
 	   }
     
-	@Override
-	public void updateGameMagicalItemInfo(int noOfMagicalItems) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
-	
-	
-	
 	@Override
 	public void zoneChanged(final ZoneChangeEvent zoneChangeEvent) {
 		Toast.makeText(getApplicationContext(), zoneChangeEvent.toString(), Toast.LENGTH_SHORT).show();
@@ -321,20 +328,40 @@ public class GameActivity extends FragmentActivity implements GameUIComponentCom
  	   
     }} 
 		
-		
-	
-	
 	
 	private float increaseZoomLevel(float number)
 	{
 		return number += 0.1;
 	}
 	
-	
+	@Override
+	public void updateGameCrystalInfo(final int noOfCrystals) {
+		Log.d("GameActivity", "Crystal Count updated to "+noOfCrystals);
+				
+		runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				Toast.makeText(getApplicationContext(), "Crystal Count Updated to "+noOfCrystals, Toast.LENGTH_LONG).show();
+				Crystal_Label.setText(""+noOfCrystals);
+			}
+			
+		});
+	}
 	
 	@Override
-	public void updateGameCrystalInfo(int noOfCrystals) {
-		// TODO Auto-generated method stub
+	public void updateGameMagicalItemInfo(final int noOfMagicalItems) {
+		Log.d("GameActivity", "Magical Item count updated to "+noOfMagicalItems);
+		
+		runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				Toast.makeText(getApplicationContext(), "Magical Item count updated to "+noOfMagicalItems, Toast.LENGTH_LONG).show();
+				Magic_Label.setText(""+noOfMagicalItems);
+			}
+			
+		});
 	}
 	
 	@Override

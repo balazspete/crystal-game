@@ -99,4 +99,12 @@ public class GameManager {
 	public CrystalGame getApplicationObj() {
 		return InformationPresenter.getInstance().getApplicationObj();
 	}
+	
+	public synchronized void crystalCaptureCallBack(int noOfCrystals) {
+		InformationPresenter.getInstance().crystalCaptureCallBack(noOfCrystals);
+	}
+	
+	public synchronized void magicalItemCaptureCallBack(int noOfMagicalItems) {
+		InformationPresenter.getInstance().magicalItemCaptureCallBack(noOfMagicalItems);
+	}
 }

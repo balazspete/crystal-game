@@ -1,10 +1,5 @@
 package com.example.crystalgame.ui;
 
-import java.util.ArrayList;
-
-import com.example.crystalgame.library.data.MagicalItem;
-
-
 /**
  * This interface is to have a set of common methods
  * in all activities to manage information flow from 
@@ -22,4 +17,8 @@ public interface UIControllerHelperInter {
 	public void energyLow(EnergyEvent energyEvent);
 	//public void updateGameEnergy(double noOfEnergyUnits);
 	public  void energyChangeCallBack(double energyLevel);
+
+	void updateGameMagicalItemInfo(int noOfMagicalItems);
+
+	void updateGameCrystalInfo(int noOfCrystals);
 }
