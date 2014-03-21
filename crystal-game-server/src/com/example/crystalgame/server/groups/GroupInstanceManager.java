@@ -196,10 +196,10 @@ public class GroupInstanceManager {
 	public void handleGroupInstruction(ControlMessage message, GroupInstruction instruction) {
 		String groupId = null;
 		GroupInstruction reply = null;
-		Map<String, String> membersList = new HashMap<String, String>();
+		Group group = null;
 		switch(instruction.groupInstructionType) {
 		 	case ALLMEMBER:
-		 		
+				Map<String, String> membersList = new HashMap<String, String>();
 		 		for(Client client : clients.values())
 		 		{
 		 			membersList.put(client.getId(), client.getName());
@@ -207,6 +207,16 @@ public class GroupInstanceManager {
 		 		//Return member list if succeeded
 		 		reply = GroupInstruction.createMembershipListResponseInstruction(membersList);
 		 		break;
+		 	case IS_MEMBER:
+		 		String groupID = (String) instruction.arguments[0];
+		 		group = groups.get(groupID);
+		 		
+		 		boolean result = false;
+		 		if (group != null) {
+		 			result = group.isClientInGroup(message.getSenderId());
+		 		}
+		 		
+		 		reply = GroupInstruction.createIsMemberReplyInstruction(result);
 			case CREATE:
 				int maxPlayers = Integer.parseInt((String) instruction.arguments[1]);
 				try {
@@ -242,7 +252,7 @@ public class GroupInstanceManager {
 				groupId = message.getGroupId();
 				System.out.println("GID:"+groupId);
 				if(groupId!=null) {
-					Group group = groups.get(message.getGroupId());
+					group = groups.get(message.getGroupId());
 					// Remove player from group
 					if (group != null) {
 						this.leaveGroup(group.groupId, group.getClient(message.getSenderId()));
