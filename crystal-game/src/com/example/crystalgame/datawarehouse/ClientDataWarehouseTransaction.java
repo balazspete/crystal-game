@@ -61,10 +61,11 @@ public class ClientDataWarehouseTransaction extends DataWarehouseTransaction {
 		if (myState != State.PREPARED) {
 			return;
 		}
-
-		System.out.println(instruction.getDataSynchronisationInstructiontype());
 		
 		boolean commit = (Boolean) instruction.arguments[0];
+
+		System.out.println((commit ? "COMMITTING" : "ABORTING") + " transaction. TransactionID=" + instruction.getTransactionID());
+		
 		if (commit) {
 			container.commit();
 		} else {
@@ -87,8 +88,6 @@ public class ClientDataWarehouseTransaction extends DataWarehouseTransaction {
 			return;
 		}
 		
-		System.out.println(instruction.getDataSynchronisationInstructiontype());
-		
 		// Get an abstraction for the container
 		DB4OInterface store = new DB4OInterface(container);
 		
@@ -96,9 +95,12 @@ public class ClientDataWarehouseTransaction extends DataWarehouseTransaction {
 		
 		// Retrieve the instruction
 		DataSynchronisationInstruction _instruction = (DataSynchronisationInstruction) instruction.arguments[0];
-
+		
 		// Get the type of the wrapped data (first argument is the type)
 		String type = (String) _instruction.arguments[0];
+		
+		System.out.println("Starting " + _instruction.getDataSynchronisationInstructiontype() + " transaction. DataType=" + 
+				type + " TransactionID=" + instruction.getTransactionID());
 		
 		if (_instruction.getDataSynchronisationInstructiontype() == DataSynchronisationInstructionType.UPDATE_REQUEST) {
 			HasID[] data = (HasID[]) _instruction.arguments[1];
@@ -114,6 +116,9 @@ public class ClientDataWarehouseTransaction extends DataWarehouseTransaction {
 			}
 		}
 				
+		System.out.println("Executed " +_instruction.getDataSynchronisationInstructiontype() + " transaction. DataType=" + type +
+				 "Result=" + success + " TransactionID=" + instruction.getTransactionID());
+		
 		sendInstruction(DataSynchronisationInstruction.createPrepareInstructionReply(instruction.getTransactionID(), myID, success));		
 		myState = State.PREPARED;
 	}
