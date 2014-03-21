@@ -41,13 +41,10 @@ public class ServerDataWarehouse extends DataWarehouse {
 	
 	public DataTransferInstruction getDownloadReply(DataTransferInstruction instruction)
 	{
-		ObjectContainer container = this.db;
 		DB4OInterface i = new DB4OInterface(this.db); 
 		
 		DataTransferInstruction reply = 
 				DataTransferInstruction.createDataWarehouseDownloadReplyInstruction(i.getAllWrappers().toArray(new Serializable[0]));
-		
-		container.close();
 		return reply;
 	}
 	

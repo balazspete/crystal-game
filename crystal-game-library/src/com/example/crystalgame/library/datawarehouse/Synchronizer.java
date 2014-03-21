@@ -78,8 +78,6 @@ public abstract class Synchronizer {
 			return;
 		}
 		
-		System.out.println("Synchronizer|putOnQueue: Putting instruction on the queue. TransactionID=" + instruction.getTransactionID() + " Type=" + instruction.getDataSynchronisationInstructiontype());
-		
 		while(true) {
 			try {
 				queue.put(instruction);
