@@ -85,10 +85,7 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 			// Don't accept the instruction, if we are not in the right state...
 			return;
 		}
-		
-		// Get an abstraction for the container
-		DB4OInterface store = new DB4OInterface(container);
-		
+
 		// Get the type of the wrapped data (first argument is the type)
 		String type = (String) instruction.arguments[0];
 		
@@ -96,7 +93,7 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 		
 		// Store the transmitted IDs (second to n arguments are the data items)
 		for (int i = 0; i < data.length; i++) {
-			store.delete(type, (String) data[i]); 
+			storage.delete(type, (String) data[i]); 
 		}
 		
 		// Forward the instruction to the clients
@@ -113,9 +110,6 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 			return;
 		}
 		
-		// Get an abstraction for the container
-		DB4OInterface store = new DB4OInterface(container);
-		
 		// Get the type of the wrapped data (first argument is the type)
 		String type = (String) instruction.arguments[0];
 		
@@ -123,7 +117,7 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 		
 		// Store the transmitted data items (second to n arguments are the data items)
 		for (int i = 0; i < data.length; i++) {
-			store.put(type, (HasID) data[i]); 
+			storage.put(type, (HasID) data[i]); 
 		}
 		
 		// Forward the instruction to the clients
@@ -164,12 +158,12 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 			}
 		
 			// Okay, so everyone replied yes, commit the changes...
-			container.commit();
+			storage.commit();
 			commit = true;
 		} else {
 			// Client replied abort, we are going to abort the transaction
 			// No need to wait for further messages
-			container.rollback();
+			storage.rollback();
 		}
 		
 		// Send a commit instruction with the result (true: commit, false: abort)

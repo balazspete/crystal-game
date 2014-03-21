@@ -67,9 +67,9 @@ public class ClientDataWarehouseTransaction extends DataWarehouseTransaction {
 		System.out.println((commit ? "COMMITTING" : "ABORTING") + " transaction. TransactionID=" + instruction.getTransactionID());
 		
 		if (commit) {
-			container.commit();
+			storage.commit();
 		} else {
-			container.rollback();
+			storage.rollback();
 		}
 		
 		synchronizer.passInstruction(instruction);
@@ -88,9 +88,6 @@ public class ClientDataWarehouseTransaction extends DataWarehouseTransaction {
 			return;
 		}
 		
-		// Get an abstraction for the container
-		DB4OInterface store = new DB4OInterface(container);
-		
 		boolean success = true;
 		
 		// Retrieve the instruction
@@ -106,13 +103,13 @@ public class ClientDataWarehouseTransaction extends DataWarehouseTransaction {
 			HasID[] data = (HasID[]) _instruction.arguments[1];
 			// Store the transmitted data items (second to n arguments are the data items)
 			for (int i = 0; i < data.length; i++) {
-				success = success && (store.put(type, data[i]) != null);  
+				success = success && storage.put(type, data[i]);  
 			}
 		} else {
 			String[] data = (String[]) _instruction.arguments[1];
 			// Store the transmitted data items (second to n arguments are the data items)
 			for (int i = 0; i < data.length; i++) {
-				success = success && store.delete(type, data[i]); 
+				success = success && storage.delete(type, data[i]); 
 			}
 		}
 				

@@ -17,7 +17,7 @@ public interface KeyValueStore {
 	 * @param value The value to store
 	 * @return True if successful
 	 */
-	public HasID put(@SuppressWarnings("rawtypes") Class type, HasID value);
+	public boolean put(@SuppressWarnings("rawtypes") Class type, HasID value);
 	
 	/**
 	 * Get a value using the associated key

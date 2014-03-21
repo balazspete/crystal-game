@@ -26,29 +26,16 @@ public class DB4OInterface implements KeyValueStore {
      * @param container the container
      */
 	public DB4OInterface(ObjectContainer container) {
-		this.db = container;
+		this.db = container.ext().openSession();
 		this.pending = new ArrayList<DataWrapper<HasID>>();
 	}
     
 	@Override
-	public HasID put(@SuppressWarnings("rawtypes") Class type, HasID value) {
-		DataWrapper<HasID> wrapper = getWrapper(type, value.getID());
-		if (wrapper == null) {
-			wrapper = new DataWrapper<HasID>(type, value);
-		} else {
-			try {
-				wrapper.setValue(value);
-			} catch (DataWarehouseException e) {
-				return null;
-			}
-		}
-		
-		db.store(wrapper);
-		pending.add(wrapper);
-		return get(type, value.getID());
+	public boolean put(@SuppressWarnings("rawtypes") Class type, HasID value) {
+		return put(type.toString(), value);
 	}
 	
-	public HasID put(String type, HasID value) {
+	public boolean put(String type, HasID value) {
 		DataWrapper<HasID> wrapper = getWrapper(type, value.getID());
 		if (wrapper == null) {
 			wrapper = new DataWrapper<HasID>(type, value);
@@ -56,13 +43,16 @@ public class DB4OInterface implements KeyValueStore {
 			try {
 				wrapper.setValue(value);
 			} catch (DataWarehouseException e) {
-				return null;
+				System.err.println("Failed to store " + type + ": " + e.getMessage());
+				return false;
 			}
 		}
 		
 		db.store(wrapper);
+		
 		pending.add(wrapper);
-		return get(type, value.getID());
+		System.out.println("GET: " + get(type, value.getID()));
+		return db.ext().isStored(wrapper);
 	}
 
 	@Override
@@ -80,14 +70,18 @@ public class DB4OInterface implements KeyValueStore {
 	}
 	
 	@Override
-	public List<HasID> getAll(@SuppressWarnings("rawtypes") Class type) {
-		Query query = db.query();
-		query.descend("type").constrain(type.toString());
+	public List<HasID> getAll(@SuppressWarnings("rawtypes") final Class type) {
+		List<DataWrapper<HasID>> result = db.query(new Predicate<DataWrapper<HasID>>() {
+			private static final long serialVersionUID = 7890956022571856026L;
+			@Override
+			public boolean match(DataWrapper<HasID> arg) {
+				
+				return arg.getType().equals(type);
+			}
+		});
 		
-		ObjectSet<DataWrapper<HasID>> result = query.execute();
 		List<HasID> results = new ArrayList<HasID>();
-		while(result.hasNext()) {
-			DataWrapper<HasID> entry = result.next();
+		for(DataWrapper<HasID> entry : result) {
 			results.add(entry.getValue());
 		}
 		
@@ -125,6 +119,10 @@ public class DB4OInterface implements KeyValueStore {
 		db.rollback();
 		pending.clear();
 	}
+	
+	public void close() {
+		db.close();
+	}
 
 	/**
 	 * Get the wrapper associated with the input
@@ -132,15 +130,19 @@ public class DB4OInterface implements KeyValueStore {
 	 * @param key the id
 	 * @return The wrapper
 	 */
-	public DataWrapper<HasID> getWrapper(String type, String key) {
-		Query query = db.query();
-		query.descend("type").constrain(type);
-		query.descend("key").constrain(key);
+	public DataWrapper<HasID> getWrapper(final String type, final String key) {
+		List<DataWrapper<HasID>> result = db.query(new Predicate<DataWrapper<HasID>>() {
+			private static final long serialVersionUID = 7890956022571856026L;
+			@Override
+			public boolean match(DataWrapper<HasID> arg) {
+				
+				return arg.getKey().equals(key)
+						&& arg.getType().equals(type);
+			}
+		});
 		
-		ObjectSet<DataWrapper<HasID>> result = query.execute();
-		
-		if(result.hasNext()) {
-			return result.next();
+		if(result.size() > 0) {
+			return result.get(0);
 		}
 		
 		return null;

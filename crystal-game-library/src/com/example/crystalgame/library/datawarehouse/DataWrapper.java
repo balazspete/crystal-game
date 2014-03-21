@@ -96,4 +96,11 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 		return type;
 	}
 
+	/**
+	 * @return the key
+	 */
+	public String getKey() {
+		return key;
+	}
+
 }

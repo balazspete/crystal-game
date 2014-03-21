@@ -14,14 +14,14 @@ public abstract class DataWarehouseTransaction implements Runnable {
 
 	protected Synchronizer synchronizer;
 	protected LinkedBlockingQueue<DataSynchronisationInstruction> queue;
-	protected ObjectContainer container;
+	protected DB4OInterface storage;
 	
 	public DataWarehouseTransaction(Synchronizer synchronizer, 
 			LinkedBlockingQueue<DataSynchronisationInstruction> queue, 
 			ObjectContainer container) {
 		this.synchronizer = synchronizer;
 		this.queue = queue;
-		this.container = container.ext().openSession();
+		this.storage = new DB4OInterface(container);
 	}
 	
 	@Override
@@ -43,8 +43,7 @@ public abstract class DataWarehouseTransaction implements Runnable {
 		System.out.println("DataWarehouseTransaction|cleanUp: Cleaning up transaction resources.");
 		
 		queue = null;
-		container.close();
-		container = null;
+		storage.close();
 	}
 	
 }
