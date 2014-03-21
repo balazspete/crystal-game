@@ -277,6 +277,10 @@ public class CrystalGame extends Application {
 	
 	public void setClientID(String ID)
 	{
+		if (clientID != null) {
+			return;
+		}
+		
 		clientID = ID;
 		
 		Editor e = preferences.edit();
@@ -313,9 +317,11 @@ public class CrystalGame extends Application {
 		groupID = preferences.getString(GROUP_ID_KEY, null);	
 		
 		System.out.println("Restored preferences: " + clientID + " " + groupID);
-		if (clientID != null && groupID != null) {
-//			configDataWarehouse();
-			System.out.println("Restoring application state, downloading data warehouse...");
+		if (clientID!= null) {
+			if (groupID != null) {
+	//			configDataWarehouse();
+				System.out.println("Restoring application state, downloading data warehouse...");
+			} 
 		} else {
 			System.out.println("Nothing to restore");
 		}

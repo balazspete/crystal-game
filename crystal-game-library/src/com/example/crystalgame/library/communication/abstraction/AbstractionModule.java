@@ -19,6 +19,7 @@ import com.example.crystalgame.library.util.RandomID;
 public class AbstractionModule {
 
 	public static String myId;
+	public static boolean isClient = false;
 	
 	private MessageQueue queue;
 	
@@ -79,11 +80,6 @@ public class AbstractionModule {
 		String senderId = message.getSenderId();
 		
 		System.out.println("Message: (" + message.getSenderId() + ")" + message.getMessageType());
-		
-		if (message.getMessageType() == MessageType.ID_MESSAGE) {
-			// If the message is an ID assignment
-			myId = message.getReceiverId();
-		}
 		
 		if (senderId == null || senderId.isEmpty()) {
 			// If connected client did not have a connection information previously
