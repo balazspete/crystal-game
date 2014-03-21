@@ -86,7 +86,8 @@
         </activity>
         <activity android:name="com.example.crystalgame.ui.GameBoundaryActivity" >
         </activity>
-        <activity android:name="com.example.crystalgame.ui.GameActivity" >
+        <activity android:name="com.example.crystalgame.ui.GameActivity" 
+            android:theme="@style/GameViewTheme">
         </activity>
         <activity android:name="com.example.crystalgame.DataWarehouseTestActivity" >
         </activity>

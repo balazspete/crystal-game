@@ -6,6 +6,7 @@ package com.example.crystalgame.ui;
 import java.util.ArrayList;
 
 import com.example.crystalgame.CrystalGame;
+import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
@@ -90,7 +91,11 @@ public class GameManager {
 	
 	public synchronized ArrayList<MagicalItem> getMagicalItemInfoList()
 	{
-		return (ArrayList<MagicalItem>)InventoryManager.getInstance().getCharacter().getMagicalItems();
+		Character character = InventoryManager.getInstance().getCharacter();
+		if(null != character) {
+			return (ArrayList<MagicalItem>)character.getMagicalItems();
+		}
+		return null;
 	}
 	
 	public synchronized com.example.crystalgame.library.data.Character getGameCharacter() {

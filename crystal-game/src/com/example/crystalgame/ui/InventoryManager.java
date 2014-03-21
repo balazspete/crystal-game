@@ -3,12 +3,15 @@
  */
 package com.example.crystalgame.ui;
 
+import java.util.List;
+
 import android.util.Log;
 
 import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Crystal;
+import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
@@ -47,7 +50,12 @@ public class InventoryManager {
 	 */
 	public synchronized Crystal[] getCrystals() {
 		try {
-			return ClientDataWarehouse.getInstance().getList(Crystal.class).toArray(new Crystal[0]);
+			List<HasID> items = ClientDataWarehouse.getInstance().getList(Crystal.class);
+			if (items == null || items.size() == 0) {
+				return new Crystal[0];
+			}
+			
+			return items.toArray(new Crystal[0]);
 		} catch (DataWarehouseException e) {
 			Log.e("InventoryManager:getCrystals()",e.toString());
 			return new Crystal[0];
@@ -60,7 +68,12 @@ public class InventoryManager {
 	 */
 	public synchronized MagicalItem[] getMagicalItems() {
 		try {
-			return ClientDataWarehouse.getInstance().getList(MagicalItem.class).toArray(new MagicalItem[0]);
+			List<HasID> items = ClientDataWarehouse.getInstance().getList(MagicalItem.class);
+			if (items == null || items.size() == 0) {
+				return new MagicalItem[0];
+			}
+			
+			return items.toArray(new MagicalItem[0]);
 		} catch (DataWarehouseException e) {
 			Log.e("InventoryManager:getMagicalItems()",e.toString());
 			return new MagicalItem[0];
@@ -73,7 +86,12 @@ public class InventoryManager {
 	 */
 	public synchronized Character[] getCharacters() {
 		try {
-			return ClientDataWarehouse.getInstance().getList(Character.class).toArray(new Character[0]);
+			List<HasID> characters = ClientDataWarehouse.getInstance().getList(Character.class);
+			if (characters == null || characters.size() == 0) {
+				return new Character[0];
+			}
+			
+			return characters.toArray(new Character[0]);
 		} catch (DataWarehouseException e) {
 			Log.e("InventoryManager:getCharacters()",e.toString());
 			return new Character[0];
@@ -130,13 +148,17 @@ public class InventoryManager {
 	 * @return ThroneRoom
 	 */
 	public synchronized ThroneRoom getThroneRoom() {
-		ThroneRoom throneRoom = null;
 		try {
-			throneRoom = (ThroneRoom)ClientDataWarehouse.getInstance().getList(ThroneRoom.class).get(0);
+			List<HasID> rooms = ClientDataWarehouse.getInstance().getList(ThroneRoom.class);
+			if (rooms == null || rooms.size() == 0) {
+				return null;
+			}
+			
+			return (ThroneRoom) rooms.get(0);
 		} catch (DataWarehouseException e) {
 			Log.e("InventoryManager:getThroneRoom()",e.toString());
 		}
 		
-		return throneRoom;
+		return null;
 	}
 }
