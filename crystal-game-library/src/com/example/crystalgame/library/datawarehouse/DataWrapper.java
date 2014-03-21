@@ -59,7 +59,7 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	 * Get the wrapped value
 	 * @return The value
 	 */
-	public HasID getValue() {
+	public DATA getValue() {
 		return value;
 	}
 	
@@ -84,7 +84,7 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	 * Get the version of the data
 	 * @return The version number
 	 */
-	public long getVersion() {
+	public int getVersion() {
 		return version;
 	}
 	
