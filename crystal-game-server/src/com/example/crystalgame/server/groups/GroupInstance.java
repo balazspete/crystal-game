@@ -131,7 +131,7 @@ public class GroupInstance implements Runnable {
 
 	@Override
 	public void run() {
-		sleep(10000);
+		sleep(1000);
 		setup();
 		
 		// TODO: do group stuff here
@@ -164,7 +164,7 @@ public class GroupInstance implements Runnable {
 			information.add(new Information(Information.GROUP_NAME, group.getName()));
 			information.add(new Information(Information.GROUP_MAX_PLAYERS, group.getMaxPlayers()));
 			
-//			dataWarehouse.putList(Information.class, information);
+			dataWarehouse.putList(Information.class, information);
 			dataWarehouse.put(GameBoundary.class, group.getGameBoundary());
 		} catch (DataWarehouseException e) {
 			e.printStackTrace();
@@ -295,7 +295,7 @@ public class GroupInstance implements Runnable {
 			locations.add((Location) data[3]);
 			locations.add((Location) data[4]);
 			
-			ThroneRoom throneRoom = new ThroneRoom(((Character) data[5]).getLocation());
+			ThroneRoom throneRoom = new ThroneRoom((Location) data[5]);
 			
 			final GameManager manager = new GameManager(dataWarehouse, sequencer, gameName, clientIDs, locations, throneRoom);
 			new Thread(manager).start();

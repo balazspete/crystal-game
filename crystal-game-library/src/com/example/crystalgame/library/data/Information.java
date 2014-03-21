@@ -7,9 +7,14 @@ import java.io.Serializable;
  * @author Balazs Pete, Allen Thomas Varghese
  *
  */
-public class Information implements HasID {
+public class Information implements HasID, Serializable {
 
-	private static transient final String PREKEY = "com.example.crystalgame.library.data.information.";
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3903033647887846667L;
+
+	private static final String PREKEY = "com.example.crystalgame.library.data.information.";
 	
 	private String key;
 	private Serializable value;
@@ -41,7 +46,7 @@ public class Information implements HasID {
 	 * PREDEFINED KEYS
 	 *******************/
 	
-	public static transient final String
+	public static final String
 		GAME_NAME = "game_name",
 		GROUP_NAME = "group_name",
 		GROUP_MAX_PLAYERS = "group_max_players";
