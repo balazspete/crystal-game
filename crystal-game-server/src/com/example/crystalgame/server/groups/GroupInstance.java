@@ -164,7 +164,7 @@ public class GroupInstance implements Runnable {
 			information.add(new Information(Information.GROUP_NAME, group.getName()));
 			information.add(new Information(Information.GROUP_MAX_PLAYERS, group.getMaxPlayers()));
 			
-			dataWarehouse.putList(Information.class, information);
+//			dataWarehouse.putList(Information.class, information);
 			dataWarehouse.put(GameBoundary.class, group.getGameBoundary());
 		} catch (DataWarehouseException e) {
 			e.printStackTrace();
