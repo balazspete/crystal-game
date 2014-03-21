@@ -1,7 +1,7 @@
 package com.example.crystalgame;
 
-import com.example.crystalgame.groups.GroupLobbyActivity;
 import com.example.crystalgame.groups.JoinGroupActivity;
+import com.example.crystalgame.library.instructions.GroupInstruction;
 import com.example.crystalgame.ui.GPSTracker;
 
 import android.os.Bundle;
@@ -10,12 +10,17 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 public class CrystalGameLaunchActivity extends Activity {
 
+	private static CrystalGameLaunchActivity instance;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		instance = this;
+		
 		setContentView(R.layout.activity_launch);
 		
 		startService(new Intent(this, GPSTracker.class));
@@ -25,9 +30,7 @@ public class CrystalGameLaunchActivity extends Activity {
 		super.onResume();
 		
 		if (CrystalGame.getClientID() != null && CrystalGame.getGroupID() != null) {
-			Intent intent = new Intent(this, GroupLobbyActivity.class);
-			intent.putExtra(GroupLobbyActivity.KEY_LOAD_DW, true);
-			startActivity(intent);
+			tryToRejoinGroup();
 		}
 	}
 
@@ -55,6 +58,33 @@ public class CrystalGameLaunchActivity extends Activity {
     	Intent intent = new Intent(this, JoinGroupActivity.class);
     	intent.putExtra(JoinGroupActivity.LAUNCH_INTENT_FIELD, extra);
     	startActivity(intent);
+    }
+    
+    private void tryToRejoinGroup() {
+    	((CrystalGame) getApplication()).getCommunication().out.sendGroupInstructionToServer(
+    			GroupInstruction.createIsMemberQueryInstruction(CrystalGame.getGroupID()));
+    	
+    	Toast.makeText(this, "Trying to rejoin the previous group...", Toast.LENGTH_SHORT).show();
+    	
+    	findViewById(R.id.button_create_group).setEnabled(false);
+    	findViewById(R.id.button_join_group).setEnabled(false);
+    }
+    
+    public void tryToRejoinGroupFailed() {
+    	final Activity a = this;
+    	runOnUiThread(new Runnable(){
+			@Override
+			public void run() {
+		    	Toast.makeText(a, "Failed to rejoin the previous group...", Toast.LENGTH_SHORT).show();
+		    	
+		    	findViewById(R.id.button_create_group).setEnabled(true);
+		    	findViewById(R.id.button_join_group).setEnabled(true);
+			}
+		});
+    }
+    
+    public static CrystalGameLaunchActivity getInstance() {
+    	return instance;
     }
     
 }

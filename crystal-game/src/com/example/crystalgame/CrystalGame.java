@@ -14,6 +14,7 @@ import com.example.crystalgame.communication.ClientOutgoingMessages;
 import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
 import com.example.crystalgame.game.CharacterSelectionActivity;
 import com.example.crystalgame.game.CreateGameActivity;
+import com.example.crystalgame.groups.GroupLobbyActivity;
 import com.example.crystalgame.library.communication.abstraction.AbstractionModule;
 import com.example.crystalgame.library.communication.messages.IdMessage;
 import com.example.crystalgame.library.data.HasID;
@@ -174,6 +175,15 @@ public class CrystalGame extends Application {
 							startActivity(intent);
 						}
 						break;
+					case IS_MEMBER_REPLY:
+						if ((Boolean) instruction.arguments[0]) {
+							Intent intent = new Intent(getApplicationContext(), GroupLobbyActivity.class);
+							intent.putExtra(GroupLobbyActivity.KEY_LOAD_DW, true);
+							intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+							startActivity(intent);
+						} else {
+							CrystalGameLaunchActivity.getInstance().tryToRejoinGroupFailed();
+						}
 					default:
 						System.out.println("Unhandled group instruction");
 						break;
@@ -277,6 +287,10 @@ public class CrystalGame extends Application {
 	
 	public void setClientID(String ID)
 	{
+		if (clientID != null) {
+			return;
+		}
+		
 		clientID = ID;
 		
 		Editor e = preferences.edit();
@@ -313,9 +327,11 @@ public class CrystalGame extends Application {
 		groupID = preferences.getString(GROUP_ID_KEY, null);	
 		
 		System.out.println("Restored preferences: " + clientID + " " + groupID);
-		if (clientID != null && groupID != null) {
-//			configDataWarehouse();
-			System.out.println("Restoring application state, downloading data warehouse...");
+		if (clientID!= null) {
+			if (groupID != null) {
+	//			configDataWarehouse();
+				System.out.println("Restoring application state, downloading data warehouse...");
+			} 
 		} else {
 			System.out.println("Nothing to restore");
 		}

@@ -18,6 +18,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.Display;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -29,6 +31,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.R;
 import com.example.crystalgame.library.data.Character.PlayerType;
 import com.example.crystalgame.library.data.Crystal;
@@ -37,6 +40,7 @@ import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
 import com.example.crystalgame.library.data.Warrior;
 import com.example.crystalgame.library.data.Wizard;
+import com.example.crystalgame.library.instructions.GroupInstruction;
 import com.example.crystalgame.ui.ZoneChangeEvent.ZoneType;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -84,7 +88,6 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game);
 
-		
 		initializeGameComponents();
 		
 		/*Get the map instance*/
@@ -448,5 +451,28 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 		// TODO Auto-generated method stub
 		
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.game, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+			case R.id.action_leave_group:
+				leaveGroup();
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+	}
+	
+	private void leaveGroup() {
+    	GroupInstruction instruction = GroupInstruction.leaveGroup();
+    	((CrystalGame)getApplication()).getCommunication().out.sendGroupInstructionToServer(instruction);
+    }
 
 }

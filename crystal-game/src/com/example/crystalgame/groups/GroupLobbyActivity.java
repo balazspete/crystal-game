@@ -29,34 +29,31 @@ public class GroupLobbyActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_group_lobby);
 		
-		Boolean loadDw = getIntent().getExtras().getBoolean(KEY_LOAD_DW);
-		if (loadDw != null && loadDw) {
-			final Toast toast = Toast.makeText(this, "Loading group information...", Toast.LENGTH_LONG);
-			toast.show();
-			new Thread(new Runnable(){
-				@Override
-				public void run() {
-					while (ClientDataWarehouse.isNull) {
-						try {
-							synchronized(this) {
-								this.wait(100);
-							}
-						} catch (InterruptedException e) {
+		final Toast toast = Toast.makeText(this, "Loading group information...", Toast.LENGTH_LONG);
+		toast.show();
+		new Thread(new Runnable(){
+			@Override
+			public void run() {
+				while (ClientDataWarehouse.isNull) {
+					try {
+						synchronized(this) {
+							this.wait(100);
 						}
-						System.out.println("Waiting");
+					} catch (InterruptedException e) {
 					}
-					
-					runOnUiThread(new Runnable(){
-						@Override
-						public void run() {
-							switchToGameIfNeeded();
-							setTitle();
-							toast.cancel();
-						}
-					});
+					System.out.println("Waiting");
 				}
-			}).start();
-		}
+				
+				runOnUiThread(new Runnable(){
+					@Override
+					public void run() {
+						switchToGameIfNeeded();
+						setTitle();
+						toast.cancel();
+					}
+				});
+			}
+		}).start();
 	}
 
 	@Override

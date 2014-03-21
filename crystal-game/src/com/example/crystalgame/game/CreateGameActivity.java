@@ -17,10 +17,12 @@ import android.widget.Toast;
 import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.R;
 import com.example.crystalgame.groups.GroupLobbyActivity;
+import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.Zone;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.Instruction;
 import com.example.crystalgame.library.instructions.InstructionFormatException;
+import com.example.crystalgame.ui.GPSTracker;
 import com.example.crystalgame.ui.GameBoundaryActivity;
 import com.example.crystalgame.ui.UIController;
 
@@ -75,13 +77,15 @@ public class CreateGameActivity extends Activity {
 		
 		Instruction instruction;
 		try {
+			android.location.Location location = GPSTracker.getInstance().getLocation();
+			Location myLocation = new Location(location.getLatitude(), location.getLongitude());
 			instruction = GameInstruction.createCreateGameGameInstruction(
 					name 															// Name of game
 				,	gameBoundary.getLocation(0) 									// Game Location Top-Left
 				,	gameBoundary.getLocation(1)  									// Game Location Top-Right
 				,	gameBoundary.getLocation(2)  									// Game Location Bottom-Right
 				,	gameBoundary.getLocation(3) 									// Game Location Bottom-Left
-				,	UIController.getInstance().getGameCharacter().getLocation()		// Pass the location of the client who initiates create game
+				,	myLocation														// Pass the location of the client who initiates create game
 			);
 		} catch (InstructionFormatException e) {
 			showErrorToast();

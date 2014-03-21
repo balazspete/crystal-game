@@ -78,7 +78,7 @@ public class MessageQueue extends Thread {
 				// try to send the data
 				String communication = element.getCommunicationID();
 				System.err.println(element.clientID);
-				if (communication == null) {
+				if (!AbstractionModule.isClient && communication == null) {
 					throw new CommunicationFailureException("Client disconnected");
 				}
 				
