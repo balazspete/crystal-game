@@ -217,6 +217,7 @@ public class GroupInstanceManager {
 		 		}
 		 		
 		 		reply = GroupInstruction.createIsMemberReplyInstruction(result);
+		 		break;
 			case CREATE:
 				int maxPlayers = Integer.parseInt((String) instruction.arguments[1]);
 				try {

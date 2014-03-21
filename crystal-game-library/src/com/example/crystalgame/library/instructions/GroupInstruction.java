@@ -25,7 +25,8 @@ public class GroupInstruction extends Instruction {
 	 */
 	public enum GroupInstructionType implements Serializable {
 		CREATE, JOIN, LEAVE,ALLMEMBER, MEMBER_LIST_RESPONSE,
-		SUCCESS, FAILURE
+		SUCCESS, FAILURE,
+		IS_MEMBER, IS_MEMBER_REPLY
 	}
 	
 	public final GroupInstructionType groupInstructionType;
@@ -117,4 +118,23 @@ public class GroupInstruction extends Instruction {
 		
 		return new GroupInstruction(GroupInstructionType.MEMBER_LIST_RESPONSE, args);
 	}
+	
+	/**
+	 * Create a query to determine if client is a member of the specified group
+	 * @param groupID The group ID
+	 * @return The instruction
+	 */
+	public static GroupInstruction createIsMemberQueryInstruction(String groupID) {
+		return new GroupInstruction(GroupInstructionType.IS_MEMBER, groupID);
+	}
+	
+	/**
+	 * Create a response to an IS_MEMBER query
+	 * @param response The response value, true if is member
+	 * @return The instruction
+	 */
+	public static GroupInstruction createIsMemberReplyInstruction(boolean response) {
+		return new GroupInstruction(GroupInstructionType.IS_MEMBER_REPLY, response);
+	}
+	
 }

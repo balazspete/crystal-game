@@ -136,13 +136,21 @@ public class GameManager implements Runnable {
 		for (String client : clientIDs) {
 			characters.add(new UnknownPlayerCharacter(client));
 		}
-		
+		System.out.println("starting characters");
 		try {
 			dataWarehouse.blockingPutList(Character.class, characters);
 		} catch (DataWarehouseException e) {
 			System.err.println("Failed to create characters, retrying...");
 			createCharacters();
 		}
+		try {
+			List<HasID> chars = dataWarehouse.getList(Character.class);
+			System.out.println(chars.size());
+		} catch (DataWarehouseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 	private void sendGameStartSignal() {
