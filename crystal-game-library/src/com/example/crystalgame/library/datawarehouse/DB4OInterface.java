@@ -162,4 +162,17 @@ public class DB4OInterface implements KeyValueStore {
 	public List<DataWrapper<HasID>> getPending() {
 		return pending;
 	}
+
+	public List<DataWrapper<HasID>> getAllWrappers() {
+		DataWrapper<HasID> ex = new DataWrapper<HasID>();
+		
+		ObjectSet<DataWrapper<HasID>> result = db.queryByExample(ex);
+		List<DataWrapper<HasID>> list = new ArrayList<DataWrapper<HasID>>();
+		while (result.hasNext()) {
+			list.add(result.next());
+		}
+		
+		return list;
+	}
+	
 }
