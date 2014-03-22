@@ -112,7 +112,7 @@ public class GameManager implements Runnable {
 		CrystalZoneScatter crystalZoneScatter = new CrystalZoneScatter(gameLocation, 5);
 		List<CrystalZone> zones = crystalZoneScatter.generateCrystalZones(3);
 		try {
-			dataWarehouse.blockingPutList(CrystalZone.class, new ArrayList<HasID>(zones));
+			dataWarehouse.putList(CrystalZone.class, new ArrayList<HasID>(zones));
 		} catch (DataWarehouseException e) {
 			e.printStackTrace();
 		}
@@ -125,7 +125,7 @@ public class GameManager implements Runnable {
 		}
 
 		try {
-			dataWarehouse.blockingPutList(Crystal.class, new ArrayList<HasID>(crystals));
+			dataWarehouse.putList(Crystal.class, new ArrayList<HasID>(crystals));
 		} catch (DataWarehouseException e) {
 			e.printStackTrace();
 		}
@@ -138,7 +138,7 @@ public class GameManager implements Runnable {
 		}
 		System.out.println("starting characters");
 		try {
-			dataWarehouse.blockingPutList(Character.class, characters);
+			dataWarehouse.putList(Character.class, characters);
 		} catch (DataWarehouseException e) {
 			System.err.println("Failed to create characters, retrying...");
 			createCharacters();
@@ -161,8 +161,8 @@ public class GameManager implements Runnable {
 	
 	private void saveGameLocation() {
 		try {
-			dataWarehouse.blockingPut(GameLocation.class, gameLocation);
-			dataWarehouse.blockingPut(ThroneRoom.class, throneRoom);
+			dataWarehouse.put(GameLocation.class, gameLocation);
+			dataWarehouse.put(ThroneRoom.class, throneRoom);
 		} catch (DataWarehouseException e) {
 			e.printStackTrace();
 		}
