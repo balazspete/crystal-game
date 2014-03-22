@@ -12,6 +12,7 @@ import com.example.crystalgame.library.data.GameLocation;
 import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.Character.UnknownPlayerCharacter;
+import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
 import com.example.crystalgame.library.datawarehouse.DataWarehouse;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
@@ -55,6 +56,7 @@ public class GameManager implements Runnable {
 		saveGameLocation();
 		createCharacters();
 		createCrystals();
+		createMagicalItems();
 		sendGameStartSignal();
 		
 		while(running) {
@@ -117,7 +119,7 @@ public class GameManager implements Runnable {
 			e.printStackTrace();
 		}
 		
-		ArrayList<Crystal> crystals = new ArrayList<Crystal>();
+		ArrayList<HasID> crystals = new ArrayList<HasID>();
 		for (CrystalZone zone : zones) {
 			CrystalScatter scatter = new CrystalScatter(zone);
 			List<Crystal> _crystals = scatter.generateCrystals((int) (Math.random() * 10));
@@ -126,6 +128,17 @@ public class GameManager implements Runnable {
 
 		try {
 			dataWarehouse.putList(Crystal.class, new ArrayList<HasID>(crystals));
+		} catch (DataWarehouseException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void createMagicalItems() {
+		MagicalItemScatter scatter = new MagicalItemScatter(gameLocation);
+		List<MagicalItem> items = scatter.generateMagicItems(6);
+		
+		try {
+			dataWarehouse.putList(MagicalItem.class, new ArrayList<HasID>(items));
 		} catch (DataWarehouseException e) {
 			e.printStackTrace();
 		}
