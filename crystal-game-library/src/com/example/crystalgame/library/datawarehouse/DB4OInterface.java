@@ -80,12 +80,20 @@ public class DB4OInterface implements KeyValueStore {
 	
 	@Override
 	public List<HasID> getAll(@SuppressWarnings("rawtypes") final Class type) {
+		return getAll(type.toString());
+	}
+	
+	public List<HasID> getAll(final String type) {
 		List<DataWrapper<HasID>> wrappers = db.query(new Predicate<DataWrapper<HasID>>() {
 			private static final long serialVersionUID = 7890956022571856026L;
 
 			@Override
 			public boolean match(DataWrapper<HasID> arg) {
-				return arg.getType().equals(type);
+//				System.out.println("DaWr type: " + arg.getType() + " looking for " + type);
+				
+				boolean match = arg.getType().equals(type);
+//				System.out.println("DaWr match? " + match);
+				return match;
 			}
 		});
 		
@@ -143,13 +151,17 @@ public class DB4OInterface implements KeyValueStore {
 
 			@Override
 			public boolean match(DataWrapper<HasID> arg) {
-				System.out.println("DaWr type: " + arg.getType() + " looking for " + type);
-				return arg.getType().equals(type) && arg.getKey().equals(key);
+//				System.out.println("DaWr type: " + arg.getType() + " looking for " + type);
+//				System.out.println("DaWr key: " + arg.getKey() + " looking for " + key);
+//				
+				boolean match = arg.getType().equals(type) && arg.getKey().equals(key);
+//				System.out.println("DaWr match? " + match);
+				return match;
 			}
 		});
 		
 		if (wrappers != null && wrappers.size() > 0) {
-			wrappers.get(0);
+			return wrappers.get(0);
 		}
 		
 		return null;
