@@ -297,7 +297,10 @@ public class GroupInstance implements Runnable {
 			
 			ThroneRoom throneRoom = new ThroneRoom((Location) data[5]);
 			
-			final GameManager manager = new GameManager(dataWarehouse, sequencer, gameName, clientIDs, locations, throneRoom);
+			int gameTime = (Integer) data[6];
+			DateTime endTime = DateTime.now().plusMinutes(gameTime);
+			
+			final GameManager manager = new GameManager(dataWarehouse, sequencer, gameName, clientIDs, locations, throneRoom, endTime);
 			new Thread(manager).start();
 		
 			inGame = true;

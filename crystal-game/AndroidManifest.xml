@@ -86,8 +86,9 @@
         </activity>
         <activity android:name="com.example.crystalgame.ui.GameBoundaryActivity" >
         </activity>
-        <activity android:name="com.example.crystalgame.ui.GameActivity" 
-            android:theme="@style/GameViewTheme">
+        <activity
+            android:name="com.example.crystalgame.ui.GameActivity"
+            android:theme="@style/GameViewTheme" >
         </activity>
         <activity android:name="com.example.crystalgame.DataWarehouseTestActivity" >
         </activity>
@@ -106,11 +107,18 @@
             android:name="com.example.crystalgame.groups.GroupLobbyActivity"
             android:label="@string/title_activity_group_lobby" >
         </activity>
-         <activity
+        <activity
             android:name="com.example.crystalgame.game.CharacterSelectionActivity"
             android:label="@string/title_activity_character_selection" >
         </activity>
-        <service android:name=".ui.GPSTracker"></service>
+
+        <service android:name="com.example.crystalgame.ui.GPSTracker" >
+        </service>
+
+        <activity
+            android:name="com.example.crystalgame.game.GameEndActivity"
+            android:label="@string/title_activity_game_end" >
+        </activity>
     </application>
 
 </manifest>

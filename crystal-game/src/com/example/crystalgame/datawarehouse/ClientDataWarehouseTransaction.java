@@ -88,6 +88,7 @@ public class ClientDataWarehouseTransaction extends DataWarehouseTransaction {
 			return;
 		}
 		
+		
 		// Get an abstraction for the container
 		DB4OInterface store = new DB4OInterface(container);
 		

@@ -32,7 +32,8 @@ public abstract class DataWarehouseTransaction implements Runnable {
 	 * @param instruction The instruction
 	 */
 	protected void sendInstruction(DataSynchronisationInstruction instruction) {
-//		System.out.println("DataWarehouseTransaction|sendInstruction: TransactionID=" + instruction.getTransactionID() + " Type=" + instruction.getDataSynchronisationInstructiontype());
+		System.out.println("DataWarehouseTransaction|sendInstruction: TransactionID=" + instruction.getTransactionID() + " Type=" + instruction.getDataSynchronisationInstructiontype());
+		
 		synchronizer.sendInstruction(instruction);
 	}
 
@@ -40,7 +41,7 @@ public abstract class DataWarehouseTransaction implements Runnable {
 	 * Release the resources held by the transaction
 	 */
 	public void cleanUp() {
-		System.out.println("DataWarehouseTransaction|cleanUp: Cleaning up transaction resources.");
+		System.out.println("DataWarehouseTransaction|cleanUp: Cleaning up transaction's resources.");
 		
 		queue = null;
 		container.close();

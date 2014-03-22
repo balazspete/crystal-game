@@ -14,8 +14,6 @@ public class Wizard extends Character {
 	 * 
 	 */
 	private static final long serialVersionUID = 1221320162223472002L;
-
-	private String originalID;
 	
 	public Wizard() {
 		super(0, 0, CharacterType.WIZARD, null, null);
@@ -29,14 +27,8 @@ public class Wizard extends Character {
 	 */
 	private Wizard(Character character, double latitude, double longitude) {
 		super(latitude, longitude, CharacterType.WIZARD, character.playerType, character.getClientId());
-		this.originalID = character.id;
 	}
 
-	@Override
-	public String getID() {
-		return originalID;
-	}
-	
 	public static Wizard create(Character character, double latitude, double longitude) {
 		Wizard w = new Wizard(character, latitude, longitude);
 		w.playerType = PlayerType.PLAYER;

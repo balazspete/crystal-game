@@ -8,7 +8,6 @@ import com.db4o.ObjectSet;
 import com.db4o.query.Predicate;
 import com.db4o.query.Query;
 import com.example.crystalgame.library.data.HasID;
-import com.sun.org.apache.bcel.internal.util.Class2HTML;
 
 /**
  * DB Connection class for Android
@@ -80,15 +79,29 @@ public class DB4OInterface implements KeyValueStore {
 	}
 	
 	@Override
-	public List<HasID> getAll(@SuppressWarnings("rawtypes") Class type) {
-		Query query = db.query();
-		query.descend("type").constrain(type.toString());
+	public List<HasID> getAll(@SuppressWarnings("rawtypes") final Class type) {
+		return getAll(type.toString());
+	}
+	
+	public List<HasID> getAll(final String type) {
+		List<DataWrapper<HasID>> wrappers = db.query(new Predicate<DataWrapper<HasID>>() {
+			private static final long serialVersionUID = 7890956022571856026L;
+
+			@Override
+			public boolean match(DataWrapper<HasID> arg) {
+//				System.out.println("DaWr type: " + arg.getType() + " looking for " + type);
+				
+				boolean match = arg.getType().equals(type);
+//				System.out.println("DaWr match? " + match);
+				return match;
+			}
+		});
 		
-		ObjectSet<DataWrapper<HasID>> result = query.execute();
 		List<HasID> results = new ArrayList<HasID>();
-		while(result.hasNext()) {
-			DataWrapper<HasID> entry = result.next();
-			results.add(entry.getValue());
+		for(DataWrapper<HasID> wrapper : wrappers) {
+			if (!wrapper.isWriteLocked()) {
+				results.add(wrapper.getValue());
+			}
 		}
 		
 		return results;
@@ -132,18 +145,37 @@ public class DB4OInterface implements KeyValueStore {
 	 * @param key the id
 	 * @return The wrapper
 	 */
-	public DataWrapper<HasID> getWrapper(String type, String key) {
-		Query query = db.query();
-		query.descend("type").constrain(type);
-		query.descend("key").constrain(key);
+	public DataWrapper<HasID> getWrapper(final String type, final String key) {
+		List<DataWrapper<HasID>> wrappers = db.query(new Predicate<DataWrapper<HasID>>() {
+			private static final long serialVersionUID = 7890956022571856026L;
+
+			@Override
+			public boolean match(DataWrapper<HasID> arg) {
+//				System.out.println("DaWr type: " + arg.getType() + " looking for " + type);
+//				System.out.println("DaWr key: " + arg.getKey() + " looking for " + key);
+//				
+				boolean match = arg.getType().equals(type) && arg.getKey().equals(key);
+//				System.out.println("DaWr match? " + match);
+				return match;
+			}
+		});
 		
-		ObjectSet<DataWrapper<HasID>> result = query.execute();
-		
-		if(result.hasNext()) {
-			return result.next();
+		if (wrappers != null && wrappers.size() > 0) {
+			return wrappers.get(0);
 		}
 		
 		return null;
+		
+//		Query query = db.query();
+//		query.descend("type").constrain(type);
+//		query.descend("key").constrain(key);
+//		
+//		ObjectSet<DataWrapper<HasID>> result = query.execute();
+//		if(result.hasNext()) {
+//			return result.next();
+//		}
+//		
+//		return null;
 	}
 	
 	/**
@@ -163,7 +195,7 @@ public class DB4OInterface implements KeyValueStore {
 	public List<DataWrapper<HasID>> getPending() {
 		return pending;
 	}
-	
+
 	public List<DataWrapper<HasID>> getAllWrappers() {
 		DataWrapper<HasID> ex = new DataWrapper<HasID>();
 		
@@ -175,4 +207,5 @@ public class DB4OInterface implements KeyValueStore {
 		
 		return list;
 	}
+	
 }

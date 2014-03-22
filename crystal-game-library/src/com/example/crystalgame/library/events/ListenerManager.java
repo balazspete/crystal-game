@@ -45,13 +45,15 @@ public abstract class ListenerManager<LISTENER extends EventListener, EVENT exte
 	 * Send a DATA to all listeners
 	 * @param data The DATA to send
 	 */
-	public synchronized void send(final EVENT data) {
+	public void send(final EVENT data) {
 		// Call the handler function for each listener
 		pool.execute(new Runnable(){
 			@Override
 			public void run() {
-				for (LISTENER listener : listeners) {
-					eventHandlerHelper(listener, data);
+				synchronized(ListenerManager.this) {
+					for (LISTENER listener : listeners) {
+						eventHandlerHelper(listener, data);
+					}
 				}
 			}
 		});

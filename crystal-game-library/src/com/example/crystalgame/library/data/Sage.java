@@ -11,8 +11,6 @@ public class Sage extends Character {
 	 * 
 	 */
 	private static final long serialVersionUID = -540232457389629765L;
-	
-	private String originalID;
 
 	public Sage() {
 		super(0, 0, CharacterType.SAGE, null, null);
@@ -26,12 +24,6 @@ public class Sage extends Character {
 	 */
 	protected Sage(Character character, double latitude, double longitude) {
 		super(latitude, longitude, CharacterType.SAGE, character.playerType, character.getClientId());
-		this.originalID = character.id;
-	}
-
-	@Override
-	public String getID() {
-		return originalID;
 	}
 	
 	public static Sage create(Character character, double latitude, double longitude) {

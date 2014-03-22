@@ -62,8 +62,9 @@ public class CreateGameActivity extends Activity {
 	private void resetFormValues() {
 		// Clear the game duration
 		((EditText) findViewById(R.id.game_name)).setText("");
+		((EditText) findViewById(R.id.game_length)).setText("");
 		gameBoundary.clear();
-		Toast.makeText(this, getString(R.string.reset_game_info), Toast.LENGTH_SHORT);
+		Toast.makeText(this, getString(R.string.reset_game_info), Toast.LENGTH_SHORT).show();
 	}
 	
 	public void createGame(View view) {
@@ -72,8 +73,20 @@ public class CreateGameActivity extends Activity {
 			return;
 		}
 		
-		String name = ((EditText) findViewById(R.id.game_name)).getText().toString();
+		int gameTime = -1;
+		try {
+			gameTime = Integer.parseInt(((EditText) findViewById(R.id.game_length)).getText().toString());
+		} catch (NumberFormatException e) {
+			// handled in the next step
+		}
 		
+		if (gameTime < 10) {
+			gameTime = 10;
+			Toast.makeText(this, "Invalid game length value", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		
+		String name = ((EditText) findViewById(R.id.game_name)).getText().toString();
 		
 		Instruction instruction;
 		try {
@@ -86,6 +99,7 @@ public class CreateGameActivity extends Activity {
 				,	gameBoundary.getLocation(2)  									// Game Location Bottom-Right
 				,	gameBoundary.getLocation(3) 									// Game Location Bottom-Left
 				,	myLocation														// Pass the location of the client who initiates create game
+				,   gameTime
 			);
 		} catch (InstructionFormatException e) {
 			showErrorToast();
