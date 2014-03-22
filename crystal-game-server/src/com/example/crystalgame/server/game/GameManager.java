@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.joda.time.DateTime;
+
 import com.example.crystalgame.library.communication.messages.InstructionRelayMessage;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Crystal;
@@ -32,11 +34,12 @@ public class GameManager implements Runnable {
 	private List<String> clientIDs;
 	private GameLocation gameLocation;
 	private ThroneRoom throneRoom;
+	private DateTime endTime;
 	
 	private volatile boolean running = true; 
 	private ListenerManager<InstructionEventListener, InstructionEvent> manager;
 
-	public GameManager(DataWarehouse dw, Sequencer sequencer, String gameName, List<String> clientIDs, List<Location> locations, ThroneRoom throneRoom) {
+	public GameManager(DataWarehouse dw, Sequencer sequencer, String gameName, List<String> clientIDs, List<Location> locations, ThroneRoom throneRoom, DateTime endTime) {
 		this.dataWarehouse = dw;
 		this.sequencer = sequencer;
 		
@@ -48,6 +51,8 @@ public class GameManager implements Runnable {
 		for(Location location : locations) {
 			this.gameLocation.addLocation(location);
 		}
+		
+		this.endTime = endTime;
 		
 	}
 
@@ -67,11 +72,20 @@ public class GameManager implements Runnable {
 				} catch (InterruptedException e) {
 				}
 			}
+			
+			if (isOutOfTime()) {
+				stopGame();
+			}
 		}
+	}
+	
+	public boolean isOutOfTime() {
+		return DateTime.now().isAfter(endTime);
 	}
 	
 	public void stopGame() {
 		running = false;
+		sendOutOfTimeSignal();
 		// TODO: stop child threads here
 	}
 	
@@ -170,6 +184,12 @@ public class GameManager implements Runnable {
 	private void sendGameStartSignal() {
 		InstructionRelayMessage message = new InstructionRelayMessage(null);
 		message.setData(GameInstruction.createGameStartedSignalInstruction());
+		sequencer.sendMessageToAll(message);
+	}
+	
+	private void sendOutOfTimeSignal() {
+		InstructionRelayMessage message = new InstructionRelayMessage(null);
+		message.setData(GameInstruction.createGameEndedSignalInstruction());
 		sequencer.sendMessageToAll(message);
 	}
 	

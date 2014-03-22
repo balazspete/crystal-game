@@ -14,6 +14,8 @@ import com.example.crystalgame.communication.ClientOutgoingMessages;
 import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
 import com.example.crystalgame.game.CharacterSelectionActivity;
 import com.example.crystalgame.game.CreateGameActivity;
+import com.example.crystalgame.game.GameEndActivity;
+import com.example.crystalgame.game.GameEndActivity.GameEndType;
 import com.example.crystalgame.groups.GroupLobbyActivity;
 import com.example.crystalgame.library.communication.abstraction.AbstractionModule;
 import com.example.crystalgame.library.communication.messages.IdMessage;
@@ -209,7 +211,13 @@ public class CrystalGame extends Application {
 						break;
 					case GAME_ENDED:
 						Log.i("CrystalGame", "Game Ended");
-						// TODO: show end game activity
+						endGame(GameEndType.OUT_OF_TIME);
+						break;
+					case GAME_BOUNDARY_OUTSIDE_RESPONSE:
+						endGame(GameEndType.OUT_OF_BOUNDARY);
+						break;
+					case ENERGY_DISQUALIFY_RESPONSE:
+						endGame(GameEndType.OUT_OF_ENERGY);
 						break;
 					default:
 						// ingored
@@ -232,6 +240,12 @@ public class CrystalGame extends Application {
 				}
 			}
 		});
+	}
+	
+	public void endGame(GameEndType type) {
+		Intent intent = new Intent(getApplicationContext(), GameEndActivity.class);
+		intent.putExtra(GameEndActivity.GAME_END_TYPE, type);
+		startActivity(intent);
 	}
 	
 	public void configDataWarehouse() {
