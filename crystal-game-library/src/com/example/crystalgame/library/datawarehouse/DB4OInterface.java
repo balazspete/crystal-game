@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.db4o.ObjectContainer;
 import com.db4o.ObjectSet;
+import com.db4o.query.Predicate;
 import com.db4o.query.Query;
 import com.example.crystalgame.library.data.HasID;
 
@@ -78,16 +79,20 @@ public class DB4OInterface implements KeyValueStore {
 	}
 	
 	@Override
-	public List<HasID> getAll(@SuppressWarnings("rawtypes") Class type) {
-		Query query = db.query();
-		query.descend("type").constrain(type.toString());
+	public List<HasID> getAll(@SuppressWarnings("rawtypes") final Class type) {
+		List<DataWrapper<HasID>> wrappers = db.query(new Predicate<DataWrapper<HasID>>() {
+			private static final long serialVersionUID = 7890956022571856026L;
+
+			@Override
+			public boolean match(DataWrapper<HasID> arg) {
+				return arg.getType().equals(type);
+			}
+		});
 		
-		ObjectSet<DataWrapper<HasID>> result = query.execute();
 		List<HasID> results = new ArrayList<HasID>();
-		while(result.hasNext()) {
-			DataWrapper<HasID> entry = result.next();
-			if (!entry.isWriteLocked()) {
-				results.add(entry.getValue());
+		for(DataWrapper<HasID> wrapper : wrappers) {
+			if (!wrapper.isWriteLocked()) {
+				results.add(wrapper.getValue());
 			}
 		}
 		
@@ -132,17 +137,33 @@ public class DB4OInterface implements KeyValueStore {
 	 * @param key the id
 	 * @return The wrapper
 	 */
-	public DataWrapper<HasID> getWrapper(String type, String key) {
-		Query query = db.query();
-		query.descend("type").constrain(type);
-		query.descend("key").constrain(key);
+	public DataWrapper<HasID> getWrapper(final String type, final String key) {
+		List<DataWrapper<HasID>> wrappers = db.query(new Predicate<DataWrapper<HasID>>() {
+			private static final long serialVersionUID = 7890956022571856026L;
+
+			@Override
+			public boolean match(DataWrapper<HasID> arg) {
+				System.out.println("DaWr type: " + arg.getType() + " looking for " + type);
+				return arg.getType().equals(type) && arg.getKey().equals(key);
+			}
+		});
 		
-		ObjectSet<DataWrapper<HasID>> result = query.execute();
-		if(result.hasNext()) {
-			return result.next();
+		if (wrappers != null && wrappers.size() > 0) {
+			wrappers.get(0);
 		}
 		
 		return null;
+		
+//		Query query = db.query();
+//		query.descend("type").constrain(type);
+//		query.descend("key").constrain(key);
+//		
+//		ObjectSet<DataWrapper<HasID>> result = query.execute();
+//		if(result.hasNext()) {
+//			return result.next();
+//		}
+//		
+//		return null;
 	}
 	
 	/**
