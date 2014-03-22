@@ -3,6 +3,7 @@ package com.example.crystalgame.datawarehouse;
 import java.io.File;
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.FutureTask;
 
 import android.util.Log;
 
@@ -60,12 +61,22 @@ public class ClientDataWarehouse extends DataWarehouse {
 		}
 		
 		@Override
-		public HasID put(@SuppressWarnings("rawtypes") Class type, HasID value) throws DataWarehouseException {
+		public HasID blockingPut(@SuppressWarnings("rawtypes") Class type, HasID value) throws DataWarehouseException {
 			throw DataWarehouseException.NULL_WAREHOUSE;
 		}
 		
 		@Override
-		public List<HasID> putList(@SuppressWarnings("rawtypes") Class type, List<HasID> value) throws DataWarehouseException {
+		public FutureTask<Boolean> put(@SuppressWarnings("rawtypes") Class type, HasID value) throws DataWarehouseException {
+			throw DataWarehouseException.NULL_WAREHOUSE;
+		}
+		
+		@Override
+		public FutureTask<Boolean> putList(@SuppressWarnings("rawtypes") Class type, List<HasID> value) throws DataWarehouseException {
+			throw DataWarehouseException.NULL_WAREHOUSE;
+		}
+		
+		@Override
+		public List<HasID> blockingPutList(@SuppressWarnings("rawtypes") Class type, List<HasID> value) throws DataWarehouseException {
 			throw DataWarehouseException.NULL_WAREHOUSE;
 		}
 
@@ -75,12 +86,17 @@ public class ClientDataWarehouse extends DataWarehouse {
 		}
 
 		@Override
-		public boolean delete(@SuppressWarnings("rawtypes") Class type, String id) throws DataWarehouseException {
+		public FutureTask<Boolean> delete(@SuppressWarnings("rawtypes") Class type, String id) throws DataWarehouseException {
 			throw DataWarehouseException.NULL_WAREHOUSE;
 		}
 		
 		@Override
-		public boolean deleteList(@SuppressWarnings("rawtypes") Class type, List<String> ids) throws DataWarehouseException {
+		public boolean blockingDelete(@SuppressWarnings("rawtypes") Class type, String id) throws DataWarehouseException {
+			throw DataWarehouseException.NULL_WAREHOUSE;
+		}
+		
+		@Override
+		public FutureTask<Boolean> deleteList(@SuppressWarnings("rawtypes") Class type, List<String> ids) throws DataWarehouseException {
 			throw DataWarehouseException.NULL_WAREHOUSE;
 		}
 
