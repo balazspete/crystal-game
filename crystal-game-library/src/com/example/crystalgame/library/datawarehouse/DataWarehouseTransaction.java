@@ -14,14 +14,14 @@ public abstract class DataWarehouseTransaction implements Runnable {
 
 	protected Synchronizer synchronizer;
 	protected LinkedBlockingQueue<DataSynchronisationInstruction> queue;
-	protected DB4OInterface storage;
+	protected ObjectContainer container;
 	
 	public DataWarehouseTransaction(Synchronizer synchronizer, 
 			LinkedBlockingQueue<DataSynchronisationInstruction> queue, 
 			ObjectContainer container) {
 		this.synchronizer = synchronizer;
 		this.queue = queue;
-		this.storage = new DB4OInterface(container);
+		this.container = container.ext().openSession();
 	}
 	
 	@Override
@@ -32,7 +32,8 @@ public abstract class DataWarehouseTransaction implements Runnable {
 	 * @param instruction The instruction
 	 */
 	protected void sendInstruction(DataSynchronisationInstruction instruction) {
-//		System.out.println("DataWarehouseTransaction|sendInstruction: TransactionID=" + instruction.getTransactionID() + " Type=" + instruction.getDataSynchronisationInstructiontype());
+		System.out.println("DataWarehouseTransaction|sendInstruction: TransactionID=" + instruction.getTransactionID() + " Type=" + instruction.getDataSynchronisationInstructiontype());
+		
 		synchronizer.sendInstruction(instruction);
 	}
 
@@ -40,10 +41,11 @@ public abstract class DataWarehouseTransaction implements Runnable {
 	 * Release the resources held by the transaction
 	 */
 	public void cleanUp() {
-		System.out.println("DataWarehouseTransaction|cleanUp: Cleaning up transaction resources.");
+		System.out.println("DataWarehouseTransaction|cleanUp: Cleaning up transaction's resources.");
 		
 		queue = null;
-		storage.close();
+		container.close();
+		container = null;
 	}
 	
 }

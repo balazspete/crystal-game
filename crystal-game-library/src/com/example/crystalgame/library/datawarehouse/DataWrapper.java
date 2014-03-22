@@ -23,7 +23,12 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	private DATA value;
 	private int version;
 	
-	public DataWrapper() {}
+	private volatile transient ReentrantReadWriteLock lock;
+	
+	public DataWrapper() {
+		version = 1;
+		lock = new ReentrantReadWriteLock(true);
+	}
 	
 	/**
 	 * Create a DataWapper user for query purposes
@@ -34,6 +39,7 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 		this.key = id;
 		
 		version = 1;
+		lock = new ReentrantReadWriteLock(true);
 	}
 	
 	/**
@@ -65,7 +71,12 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	 * @return The value
 	 */
 	public DATA getValue() {
-		return value;
+		lock.readLock().lock();
+		try {
+			return value;
+		} finally {
+			lock.readLock().unlock();
+		}
 	}
 	
 	/**
@@ -81,8 +92,26 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 			throw DataWarehouseException.MISMATCHING_TYPE_EXCEPTION;
 		}
 		
-		this.value = value;
-		version++;
+		// Get the write lock
+		lock.readLock().lock();
+		lock.writeLock().lock();
+		try {
+			// Update value & version
+			this.value = value;
+			version++;
+		} finally {
+			// Release locks
+			lock.writeLock().unlock();
+			lock.readLock().unlock();
+		}
+	}
+	
+	/**
+	 * Is the wrapper write locked?
+	 * @return True if write locked
+	 */
+	public boolean isWriteLocked() {
+		return lock.isWriteLocked();
 	}
 	
 	/**
@@ -100,6 +129,21 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	public String getType() {
 		return type;
 	}
+	
+	/*********
+	 * SERIALISATION OVERRIDE
+	 *********/
+	
+	private void writeObject(java.io.ObjectOutputStream stream) throws IOException {
+		stream.defaultWriteObject(); 
+    }
+
+    @SuppressWarnings("unchecked")
+	private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    	stream.defaultReadObject();
+    	this.lock = new ReentrantReadWriteLock(true);
+    	System.out.println("creating object: " + lock);
+    }
 
 	/**
 	 * @return the key

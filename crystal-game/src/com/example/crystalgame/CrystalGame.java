@@ -35,6 +35,7 @@ import com.example.crystalgame.ui.GameActivity;
 import com.example.crystalgame.ui.InformationPresenter;
 import com.example.crystalgame.ui.UIController;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.ArrayList;
 
@@ -67,7 +68,7 @@ public class CrystalGame extends Application {
 		addCommunication();
 		incomingCommunicationsSetup();
 		configDataWarehouse(); // This will have to be called again when we get the client ID or if we join a group
-		//setupDataWarehouse(null);
+//		setupDataWarehouse(null);
 	}
 	
 	/**

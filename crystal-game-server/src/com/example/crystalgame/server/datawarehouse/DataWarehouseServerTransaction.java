@@ -36,7 +36,9 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 			List<String> clientIDs) {
 		super(synchronizer, queue, container);
 		clientMap = new HashMap<String, State>();
-		
+		for (String id : clientIDs) {
+			clientMap.put(id, State.INITIAL);
+		}
 		count = 0;
 		myState = State.INITIAL;
 	}
@@ -46,9 +48,7 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 		while (running) {
 			try {
 				// Listen to instructions
-				System.out.println("DWST: waiting...");
 				DataSynchronisationInstruction instruction = queue.poll(Long.MAX_VALUE, TimeUnit.DAYS);
-				System.out.println("DWST: got instruction: " + instruction.getDataSynchronisationInstructiontype());
 				
 				switch (instruction.getDataSynchronisationInstructiontype()) {
 					case COMMIT_REPLY:
@@ -85,7 +85,10 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 			// Don't accept the instruction, if we are not in the right state...
 			return;
 		}
-
+		
+		// Get an abstraction for the container
+		DB4OInterface store = new DB4OInterface(container);
+		
 		// Get the type of the wrapped data (first argument is the type)
 		String type = (String) instruction.arguments[0];
 		
@@ -93,7 +96,7 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 		
 		// Store the transmitted IDs (second to n arguments are the data items)
 		for (int i = 0; i < data.length; i++) {
-			storage.delete(type, (String) data[i]); 
+			store.delete(type, (String) data[i]); 
 		}
 		
 		// Forward the instruction to the clients
@@ -110,6 +113,9 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 			return;
 		}
 		
+		// Get an abstraction for the container
+		DB4OInterface store = new DB4OInterface(container);
+		
 		// Get the type of the wrapped data (first argument is the type)
 		String type = (String) instruction.arguments[0];
 		
@@ -117,7 +123,7 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 		
 		// Store the transmitted data items (second to n arguments are the data items)
 		for (int i = 0; i < data.length; i++) {
-			storage.put(type, (HasID) data[i]); 
+			store.put(type, (HasID) data[i]); 
 		}
 		
 		// Forward the instruction to the clients
@@ -126,7 +132,6 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 		
 		// Change the state
 		myState = State.PREPARED;
-		System.out.println("Prepared");
 	}
 	
 	private void commitTransaction(DataSynchronisationInstruction instruction) {
@@ -134,6 +139,8 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 			// Don't accept the instruction, if we are not in the right state...
 			return;
 		}
+		
+		System.out.println("commit"+instruction.getDataSynchronisationInstructiontype());
 		
 		// Let's get the details contained in the instruction
 		// For formatting, check the class
@@ -158,12 +165,12 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 			}
 		
 			// Okay, so everyone replied yes, commit the changes...
-			storage.commit();
+			container.commit();
 			commit = true;
 		} else {
 			// Client replied abort, we are going to abort the transaction
 			// No need to wait for further messages
-			storage.rollback();
+			container.rollback();
 		}
 		
 		// Send a commit instruction with the result (true: commit, false: abort)

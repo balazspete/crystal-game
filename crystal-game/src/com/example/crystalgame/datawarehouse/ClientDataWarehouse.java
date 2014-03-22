@@ -3,7 +3,8 @@ package com.example.crystalgame.datawarehouse;
 import java.io.File;
 import java.io.Serializable;
 import java.util.List;
-import java.util.concurrent.FutureTask;
+
+import android.util.Log;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
@@ -15,6 +16,7 @@ import com.example.crystalgame.library.datawarehouse.DataWrapper;
 import com.example.crystalgame.library.datawarehouse.Synchronizer;
 import com.example.crystalgame.library.events.InstructionEventListener;
 import com.example.crystalgame.library.instructions.DataSynchronisationInstruction;
+import com.example.crystalgame.library.util.RandomID;
 
 /**
  * The client version of the DB4OInterface
@@ -58,12 +60,12 @@ public class ClientDataWarehouse extends DataWarehouse {
 		}
 		
 		@Override
-		public FutureTask<Boolean> put(@SuppressWarnings("rawtypes") Class type, HasID value) throws DataWarehouseException {
+		public HasID put(@SuppressWarnings("rawtypes") Class type, HasID value) throws DataWarehouseException {
 			throw DataWarehouseException.NULL_WAREHOUSE;
 		}
 		
 		@Override
-		public FutureTask<Boolean> putList(@SuppressWarnings("rawtypes") Class type, List<HasID> value) throws DataWarehouseException {
+		public List<HasID> putList(@SuppressWarnings("rawtypes") Class type, List<HasID> value) throws DataWarehouseException {
 			throw DataWarehouseException.NULL_WAREHOUSE;
 		}
 
@@ -73,12 +75,12 @@ public class ClientDataWarehouse extends DataWarehouse {
 		}
 
 		@Override
-		public FutureTask<Boolean> delete(@SuppressWarnings("rawtypes") Class type, String id) throws DataWarehouseException {
+		public boolean delete(@SuppressWarnings("rawtypes") Class type, String id) throws DataWarehouseException {
 			throw DataWarehouseException.NULL_WAREHOUSE;
 		}
 		
 		@Override
-		public FutureTask<Boolean> deleteList(@SuppressWarnings("rawtypes") Class type, List<String> ids) throws DataWarehouseException {
+		public boolean deleteList(@SuppressWarnings("rawtypes") Class type, List<String> ids) throws DataWarehouseException {
 			throw DataWarehouseException.NULL_WAREHOUSE;
 		}
 
@@ -112,7 +114,7 @@ public class ClientDataWarehouse extends DataWarehouse {
 			f.delete();
 		}
 		
-		ObjectContainer c = Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), DB_PATH + "/" + groupID);
+		ObjectContainer c = Db4oEmbedded.openFile(DB_PATH + "/" + groupID);
 		instance = new ClientDataWarehouse(c, new ClientSynchronizer(c, myID));
 	}
 	

@@ -4,10 +4,9 @@ import java.io.Serializable;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
-import com.example.crystalgame.library.data.HasID;
+
 import com.example.crystalgame.library.datawarehouse.DB4OInterface;
 import com.example.crystalgame.library.datawarehouse.DataWarehouse;
-import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
 import com.example.crystalgame.library.instructions.DataTransferInstruction;
 import com.example.crystalgame.server.groups.Group;
 
@@ -32,11 +31,6 @@ public class ServerDataWarehouse extends DataWarehouse {
 	
 	private static ObjectContainer createGroupObjectContainer(String groupId) {
 		return Db4oEmbedded.openFile(Db4oEmbedded.newConfiguration(), DB_PATH + "group-db-" + groupId);
-	}
-	
-	@Deprecated
-	public void putDirect(@SuppressWarnings("rawtypes") Class type, HasID value) throws DataWarehouseException {
-		new DB4OInterface(db).put(type, value);
 	}
 	
 	public DataTransferInstruction getDownloadReply(DataTransferInstruction instruction)

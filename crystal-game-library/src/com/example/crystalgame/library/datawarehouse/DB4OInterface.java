@@ -26,16 +26,29 @@ public class DB4OInterface implements KeyValueStore {
      * @param container the container
      */
 	public DB4OInterface(ObjectContainer container) {
-		this.db = container.ext().openSession();
+		this.db = container;
 		this.pending = new ArrayList<DataWrapper<HasID>>();
 	}
     
 	@Override
-	public boolean put(@SuppressWarnings("rawtypes") Class type, HasID value) {
-		return put(type.toString(), value);
+	public HasID put(@SuppressWarnings("rawtypes") Class type, HasID value) {
+		DataWrapper<HasID> wrapper = getWrapper(type, value.getID());
+		if (wrapper == null) {
+			wrapper = new DataWrapper<HasID>(type, value);
+		} else {
+			try {
+				wrapper.setValue(value);
+			} catch (DataWarehouseException e) {
+				return null;
+			}
+		}
+		
+		db.store(wrapper);
+		pending.add(wrapper);
+		return get(type, value.getID());
 	}
 	
-	public boolean put(String type, HasID value) {
+	public HasID put(String type, HasID value) {
 		DataWrapper<HasID> wrapper = getWrapper(type, value.getID());
 		if (wrapper == null) {
 			wrapper = new DataWrapper<HasID>(type, value);
@@ -44,15 +57,14 @@ public class DB4OInterface implements KeyValueStore {
 				wrapper.setValue(value);
 			} catch (DataWarehouseException e) {
 				System.err.println("Failed to store " + type + ": " + e.getMessage());
-				return false;
+				return null;
 			}
 		}
 		
 		db.store(wrapper);
-		
 		pending.add(wrapper);
 		System.out.println("GET: " + get(type, value.getID()));
-		return db.ext().isStored(wrapper);
+		return get(type, value.getID());
 	}
 
 	@Override
@@ -118,10 +130,6 @@ public class DB4OInterface implements KeyValueStore {
 	public void rollback() {
 		db.rollback();
 		pending.clear();
-	}
-	
-	public void close() {
-		db.close();
 	}
 
 	/**
