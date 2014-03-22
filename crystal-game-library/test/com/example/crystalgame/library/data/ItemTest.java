@@ -24,7 +24,7 @@ public class ItemTest extends ArtifactTest {
 	
 	@Test
 	public void test() {
-		fail("Not yet implemented");
+		assertNotNull(new Item(latitude, longitude, ItemType.CRYSTAL){});
 	}
 
 }
