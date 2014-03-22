@@ -67,7 +67,7 @@ public class CrystalGame extends Application {
 		addCommunication();
 		incomingCommunicationsSetup();
 		configDataWarehouse(); // This will have to be called again when we get the client ID or if we join a group
-		setupDataWarehouse(null);
+		//setupDataWarehouse(null);
 	}
 	
 	/**
