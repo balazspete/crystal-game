@@ -27,7 +27,7 @@ public class MagicalItemController
 	 */
 	public boolean storeCrystal()
 	{
-		return store.put(MagicalItem.class, magicalItem) != null;
+		return store.put(MagicalItem.class, magicalItem);
 	}
 	
 	/**

@@ -129,7 +129,11 @@ public class ClientDataWarehouse extends DataWarehouse {
 	@SuppressWarnings("unchecked")
 	public void updateWithWrappers(Serializable[] data) {
 		for (Serializable wrapper : data) {
-			db.store((DataWrapper<HasID>) wrapper);
+			try {
+				db.store(new DataWrapper<HasID>((DataWrapper<HasID>) wrapper));
+			} catch (ClassCastException e) {
+				System.out.println(((DataWrapper<HasID>)wrapper).getType());
+			}
 		}
 		
 		db.commit();

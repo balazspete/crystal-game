@@ -29,7 +29,7 @@ public class CrystalController
 	 */
 	public boolean storeCrystal()
 	{
-		return store.put(Crystal.class, crystal) != null;
+		return store.put(Crystal.class, crystal);
 	}
 	
 	/**

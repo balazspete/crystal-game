@@ -55,6 +55,11 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 		this.value = value;
 	}
 	
+	public DataWrapper(DataWrapper<DATA> wrapper) {
+		this(wrapper.getType(), wrapper.getValue());
+		this.version = wrapper.getVersion();
+	}
+	
 	/**
 	 * Get the wrapped value
 	 * @return The value
