@@ -338,7 +338,7 @@ public class CrystalGame extends Application {
 	}
 	
 	private void restoreValues() {
-		AbstractionModule.myId = clientID = preferences.getString(CLIENT_ID_KEY, null);
+		clientID = preferences.getString(CLIENT_ID_KEY, null);
 		groupID = preferences.getString(GROUP_ID_KEY, null);	
 		
 		System.out.println("Restored preferences: " + clientID + " " + groupID);

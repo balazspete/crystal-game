@@ -51,8 +51,7 @@ public class ClientDataWarehouseTransaction extends DataWarehouseTransaction {
 						break;
 				}
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.println("Transaction aborted. Error=" + e.getMessage());
 			}
 		}
 	}
