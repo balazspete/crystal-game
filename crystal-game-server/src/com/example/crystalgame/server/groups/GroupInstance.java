@@ -50,6 +50,8 @@ public class GroupInstance implements Runnable {
 	
 	private ArrayBlockingQueue<GameManager> managerLock;
 	
+	private GameManager currentGame;
+	
 	private ListenerManager<InstructionEventListener, InstructionEvent> instructionEventListenerManager;
 	
 	/**
@@ -142,7 +144,8 @@ public class GroupInstance implements Runnable {
 					continue;
 				}
 				
-				manager.run();
+				currentGame = manager;
+				currentGame.run();
 			} catch (InterruptedException e) {
 				System.err.println(e.getMessage());
 			}
@@ -225,6 +228,15 @@ public class GroupInstance implements Runnable {
 	 */
 	protected void removeInstructionEventListener(InstructionEventListener listener) {
 		instructionEventListenerManager.removeEventListener(listener);
+	}
+	
+	/**
+	 * Remove a client from the game
+	 * @param clientID The ID of the client
+	 * @return True if removed
+	 */
+	public synchronized boolean removeClientFromGame(String clientID) {
+		return currentGame.removeClientFromGame(clientID);
 	}
 	
 	private void handleInstruction(Instruction instruction, String sender) {

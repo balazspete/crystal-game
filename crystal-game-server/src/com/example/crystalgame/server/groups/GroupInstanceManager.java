@@ -141,6 +141,7 @@ public class GroupInstanceManager {
 	public void leaveGroup(String groupId, Client client) {
 		Group group = groups.get(groupId);
 		try {
+			group.getGroupInstance().removeClientFromGame(client.getId());
 			group.removeClient(client);
 		} catch (GroupException e) {
 			deleteGroup(groupId);
