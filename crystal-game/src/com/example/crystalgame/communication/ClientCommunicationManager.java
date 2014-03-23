@@ -99,5 +99,10 @@ public class ClientCommunicationManager extends CommunicationManager {
 	public void sendId(String id, String nodeId) {
 		// Ignored
 	}
+
+	@Override
+	public boolean isClient() {
+		return true;
+	}
 	
 }
