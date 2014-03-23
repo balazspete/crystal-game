@@ -27,7 +27,7 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	
 	public DataWrapper() {
 		version = 1;
-		lock = new ReentrantReadWriteLock(true);
+		getLock();
 	}
 	
 	/**
@@ -39,7 +39,7 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 		this.key = id;
 		
 		version = 1;
-		lock = new ReentrantReadWriteLock(true);
+		getLock();
 	}
 	
 	/**
@@ -71,11 +71,11 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	 * @return The value
 	 */
 	public DATA getValue() {
-		lock.readLock().lock();
+		getLock().readLock().lock();
 		try {
 			return value;
 		} finally {
-			lock.readLock().unlock();
+			getLock().readLock().unlock();
 		}
 	}
 	
@@ -93,16 +93,16 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 		}
 		
 		// Get the write lock
-		lock.readLock().lock();
-		lock.writeLock().lock();
+		getLock().readLock().lock();
+		getLock().writeLock().lock();
 		try {
 			// Update value & version
 			this.value = value;
 			version++;
 		} finally {
 			// Release locks
-			lock.writeLock().unlock();
-			lock.readLock().unlock();
+			getLock().writeLock().unlock();
+			getLock().readLock().unlock();
 		}
 	}
 	
@@ -111,7 +111,7 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	 * @return True if write locked
 	 */
 	public boolean isWriteLocked() {
-		return lock.isWriteLocked();
+		return getLock().isWriteLocked();
 	}
 	
 	/**
@@ -129,6 +129,21 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	public String getType() {
 		return type;
 	}
+
+	/**
+	 * @return the key
+	 */
+	public String getKey() {
+		return key;
+	}
+	
+	private ReentrantReadWriteLock getLock() {
+		if (lock == null) {
+			lock = new ReentrantReadWriteLock(true);
+		}
+		
+		return lock;
+	}
 	
 	/*********
 	 * SERIALISATION OVERRIDE
@@ -141,15 +156,7 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
     @SuppressWarnings("unchecked")
 	private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
     	stream.defaultReadObject();
-    	this.lock = new ReentrantReadWriteLock(true);
-    	System.out.println("creating object: " + lock);
+    	this.lock = getLock();
     }
-
-	/**
-	 * @return the key
-	 */
-	public String getKey() {
-		return key;
-	}
 
 }
