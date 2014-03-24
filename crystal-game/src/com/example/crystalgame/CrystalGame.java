@@ -239,11 +239,18 @@ public class CrystalGame extends Application {
 						break;
 				}
 			}
+
+			@Override
+			public void onCommunicationStatusInstruction(InstructionEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
 		});
 	}
 	
 	public void endGame(GameEndType type) {
 		Intent intent = new Intent(getApplicationContext(), GameEndActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		intent.putExtra(GameEndActivity.GAME_END_TYPE, type);
 		startActivity(intent);
 	}
@@ -271,6 +278,12 @@ public class CrystalGame extends Application {
 			@Override
 			public void onDataTransferInstruction(InstructionEvent event) {
 				getCommunication().out.relayInstructionToServer(event.getInstruction());
+			}
+
+			@Override
+			public void onCommunicationStatusInstruction(InstructionEvent event) {
+				// TODO Auto-generated method stub
+				
 			}
 		};
 		

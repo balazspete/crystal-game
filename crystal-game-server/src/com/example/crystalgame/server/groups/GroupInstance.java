@@ -25,6 +25,7 @@ import com.example.crystalgame.library.events.InstructionEventListener;
 import com.example.crystalgame.library.events.ListenerManager;
 import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.events.MessageEventListener;
+import com.example.crystalgame.library.instructions.CommunicationStatusInstruction;
 import com.example.crystalgame.library.instructions.DataSynchronisationInstruction;
 import com.example.crystalgame.library.instructions.DataTransferInstruction;
 import com.example.crystalgame.library.instructions.GameInstruction;
@@ -77,6 +78,11 @@ public class GroupInstance implements Runnable {
 			public void onGameInstruction(InstructionEvent event) {}
 			@Override
 			public void onDataTransferInstruction(InstructionEvent event) {}
+
+			@Override
+			public void onCommunicationStatusInstruction(InstructionEvent event) {
+				handleCommunicationStatusInstruction((CommunicationStatusInstruction) event.getInstruction());
+			}
 		});
 		
 		// Add a sequencer event listener for local events
@@ -443,6 +449,10 @@ public class GroupInstance implements Runnable {
 				}
 			}
 		}
+	}
+	
+	private void handleCommunicationStatusInstruction(CommunicationStatusInstruction instruction) {
+		System.err.println("GroupInstance:465 - Unhandled communication status instruction");
 	}
 	
 }

@@ -159,6 +159,9 @@ public class JoinGroupActivity extends Activity {
 			public void onDataSynchronisationInstruction(InstructionEvent event) {}
 			@Override
 			public void onDataTransferInstruction(InstructionEvent event) {}
+
+			@Override
+			public void onCommunicationStatusInstruction(InstructionEvent event) {}
 		};
 		game.getCommunication().in.addInstructionEventListener(listener);
 	}

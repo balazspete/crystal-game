@@ -132,6 +132,6 @@ public abstract class AbstractionModule {
 		return id;
 	}
 	
-	protected abstract String myID();
+	public abstract String myID();
 	
 }
