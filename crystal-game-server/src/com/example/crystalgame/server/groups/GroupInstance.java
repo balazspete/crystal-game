@@ -48,8 +48,6 @@ public class GroupInstance implements Runnable {
 	private DateTime lastGameStartRequestTime = DateTime.now().minusMinutes(1);
 	private ServerDataWarehouse dataWarehouse;
 	
-	private ArrayBlockingQueue<GameManager> managerLock;
-	
 	private GameManager currentGame;
 	
 	private ListenerManager<InstructionEventListener, InstructionEvent> instructionEventListenerManager;
@@ -62,7 +60,6 @@ public class GroupInstance implements Runnable {
 		this.group = group;
 		
 		sequencer = new Sequencer(group);
-		this.managerLock = new ArrayBlockingQueue<GameManager>(1);
 		dataWarehouse = ServerDataWarehouse.getWarehouseForGroup(group);
 		dataWarehouse.addInstructionEventListener(new InstructionEventListener() {
 			@Override
@@ -138,17 +135,12 @@ public class GroupInstance implements Runnable {
 		
 		// TODO: do group stuff here
 		while(running) {
-			try {
-				GameManager manager = managerLock.poll(Long.MAX_VALUE, TimeUnit.MILLISECONDS);
-				if (manager == null) {
-					continue;
-				}
-				
-				currentGame = manager;
-				currentGame.run();
-			} catch (InterruptedException e) {
-				System.err.println(e.getMessage());
+			if (!inGame || currentGame == null) {
+				sleep(1000);
+				continue;
 			}
+			
+			currentGame.run();
 		}
 	}
 	
@@ -311,11 +303,9 @@ public class GroupInstance implements Runnable {
 			
 			int gameTime = (Integer) data[6];
 			DateTime endTime = DateTime.now().plusMinutes(gameTime);
-			
-			final GameManager manager = new GameManager(dataWarehouse, sequencer, gameName, clientIDs, locations, throneRoom, endTime);
-			new Thread(manager).start();
-		
+
 			inGame = true;
+			currentGame = new GameManager(dataWarehouse, sequencer, gameName, clientIDs, locations, throneRoom, endTime);
 		}	
 	}
 	

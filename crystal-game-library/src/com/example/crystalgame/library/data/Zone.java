@@ -216,7 +216,7 @@ public class Zone implements Serializable, HasID
 	public double getMinLattitudeValue() {
 		double minLatitude = Double.POSITIVE_INFINITY;
 		for (Location l : locationPoints) {
-			minLatitude = Math.min(minLatitude, l.getLongitude());
+			minLatitude = Math.min(minLatitude, l.getLatitude());
 		}
 		return minLatitude;
 	}
