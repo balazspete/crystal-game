@@ -1,4 +1,4 @@
-package com.example.crystalgame.ui;
+package com.example.crystalgame.location;
 
 import java.io.Serializable;
 

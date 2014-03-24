@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.example.crystalgame.ui;
+package com.example.crystalgame.game;
 
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Crystal;

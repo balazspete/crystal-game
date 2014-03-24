@@ -1,10 +1,11 @@
 /**
  * 
  */
-package com.example.crystalgame.ui;
+package com.example.crystalgame.location;
 
 import java.util.ArrayList;
 
+import com.example.crystalgame.game.InventoryManager;
 import com.example.crystalgame.library.data.Artifact;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Crystal;

@@ -1,5 +1,7 @@
-package com.example.crystalgame.ui;
+package com.example.crystalgame.game.maps;
 
+import com.example.crystalgame.game.GamePlayState;
+import com.example.crystalgame.game.GameStateInformation;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.MagicalItem;

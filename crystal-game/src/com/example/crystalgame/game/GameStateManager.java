@@ -1,11 +1,12 @@
 /**
  * 
  */
-package com.example.crystalgame.ui;
+package com.example.crystalgame.game;
 
 import android.util.Log;
 
 import com.example.crystalgame.CrystalGame;
+import com.example.crystalgame.game.energy.EnergyEvent;
 import com.example.crystalgame.library.data.Artifact;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Crystal;
@@ -14,6 +15,7 @@ import com.example.crystalgame.library.events.ProximityEvent;
 import com.example.crystalgame.library.events.ProximityEvent.ArtifactType;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.InstructionFormatException;
+import com.example.crystalgame.location.ZoneChangeEvent;
 
 
 /**

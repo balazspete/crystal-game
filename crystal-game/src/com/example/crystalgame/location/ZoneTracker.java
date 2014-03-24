@@ -1,4 +1,4 @@
-package com.example.crystalgame.ui;
+package com.example.crystalgame.location;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +10,8 @@ import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.Zone;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
+import com.example.crystalgame.location.ZoneChangeEvent.LocationState;
+import com.example.crystalgame.location.ZoneChangeEvent.ZoneType;
 
 /**
  *  Notify & keep track of zone changes

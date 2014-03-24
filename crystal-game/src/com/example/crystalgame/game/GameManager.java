@@ -1,16 +1,21 @@
 /**
  * 
  */
-package com.example.crystalgame.ui;
+package com.example.crystalgame.game;
 
 import java.util.ArrayList;
 
 import com.example.crystalgame.CrystalGame;
+import com.example.crystalgame.game.energy.EnergyEvent;
+import com.example.crystalgame.game.energy.EnergyManager;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
+import com.example.crystalgame.location.LocationManager;
+import com.example.crystalgame.location.ZoneChangeEvent;
+import com.example.crystalgame.ui.InformationPresenter;
 
 
 /**

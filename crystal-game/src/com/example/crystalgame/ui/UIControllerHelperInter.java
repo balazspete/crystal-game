@@ -1,5 +1,8 @@
 package com.example.crystalgame.ui;
 
+import com.example.crystalgame.game.energy.EnergyEvent;
+import com.example.crystalgame.location.ZoneChangeEvent;
+
 /**
  * This interface is to have a set of common methods
  * in all activities to manage information flow from 

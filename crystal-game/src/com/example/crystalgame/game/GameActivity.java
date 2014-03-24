@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.example.crystalgame.ui;
+package com.example.crystalgame.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +33,9 @@ import android.widget.Toast;
 
 import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.R;
+import com.example.crystalgame.game.energy.EnergyEvent;
+import com.example.crystalgame.game.maps.LocalMapInformation;
+import com.example.crystalgame.game.maps.LocalMapPolygon;
 import com.example.crystalgame.library.data.Character.PlayerType;
 import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.Location;
@@ -41,7 +44,11 @@ import com.example.crystalgame.library.data.ThroneRoom;
 import com.example.crystalgame.library.data.Warrior;
 import com.example.crystalgame.library.data.Wizard;
 import com.example.crystalgame.library.instructions.GroupInstruction;
-import com.example.crystalgame.ui.ZoneChangeEvent.ZoneType;
+import com.example.crystalgame.location.GPSTracker;
+import com.example.crystalgame.location.ZoneChangeEvent;
+import com.example.crystalgame.location.ZoneChangeEvent.ZoneType;
+import com.example.crystalgame.ui.UIController;
+import com.example.crystalgame.ui.UIControllerHelperInter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.Projection;

@@ -4,12 +4,12 @@ import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.DataWarehouseTestActivity;
 import com.example.crystalgame.R;
 import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
+import com.example.crystalgame.game.GameActivity;
+import com.example.crystalgame.game.InventoryManager;
 import com.example.crystalgame.library.data.Information;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.GroupInstruction;
-import com.example.crystalgame.ui.GameActivity;
-import com.example.crystalgame.ui.InventoryManager;
 import com.example.crystalgame.library.data.Character;
 
 import android.os.Bundle;

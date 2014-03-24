@@ -2,7 +2,7 @@ package com.example.crystalgame;
 
 import com.example.crystalgame.groups.JoinGroupActivity;
 import com.example.crystalgame.library.instructions.GroupInstruction;
-import com.example.crystalgame.ui.GPSTracker;
+import com.example.crystalgame.location.GPSTracker;
 
 import android.os.Bundle;
 import android.app.Activity;

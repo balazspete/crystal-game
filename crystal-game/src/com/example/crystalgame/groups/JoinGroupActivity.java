@@ -4,11 +4,11 @@ import java.io.Serializable;
 
 import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.R;
+import com.example.crystalgame.game.GameBoundaryActivity;
 import com.example.crystalgame.library.data.Zone;
 import com.example.crystalgame.library.events.InstructionEvent;
 import com.example.crystalgame.library.events.InstructionEventListener;
 import com.example.crystalgame.library.instructions.GroupInstruction;
-import com.example.crystalgame.ui.GameBoundaryActivity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

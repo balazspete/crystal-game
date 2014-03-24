@@ -1,10 +1,11 @@
 /**
  * 
  */
-package com.example.crystalgame.ui;
+package com.example.crystalgame.location;
 
 import java.util.ArrayList;
 
+import com.example.crystalgame.game.GameStateManager;
 import com.example.crystalgame.library.data.Artifact;
 import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.data.Location;
@@ -12,8 +13,8 @@ import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.events.ListenerManager;
 import com.example.crystalgame.library.events.StateChangeEvent;
 import com.example.crystalgame.library.events.StateChangeEventListener;
-import com.example.crystalgame.ui.ZoneChangeEvent.LocationState;
-import com.example.crystalgame.ui.ZoneChangeEvent.ZoneType;
+import com.example.crystalgame.location.ZoneChangeEvent.LocationState;
+import com.example.crystalgame.location.ZoneChangeEvent.ZoneType;
 
 /**
  *  @author Allen Thomas Varghese, Rajan Verma

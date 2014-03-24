@@ -22,8 +22,7 @@ import com.example.crystalgame.library.data.Zone;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.Instruction;
 import com.example.crystalgame.library.instructions.InstructionFormatException;
-import com.example.crystalgame.ui.GPSTracker;
-import com.example.crystalgame.ui.GameBoundaryActivity;
+import com.example.crystalgame.location.GPSTracker;
 import com.example.crystalgame.ui.UIController;
 
 /**

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.example.crystalgame.ui;
+package com.example.crystalgame.game.energy;
 
 import java.util.Date;
 

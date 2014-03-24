@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.example.crystalgame.ui;
+package com.example.crystalgame.location;
 
 import android.app.AlertDialog;
 import android.app.Service;
@@ -45,7 +45,7 @@ public class GPSTracker extends Service implements LocationListener {
     // Declaring a Location Manager
     protected LocationManager locationManager;
     
-    private com.example.crystalgame.ui.LocationManager gameLocationManager;
+    private com.example.crystalgame.location.LocationManager gameLocationManager;
     private com.example.crystalgame.library.data.Location currentLocation, previousLocation;
  
     private static GPSTracker gpsTracker = null;
@@ -59,7 +59,7 @@ public class GPSTracker extends Service implements LocationListener {
     	return gpsTracker;
     }
 	
-    public void setGameLocationManager(com.example.crystalgame.ui.LocationManager gameLocationManager) {
+    public void setGameLocationManager(com.example.crystalgame.location.LocationManager gameLocationManager) {
     	this.gameLocationManager = gameLocationManager;
     }
     
@@ -236,7 +236,7 @@ public class GPSTracker extends Service implements LocationListener {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		mContext = getApplicationContext();
     	//gpsTracker = this;
-    	gameLocationManager = com.example.crystalgame.ui.LocationManager.getInstance();
+    	gameLocationManager = com.example.crystalgame.location.LocationManager.getInstance();
 		getLocation();  
 		return START_STICKY;
 	}

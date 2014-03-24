@@ -14,6 +14,7 @@ import com.example.crystalgame.communication.ClientOutgoingMessages;
 import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
 import com.example.crystalgame.game.CharacterSelectionActivity;
 import com.example.crystalgame.game.CreateGameActivity;
+import com.example.crystalgame.game.GameActivity;
 import com.example.crystalgame.game.GameEndActivity;
 import com.example.crystalgame.game.GameEndActivity.GameEndType;
 import com.example.crystalgame.groups.GroupLobbyActivity;
@@ -32,8 +33,7 @@ import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.GroupInstruction;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
-import com.example.crystalgame.ui.GPSTracker;
-import com.example.crystalgame.ui.GameActivity;
+import com.example.crystalgame.location.GPSTracker;
 import com.example.crystalgame.ui.InformationPresenter;
 import com.example.crystalgame.ui.UIController;
 

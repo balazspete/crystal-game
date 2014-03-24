@@ -1,9 +1,12 @@
 /**
  * 
  */
-package com.example.crystalgame.ui;
+package com.example.crystalgame.game;
 
 import java.util.Date;
+
+import com.example.crystalgame.game.energy.EnergyEvent;
+import com.example.crystalgame.location.ZoneChangeEvent;
 
 import android.util.Log;
 

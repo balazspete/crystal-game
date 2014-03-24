@@ -1,4 +1,4 @@
-package com.example.crystalgame.ui;
+package com.example.crystalgame.game;
 
 import java.io.Serializable;
 
@@ -13,6 +13,7 @@ import com.example.crystalgame.R;
 import com.example.crystalgame.SettingsActivity;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.Zone;
+import com.example.crystalgame.location.GPSTracker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;

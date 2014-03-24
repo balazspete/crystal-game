@@ -6,9 +6,16 @@ import android.app.Activity;
 import android.util.Log;
 
 import com.example.crystalgame.CrystalGame;
+import com.example.crystalgame.game.GameManager;
+import com.example.crystalgame.game.GamePlayState;
+import com.example.crystalgame.game.GameStateInformation;
+import com.example.crystalgame.game.energy.EnergyEvent;
+import com.example.crystalgame.game.maps.LocalMapInformation;
+import com.example.crystalgame.game.maps.MapInformation;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
+import com.example.crystalgame.location.ZoneChangeEvent;
 
 /**
  * 

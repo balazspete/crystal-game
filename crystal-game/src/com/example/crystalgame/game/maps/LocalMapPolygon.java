@@ -1,4 +1,4 @@
-package com.example.crystalgame.ui;
+package com.example.crystalgame.game.maps;
 
 import java.util.ArrayList;
 

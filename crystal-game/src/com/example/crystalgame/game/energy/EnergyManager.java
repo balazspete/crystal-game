@@ -1,6 +1,10 @@
-package com.example.crystalgame.ui;
+package com.example.crystalgame.game.energy;
 
 import java.text.DecimalFormat;
+
+import com.example.crystalgame.game.GameManager;
+import com.example.crystalgame.game.InventoryManager;
+import com.example.crystalgame.location.LocationManager;
 
 import android.util.Log;
 
