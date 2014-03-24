@@ -5,6 +5,7 @@ package com.example.crystalgame.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -55,6 +56,7 @@ import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
@@ -74,6 +76,10 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
     private ArrayList<Location> gameBoundaryPoints= null;
     private ArrayList<Location> gameLocationPoints = null;
     private ArrayList<MagicalItem> magicalItemsList = null;
+    private Map<String, Marker> markersOnMap = new HashMap<String, Marker>(); 
+    
+    // Refresh the position of markers every 3 seconds
+    private int UI_REFRESH_FREQUENCY = 3000;
 	
 	public GameActivity() {	
 	}
@@ -126,12 +132,19 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
         this.locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);	
         Criteria criteria = new Criteria();
         
-        /*Returns the name of the provider that best matches the given criteria*/
-        this.locationFind = this.locationManager.getBestProvider(criteria, false);
-        
-        android.location.Location location = locationManager.getLastKnownLocation(locationFind);
-        LatLng newLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        this.map.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng, 17));
+        new Thread(new Runnable() {
+        	@Override
+        	public void run() {
+        		android.location.Location location = null;
+		        do {
+		        	location = GPSTracker.getInstance().getLocation();
+		        } while(null != location);
+		        
+		        
+		        LatLng newLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+		        map.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng, 17));
+			}
+        }).start();
         
         final RadioButton magicItemButton = (RadioButton) findViewById(R.id.main_tab_magic);
         magicItemButton.setOnClickListener(new OnClickListener() {
@@ -189,6 +202,28 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 				magicItemButton.setChecked(false);
 			}
 		});
+        
+        // Update the map information
+        new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				boolean isRunning = true;
+				while(isRunning) {
+					try {
+						// Check if there are elements already added to the marker map
+						if(null != markersOnMap && markersOnMap.size() > 0) {
+							
+						}
+						Thread.sleep(UI_REFRESH_FREQUENCY);
+					} catch (InterruptedException e) {
+						// Stop thread execution
+						isRunning = false;
+					}
+				}
+			}
+			
+        }).start();
 	}
 
 	@Override
@@ -197,16 +232,19 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
         LocalMapInformation mapInformation = (LocalMapInformation) UIController.getInstance().loadGamePlayData(GamePlayState.LOCAL_MAP);
         
         if(null != mapInformation) {
-		    
+        	// Each time the whole set of markers are created, clear the marker map
+        	markersOnMap.clear();
+        	
         	gameBoundaryPoints = UIController.getInstance().getGameBoundaryPoints();
 		    
 		    if(null != gameBoundaryPoints) {
 			    for(Location location: gameBoundaryPoints)
 			    {
-			    	  map.addMarker(new MarkerOptions()
-			        	.position(new LatLng(location.getLatitude(),location.getLongitude()))
-			        	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
-			        );
+				    map.addMarker(new MarkerOptions()
+						.position(new LatLng(location.getLatitude(),location.getLongitude()))
+						.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
+					);
+				    
 			    }
 		    }
 		    
@@ -225,55 +263,63 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 		    Crystal[] crystals = mapInformation.getCrystalList();
 		    
 		    if(null != crystals) {
+		    	Marker tempMarker = null;
 			    // Displaying Crystals
 			    for(Location location : crystals) {
-			        map.addMarker(new MarkerOptions()
+			    	tempMarker = map.addMarker(new MarkerOptions()
 			        	.position(new LatLng(location.getLatitude(),location.getLongitude()))
 			        	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
 			        );
+			        markersOnMap.put(tempMarker.getId(), tempMarker);
 			    }
 		    }
 		    
 		    MagicalItem[] magicalItems = mapInformation.getMagicalItemList();
 		    if(null != magicalItems) {
+		    	Marker tempMarker = null;
 			    // Displaying Magical Items
 			    for(Location location : magicalItems){
-			        map.addMarker(new MarkerOptions()
+			    	tempMarker = map.addMarker(new MarkerOptions()
 				    	.position(new LatLng(location.getLatitude(),location.getLongitude()))
 				    	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
 			        );
+			        markersOnMap.put(tempMarker.getId(), tempMarker);
 			    }
 		    }
 		    
 		    com.example.crystalgame.library.data.Character gameCharacter = null;
 		    gameCharacter = mapInformation.gameStateInformation.getGameCharacter();
-		    
-		    // Display different markers based on player types
-	    	if(gameCharacter instanceof Warrior) {
-	    		map.addMarker(new MarkerOptions()
-		    	.position(new LatLng(gameCharacter.getLatitude(),gameCharacter.getLongitude()))
-		    	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-	    		);
-	    	}
-		    
-		    // Displaying Characters
+		    	    
+		    // Displaying Characters and different markers based on player types
 		    for(com.example.crystalgame.library.data.Character player : mapInformation.getCharacterList()) {
+		    	Marker tempMarker = null;
 		    	// If the character is same as the game character, skip
 		    	if(gameCharacter.getID().equals(player.getID())) {
 		    		continue;
-		    	} else if(gameCharacter instanceof Wizard && player.getPlayerType().equals(PlayerType.NPC)) {
-		    		map.addMarker(new MarkerOptions()
+		    	}
+		    	// If warrior, show players as red dots
+		    	else if(gameCharacter instanceof Warrior && player.getPlayerType().equals(PlayerType.PLAYER)) {
+		    		tempMarker = map.addMarker(new MarkerOptions()
+			    	.position(new LatLng(gameCharacter.getLatitude(),gameCharacter.getLongitude()))
+			    	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+		    		);
+		    	}
+		    	// If wizard, show NPCs as purple dots
+		    	else if(gameCharacter instanceof Wizard && player.getPlayerType().equals(PlayerType.NPC)) {
+		    		tempMarker = map.addMarker(new MarkerOptions()
 			    	.position(new LatLng(gameCharacter.getLatitude(),gameCharacter.getLongitude()))
 			    	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET))
 		    		);
-		    	} else {
-			        map.addMarker(new MarkerOptions()
+		    	}
+		    	else {
+		    		tempMarker = map.addMarker(new MarkerOptions()
 				    	.position(new LatLng(player.getLatitude(),player.getLongitude()))
 				    	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
 			        ); 
 		    	}
+		    	markersOnMap.put(tempMarker.getId(), tempMarker);
 		    }
-		    
+		    		    
 		    // Adding throne room to the current location of the host
 		    ThroneRoom throneRoom = UIController.getInstance().getThroneRoom();
 		    if(null != throneRoom) {
@@ -366,9 +412,7 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 		        	
 		        }
 		});
- 		    
- 	  
- 	   
+ 		
     }} 
 		
 	
