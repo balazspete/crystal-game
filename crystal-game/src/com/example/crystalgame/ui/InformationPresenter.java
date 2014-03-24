@@ -9,9 +9,11 @@ import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.game.GameManager;
 import com.example.crystalgame.game.GamePlayState;
 import com.example.crystalgame.game.GameStateInformation;
+import com.example.crystalgame.game.InventoryManager;
 import com.example.crystalgame.game.energy.EnergyEvent;
 import com.example.crystalgame.game.maps.LocalMapInformation;
 import com.example.crystalgame.game.maps.MapInformation;
+import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
@@ -42,13 +44,12 @@ public class InformationPresenter {
 		
 		// Formatting of information happens here based on the game play state
 		if(gamePlayState == GamePlayState.WORLD_MAP) {
-			//TODO: Process the information only for world map
+			//Process the information only for world map
 		} else if(gamePlayState == GamePlayState.LOCAL_MAP) {
-			//TODO: Process the information only for local map
-			
+			//Process the information only for local map
 			mapInformation = new LocalMapInformation(gameStateInformation);
 		} else if(gamePlayState == GamePlayState.INFO_PANEL) {
-			//TODO: Process the information only for information panel
+			//Process the information only for information panel
 			
 		}
 		return mapInformation;
@@ -129,4 +130,15 @@ public class InformationPresenter {
 		UIController.getInstance().magicalItemCaptureCallBack(noOfMagicalItems);
 	}
 	
+	public synchronized com.example.crystalgame.library.data.Character[] getCharacters() {
+		return InventoryManager.getInstance().getCharacters();
+	}
+	
+	public synchronized MagicalItem[] getMagicalItems() {
+		return InventoryManager.getInstance().getMagicalItems();
+	}
+	
+	public synchronized Crystal[] getGameCrystals() {
+		return InventoryManager.getInstance().getCrystals();
+	}
 }

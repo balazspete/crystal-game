@@ -2,16 +2,18 @@ package com.example.crystalgame.ui;
 
 import java.util.ArrayList;
 
+import android.util.Log;
+
 import com.example.crystalgame.game.GameManager;
 import com.example.crystalgame.game.GamePlayState;
 import com.example.crystalgame.game.energy.EnergyEvent;
 import com.example.crystalgame.game.maps.MapInformation;
+import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
 import com.example.crystalgame.location.ZoneChangeEvent;
-
-import android.util.Log;
+import com.google.android.gms.ads.identifier.AdvertisingIdClient.Info;
 
 
 /**
@@ -137,4 +139,29 @@ public class UIController {
 		
 		currentActivity.updateGameMagicalItemInfo(noOfMagicalItems);
 	}
+	
+	/**
+	 * Get list of all characters
+	 * @return Array of characters
+	 */
+	public synchronized com.example.crystalgame.library.data.Character[] getGameCharacters() {
+		return InformationPresenter.getInstance().getCharacters();
+	}
+	
+	/**
+	 * Get the list of all magical items
+	 * @return Array of Magical Items
+	 */
+	public synchronized MagicalItem[] getGameMagicalItems() {
+		return InformationPresenter.getInstance().getMagicalItems();
+	}
+	
+	/**
+	 * Get the list of all Crystals
+	 * @return Array of Crystals
+	 */
+	public synchronized Crystal[] getGameCrystals() {
+		return InformationPresenter.getInstance().getGameCrystals();
+	}
+	
 }
