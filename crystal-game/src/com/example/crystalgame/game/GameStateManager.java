@@ -49,7 +49,7 @@ public class GameStateManager {
 	 */
 	public void startComponents() {
 		//GameState.getInstance().initializeGameState();
-		GameAgent.getInstance().initializeGameAgent();
+		//GameAgent.getInstance().initializeGameAgent();
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public class GameStateManager {
 	 */
 	public synchronized void zoneProximityAlert(ZoneChangeEvent zoneChangeEvent)
 	{
-		GameAgent.getInstance().setZoneChangeEvent(zoneChangeEvent);
+		zoneChangeCallBack(zoneChangeEvent);
 	}
 	
 	/**

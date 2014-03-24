@@ -44,9 +44,6 @@ public class GameManager {
 	 * Method to start all the components that are part of Game Manager
 	 */
 	public void startComponents() {
-		GameStateManager.getInstance().startComponents();
-		//LocationManager.getInstance().startComponents();
-		
 		// Player has to be inside the game boundary before the following executes
 		EnergyManager.getInstance().startEnergyManager();
 	}
