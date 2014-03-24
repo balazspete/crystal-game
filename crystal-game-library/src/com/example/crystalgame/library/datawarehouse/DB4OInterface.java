@@ -31,20 +31,7 @@ public class DB4OInterface implements KeyValueStore {
     
 	@Override
 	public HasID put(@SuppressWarnings("rawtypes") Class type, HasID value) {
-		DataWrapper<HasID> wrapper = getWrapper(type, value.getID());
-		if (wrapper == null) {
-			wrapper = new DataWrapper<HasID>(type, value);
-		} else {
-			try {
-				wrapper.setValue(value);
-			} catch (DataWarehouseException e) {
-				return null;
-			}
-		}
-		
-		db.store(wrapper);
-		pending.add(wrapper);
-		return get(type, value.getID());
+		return put(type.toString(), value);
 	}
 	
 	public HasID put(String type, HasID value) {
@@ -53,14 +40,15 @@ public class DB4OInterface implements KeyValueStore {
 			wrapper = new DataWrapper<HasID>(type, value);
 		} else {
 			try {
+				db.ext().activate(wrapper, Integer.MAX_VALUE);
 				wrapper.setValue(value);
 			} catch (DataWarehouseException e) {
 				return null;
 			}
 		}
 		
-		db.store(wrapper);
 		pending.add(wrapper);
+		db.ext().store(wrapper, Integer.MAX_VALUE);
 		return get(type, value.getID());
 	}
 

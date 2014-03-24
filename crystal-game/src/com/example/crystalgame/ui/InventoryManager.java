@@ -112,7 +112,7 @@ public class InventoryManager {
 		}
 		
 		for (Character c : characters) {
-			if (c.getClientId().equals(CrystalGame.getClientID())) {
+			if (CrystalGame.getClientID().equals(c.getClientId())) {
 				character = c;
 				break;
 			}
