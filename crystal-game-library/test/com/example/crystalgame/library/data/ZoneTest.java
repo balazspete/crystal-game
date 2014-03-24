@@ -112,4 +112,5 @@ public class ZoneTest {
 	zone.setLocationList(locations);
 	assertNotNull(zone.getLocationList());
 	}
+	
 }
