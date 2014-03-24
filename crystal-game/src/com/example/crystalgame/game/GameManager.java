@@ -13,6 +13,7 @@ import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
+import com.example.crystalgame.location.GPSTracker;
 import com.example.crystalgame.location.LocationManager;
 import com.example.crystalgame.location.ZoneChangeEvent;
 import com.example.crystalgame.ui.InformationPresenter;
@@ -48,8 +49,9 @@ public class GameManager {
 		EnergyManager.getInstance().startEnergyManager();
 	}
 	
-	public GameStateInformation getGameState() {
-		return GameState.getInstance().getGameState();
+	public void stopComponents() {
+		EnergyManager.getInstance().stopEnergyManager();
+		GPSTracker.getInstance().stopUsingGPS();
 	}
 	
 	public synchronized void saveGameBoundary(GameBoundary gameBoundary) {
@@ -70,9 +72,7 @@ public class GameManager {
 	 * @param energyLevel
 	 */
 	public synchronized void energyChangeCallBack(double energyLevel) {
-		GameStateManager.getInstance().energyChangeCallBack(energyLevel);
-		InformationPresenter.getInstance().energyChangeCallBack(energyLevel);
-		
+		InformationPresenter.getInstance().energyChangeCallBack(energyLevel);		
 	}
 	
 	public synchronized void energyLowCallBack(EnergyEvent energyEvent)

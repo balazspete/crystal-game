@@ -3,13 +3,13 @@ package com.example.crystalgame.game.energy;
 import java.text.DecimalFormat;
 import java.util.Date;
 
+import android.util.Log;
+
+import com.example.crystalgame.game.GameEndActivity.GameEndType;
 import com.example.crystalgame.game.GameManager;
-import com.example.crystalgame.game.GameState;
 import com.example.crystalgame.game.GameStateManager;
 import com.example.crystalgame.game.InventoryManager;
 import com.example.crystalgame.location.LocationManager;
-
-import android.util.Log;
 
 /**
  * Energy Manager to keep track of energy units available
@@ -30,12 +30,17 @@ public class EnergyManager extends Thread {
 	private double inLocationTime 					= 0.0						;
 	private double outLocationTime 					= 0.0						;
 	
+	// 2 energy units gained when capturing a crystal 
 	private final int CRYSTAL_ENERGY_GAIN 			= 2							;
+
+	// Energy levels are tracked every 3 seconds 
 	private final int ENERGY_TRACKING_FREQUENCY 	= 3000						;
 	
 	private boolean inLocation;
+	private boolean isRunning = true;
 	
 	
+	// Private Constructor for internal invocation
 	private EnergyManager() {
 		super("EnergyManager");
 	}
@@ -48,18 +53,31 @@ public class EnergyManager extends Thread {
 		return energyManager;
 	}
 
+	/**
+	 * Initiate the tracking of energy as a thread in the background
+	 */
 	public void startEnergyManager() {
-		this.start();
+		// Checking if the thread has already started
+		if(!this.isAlive()) {
+			this.start();
+		}
+	}
+	
+	/**
+	 * Stop the energy manager thread
+	 */
+	public void stopEnergyManager() {
+		if(this.isAlive()) {
+			this.isRunning = false;
+		}
 	}
 	
 	@Override
 	public void run() {
-		Log.d("EnergyManager", "Thread started");
-		while(true)
+		Log.d("EnergyManager", "Energy Tracking thread started...");
+		while(isRunning)
 		{
-			try {
-				Thread.sleep(ENERGY_TRACKING_FREQUENCY);
-				
+			try {				
 				inLocation = LocationManager.getInstance().isGameLocation();
 				
 				// Tracking is done in seconds. Do divide by 1000 to convert from milliseconds to seconds
@@ -72,7 +90,7 @@ public class EnergyManager extends Thread {
 				energyRemaining -= inLocationTime * IN_LOCATION_MULTIPLIER + outLocationTime * OUT_LOCATION_MULTIPLIER;
 				
 				if(energyRemaining <= ENERGY_NOTIFY_VALUE) {
-					Log.d("GameAgent", "Energy Low...");
+					Log.d("EnergyManager", "Energy Low...");
 					energyEvent = new EnergyEvent();
 					energyEvent.setEnergyLowTime(new Date());
 					
@@ -84,8 +102,19 @@ public class EnergyManager extends Thread {
 				
 				// Pushing the new energy level to Game Manager
 				GameManager.getInstance().energyChangeCallBack(energyRemaining);
+				
+				// No more energy left, end the game
+				if(energyRemaining <= 0.00 && null != GameManager.getInstance().getApplicationObj()) {
+					// Invoke the end of game screen
+					GameManager.getInstance().getApplicationObj().endGame(GameEndType.OUT_OF_ENERGY);
+					
+					// End the thread
+					isRunning = false;
+				}
+
+				Thread.sleep(ENERGY_TRACKING_FREQUENCY);
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				Log.e("EnergyManager:run()", "Energy Tracking Thread is interrupted...");
 			}
 		}
 	}
@@ -106,19 +135,6 @@ public class EnergyManager extends Thread {
 		return new DecimalFormat("#.00").format(energyRemaining);
 	}
 
-	/**
-	 * Gives the actual value of energy units for saving in data store
-	 * 
-	 * @return double value of energy remaining
-	 */
-	public double getEnergyLevelValue() {
-		return energyRemaining;
-	}
-
-	public void setInLocation(boolean inLocation) {
-		this.inLocation = inLocation;
-	}
-	
 	/**
 	 * Raise an event when the energy level becomes lower than the threshold
 	 * @param energyEvent

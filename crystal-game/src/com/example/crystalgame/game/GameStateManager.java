@@ -118,14 +118,6 @@ public class GameStateManager {
 	}
 	
 	/**
-	 * Pass the current energy level to the game state object
-	 * @param energyLevel
-	 */
-	public synchronized void energyChangeCallBack(double energyLevel) {
-		GameState.getInstance().updateEnergyLevel(energyLevel);
-	}
-	
-	/**
 	 * Callback function when energy becomes low
 	 * @param energyEvent
 	 */

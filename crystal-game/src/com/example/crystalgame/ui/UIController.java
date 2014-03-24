@@ -38,14 +38,14 @@ public class UIController {
 		return uiController;
 	}
 	
-	public MapInformation loadGamePlayData(GamePlayState gamePlayState) {
-		return InformationPresenter.getInstance().getGamePlayData(gamePlayState);
-	}
-	
 	public void startComponents() {
 		GameManager.getInstance().startComponents();
 	}
 
+	public void stopComponents() {
+		GameManager.getInstance().stopComponents();
+	}
+	
 	public UIControllerHelperInter getCurrentActivity() {
 		return currentActivity;
 	}

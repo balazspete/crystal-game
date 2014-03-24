@@ -134,6 +134,7 @@ public class InventoryManager {
 			}
 			c.setEnergyLevel(energyLevel);
 			ClientDataWarehouse.getInstance().put(Character.class, c);
+			Log.d("InventoryManager:setEnergyLevel(val)","Updated Energy Level to "+energyLevel);
 		} catch (DataWarehouseException e) {
 			Log.e("InventoryManager:setEnergyLevel(val)",e.toString());
 		}

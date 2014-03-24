@@ -38,23 +38,6 @@ public class InformationPresenter {
 		return informationPresenter;
 	}
 	
-	public MapInformation getGamePlayData(GamePlayState gamePlayState) {
-		GameStateInformation gameStateInformation = GameManager.getInstance().getGameState();
-		MapInformation mapInformation = null;
-		
-		// Formatting of information happens here based on the game play state
-		if(gamePlayState == GamePlayState.WORLD_MAP) {
-			//Process the information only for world map
-		} else if(gamePlayState == GamePlayState.LOCAL_MAP) {
-			//Process the information only for local map
-			mapInformation = new LocalMapInformation(gameStateInformation);
-		} else if(gamePlayState == GamePlayState.INFO_PANEL) {
-			//Process the information only for information panel
-			
-		}
-		return mapInformation;
-	}
-	
 	public void zoneChangeCallBack(ZoneChangeEvent zoneChangeEvent)
 	{
 		UIController.getInstance().zoneChangeCallBack(zoneChangeEvent);
