@@ -58,4 +58,7 @@ public abstract class CommunicationManager extends Thread {
 		CommunicationManager.port = port;
 		System.out.println(CommunicationManager.port);
 	}
+	
+	public abstract boolean isClient();
+	
 }

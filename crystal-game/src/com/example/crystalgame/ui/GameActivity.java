@@ -187,7 +187,7 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 	@Override
 	protected void onStart() {
 		super.onStart();
-        LocalMapInformation mapInformation = (LocalMapInformation)UIController.getInstance().loadGamePlayData(GamePlayState.LOCAL_MAP);
+        LocalMapInformation mapInformation = (LocalMapInformation) UIController.getInstance().loadGamePlayData(GamePlayState.LOCAL_MAP);
         
         if(null != mapInformation) {
 		    

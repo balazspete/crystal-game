@@ -21,11 +21,14 @@ public abstract class Communication {
 	public Communication(CommunicationManager manager) {
 		this.manager = manager;
 		
-		this.abstraction = new AbstractionModule();
+		this.abstraction = abstraction();
 		this.abstraction.initialise(manager);
 		
 		this.manager.addAbstraction(abstraction);
 		
 		manager.start();
 	}
+	
+	protected abstract AbstractionModule abstraction();
+	
 }

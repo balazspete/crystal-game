@@ -29,16 +29,18 @@
     <string name="request_game_start">Request game start</string>
     <string name="reset_game_info">Game settings cleared</string>
     <string name="action_save_boundary">Save</string>
-    
-
-	<string name="NameHint">player name</string>
+    <string name="NameHint">player name</string>
     <string name="reset_game_info">Game settings cleared</string>
     <string name="action_save_boundary">Save</string>
     <string name="choose_character_button_label">Choose</string>
-	<string name="title_activity_character_selection">Choose Character</string>
-	<string name="select_character_warning">Select a character!</string>  
+    <string name="title_activity_character_selection">Choose Character</string>
+    <string name="select_character_warning">Select a character!</string>
+    <string name="communication_failure">Failed to communicate with the server. Try again!</string>
+    <string name="action_leave_group">Leave group</string>
+    <string name="title_activity_game_end">GameEndActivity</string>
+    <string name="end_of_game">The game has ended.</string>
+    <string name="go_to_lobby">Go back to lobby</string>
+    
+    <string name="game_length">Game length (minutes)</string>
 
-	<string name="communication_failure">Failed to communicate with the server. Try again!</string>
-	<string name="action_leave_group">Leave group</string> 
-	
 </resources>

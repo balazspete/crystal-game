@@ -2,7 +2,6 @@ package com.example.crystalgame.library.datawarehouse;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.FutureTask;
@@ -36,21 +35,16 @@ public class DataWarehouse {
 	 * @return True if stored successfully
 	 * @throws DataWarehouseException Thrown in case of an error or input mismatch
 	 */
-	public FutureTask<Boolean> put(@SuppressWarnings("rawtypes") Class type, HasID value) throws DataWarehouseException {
+	public HasID put(@SuppressWarnings("rawtypes") Class type, HasID value) throws DataWarehouseException {
 		List<HasID> values = new ArrayList<HasID>();
 		values.add(value);
-		return putList(type, values);
-	}
-	
-	public HasID blockingPut(@SuppressWarnings("rawtypes") Class type, HasID value) throws DataWarehouseException {
-		try {
-			put(type, value).get();
-			return get(type, value.getID());
-		} catch (InterruptedException e) {
-			throw DataWarehouseException.FAILED_TO_UPDATE;
-		} catch (ExecutionException e) {
-			throw DataWarehouseException.FAILED_TO_UPDATE;
+		values = putList(type, values);
+		
+		if (values.size() > 0) {
+			return values.get(0);
 		}
+		
+		return null;
 	}
 	
 	/**
@@ -60,21 +54,17 @@ public class DataWarehouse {
 	 * @return The new values
 	 * @throws DataWarehouseException Thrown in case of an error
 	 */
-	public FutureTask<Boolean> putList(@SuppressWarnings("rawtypes") Class type, List<HasID> value) throws DataWarehouseException {
-		System.out.println("DataWarehouse|putList: Initiating PutList operation for " + type + " items.");
+	public List<HasID> putList(@SuppressWarnings("rawtypes") Class type, List<HasID> value) throws DataWarehouseException {
+		ObjectContainer container = db.ext().openSession();
+		DB4OInterface store = new DB4OInterface(container);
+
+		System.out.println("DataWarehouse|putList: Initiating PutList operation...");
 		
 		FutureTask<Boolean> future = new FutureTask<Boolean>(
 				new DataWarehouseUpdateTask(
 						synchronizer,
 						DataSynchronisationInstruction.createUpdateRequestInstruction(type, value)));
 		pool.submit(future);
-		return future;
-	}
-	
-	public List<HasID> blockingPutList(@SuppressWarnings("rawtypes") Class type, List<HasID> value) throws DataWarehouseException {
-		DB4OInterface store = new DB4OInterface(db);
-
-		FutureTask<Boolean> future = putList(type, value);
 		
 		List<HasID> result = new ArrayList<HasID>();
 		try {
@@ -85,7 +75,11 @@ public class DataWarehouse {
 			} 
 		} catch (Exception e) {
 //			System.out.println("DataWarehouse|putList: PutList operation failed, rolling back");
+			e.printStackTrace();
+			store.rollback();
 			throw DataWarehouseException.FAILED_TO_UPDATE;
+		} finally {
+			container.close();
 		}
 		
 		return result;
@@ -110,20 +104,10 @@ public class DataWarehouse {
 	 * @return True if deleted
 	 * @throws DataWarehouseException Thrown in case of an error
 	 */
-	public FutureTask<Boolean> delete(@SuppressWarnings("rawtypes") Class type, String id) throws DataWarehouseException {
+	public boolean delete(@SuppressWarnings("rawtypes") Class type, String id) throws DataWarehouseException {
 		List<String> values = new ArrayList<String>();
 		values.add(id);
 		return deleteList(type, values);
-	}
-	
-	public boolean blockingDelete(@SuppressWarnings("rawtypes") Class type, String id) throws DataWarehouseException {
-		try {
-			return delete(type, id).get();
-		} catch (InterruptedException e) {
-			throw DataWarehouseException.FAILED_TO_UPDATE;
-		} catch (ExecutionException e) {
-			throw DataWarehouseException.FAILED_TO_UPDATE;
-		}
 	}
 	
 	/**
@@ -133,20 +117,14 @@ public class DataWarehouse {
 	 * @return true of successful
 	 * @throws DataWarehouseException
 	 */
-	public FutureTask<Boolean> deleteList(@SuppressWarnings("rawtypes") Class type, List<String> ids) throws DataWarehouseException {
-		System.out.println("DataWarehouse|deleteList: Initiating deleteList operation for " + type + " items.");
+	public boolean deleteList(@SuppressWarnings("rawtypes") Class type, List<String> ids) throws DataWarehouseException {
+		System.out.println("DataWarehouse|deleteList: Initiating deleteList operation...");
 		
 		FutureTask<Boolean> future = new FutureTask<Boolean>(
 				new DataWarehouseUpdateTask(
 						synchronizer,
 						DataSynchronisationInstruction.createDeleteRequestInstruction(type, ids)));
 		pool.submit(future);
-		
-		return future;
-	}
-	
-	public boolean blockingDeleteList(@SuppressWarnings("rawtypes") Class type, List<String> ids) throws DataWarehouseException {
-		FutureTask<Boolean> future = deleteList(type, ids);
 		
 		try {
 			future.get();

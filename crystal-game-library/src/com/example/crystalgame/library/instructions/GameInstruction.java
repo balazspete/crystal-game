@@ -55,12 +55,12 @@ public class GameInstruction extends Instruction {
 	 * @return The instruction
 	 * @throws InstructionFormatException Thrown if an argument was null
 	 */
-	public static GameInstruction createCreateGameGameInstruction(String gameName, Location upperLeft, Location upperRight, Location lowerRight, Location lowerLeft, Location throneRoom) throws InstructionFormatException {
+	public static GameInstruction createCreateGameGameInstruction(String gameName, Location upperLeft, Location upperRight, Location lowerRight, Location lowerLeft, Location throneRoom, int gameLength) throws InstructionFormatException {
 		if (upperLeft == null || upperRight == null || lowerLeft == null || lowerRight == null) {
 			throw InstructionFormatException.NULL_ARGUMENT;
 		}
 		
-		return new GameInstruction(GameInstructionType.CREATE_GAME, gameName, upperLeft, upperRight, lowerRight, lowerLeft, throneRoom);
+		return new GameInstruction(GameInstructionType.CREATE_GAME, gameName, upperLeft, upperRight, lowerRight, lowerLeft, throneRoom, gameLength);
 	}
 	
 	/**

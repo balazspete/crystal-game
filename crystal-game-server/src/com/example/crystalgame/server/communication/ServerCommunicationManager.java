@@ -118,4 +118,9 @@ public class ServerCommunicationManager extends CommunicationManager {
 			System.err.println("Failed to transmit node ID to " + nodeId);
 		}
 	}
+
+	@Override
+	public boolean isClient() {
+		return false;
+	}
 }

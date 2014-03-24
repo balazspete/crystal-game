@@ -73,17 +73,10 @@ public abstract class Character extends Artifact {
 	public void setEnergy(double energy) {
 		this.energy = energy;
 	}
-	
-	@Override
-	public String getID() 
-	{
-		return id;
-	}
 
 	public String getClientId() {
 		return clientId;
 	}
-	
 	
 	/**
 	 * Add a crystal to the possession of the character

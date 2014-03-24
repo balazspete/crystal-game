@@ -23,7 +23,12 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	private DATA value;
 	private int version;
 	
-	public DataWrapper() {}
+	private volatile transient ReentrantReadWriteLock lock;
+	
+	public DataWrapper() {
+		version = 1;
+		getLock();
+	}
 	
 	/**
 	 * Create a DataWapper user for query purposes
@@ -34,6 +39,7 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 		this.key = id;
 		
 		version = 1;
+		getLock();
 	}
 	
 	/**
@@ -55,12 +61,22 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 		this.value = value;
 	}
 	
+	public DataWrapper(DataWrapper<DATA> wrapper) {
+		this(wrapper.getType(), wrapper.getValue());
+		this.version = wrapper.getVersion();
+	}
+	
 	/**
 	 * Get the wrapped value
 	 * @return The value
 	 */
-	public HasID getValue() {
-		return value;
+	public DATA getValue() {
+		getLock().readLock().lock();
+		try {
+			return value;
+		} finally {
+			getLock().readLock().unlock();
+		}
 	}
 	
 	/**
@@ -76,15 +92,33 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 			throw DataWarehouseException.MISMATCHING_TYPE_EXCEPTION;
 		}
 		
-		this.value = value;
-		version++;
+		// Get the write lock
+		getLock().readLock().lock();
+		getLock().writeLock().lock();
+		try {
+			// Update value & version
+			this.value = value;
+			version++;
+		} finally {
+			// Release locks
+			getLock().writeLock().unlock();
+			getLock().readLock().unlock();
+		}
+	}
+	
+	/**
+	 * Is the wrapper write locked?
+	 * @return True if write locked
+	 */
+	public boolean isWriteLocked() {
+		return getLock().isWriteLocked();
 	}
 	
 	/**
 	 * Get the version of the data
 	 * @return The version number
 	 */
-	public long getVersion() {
+	public int getVersion() {
 		return version;
 	}
 	
@@ -95,5 +129,34 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	public String getType() {
 		return type;
 	}
+
+	/**
+	 * @return the key
+	 */
+	public String getKey() {
+		return key;
+	}
+	
+	private ReentrantReadWriteLock getLock() {
+		if (lock == null) {
+			lock = new ReentrantReadWriteLock(true);
+		}
+		
+		return lock;
+	}
+	
+	/*********
+	 * SERIALISATION OVERRIDE
+	 *********/
+	
+	private void writeObject(java.io.ObjectOutputStream stream) throws IOException {
+		stream.defaultWriteObject(); 
+    }
+
+    @SuppressWarnings("unchecked")
+	private void readObject(java.io.ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    	stream.defaultReadObject();
+    	this.lock = getLock();
+    }
 
 }

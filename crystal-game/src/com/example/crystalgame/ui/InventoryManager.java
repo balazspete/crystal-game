@@ -102,26 +102,23 @@ public class InventoryManager {
 	 * Returns the player playing the game
 	 */
 	public synchronized Character getCharacter() {
-		if(playerCharacterID == null) {
-			for(Character gamePlayer : getCharacters()) {
-				if(gamePlayer.getClientId().equals(CrystalGame.getClientID())) {
-					playerCharacterID = gamePlayer.getID();
-					return gamePlayer;
-				}
-			}
-		} else  {
-			try {
-				Character c = (Character) ClientDataWarehouse.getInstance().get(Character.class, playerCharacterID);
-				if (c == null) {
-					playerCharacterID = null;
-					c = getCharacter();
-				}
-				return c;
-			} catch (DataWarehouseException e) {
-				Log.e("InventoryManager:getGamePlayer()",e.toString());
+		Character character = null;
+		Character[] characters;
+		
+		try {
+			characters = ClientDataWarehouse.getInstance().getList(Character.class).toArray(new Character[0]);
+		} catch (DataWarehouseException e1) {
+			characters = new Character[0];
+		}
+		
+		for (Character c : characters) {
+			if (c.getClientId().equals(CrystalGame.getClientID())) {
+				character = c;
+				break;
 			}
 		}
-		return null;
+		
+		return character;
 	}
 	
 	/**

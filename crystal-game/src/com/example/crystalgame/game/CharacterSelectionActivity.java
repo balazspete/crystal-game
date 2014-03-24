@@ -1,10 +1,14 @@
 package com.example.crystalgame.game;
 
+import java.util.List;
+
+import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.R;
 import com.example.crystalgame.R.layout;
 import com.example.crystalgame.R.menu;
 import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
 import com.example.crystalgame.library.data.Character;
+import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.data.Sage;
 import com.example.crystalgame.library.data.Warrior;
 import com.example.crystalgame.library.data.Wizard;
@@ -97,27 +101,37 @@ public class CharacterSelectionActivity extends Activity implements OnCheckedCha
 		System.out.println("location:" + location + " " + GPSTracker.getInstance().getLatitude());
 		
 		Character character = InventoryManager.getInstance().getCharacter();
-		Character myCharacter;
-		switch(checkedButton) {
-			case 0: 
-				myCharacter = Sage.create(character, location.getLatitude(), location.getLongitude());
-				break;
-			case 1:
-				myCharacter = Warrior.create(character, location.getLatitude(), location.getLongitude());
-				break;
-			default:
-				myCharacter = Wizard.create(character, location.getLatitude(), location.getLongitude());
-				break;
+		if (character == null) {
+			Toast.makeText(this, "You did not receive your place yet!", Toast.LENGTH_SHORT).show();
+			return;
 		}
 		
 		try {
+			ClientDataWarehouse.getInstance().delete(Character.class, character.id);
+			
+			Character myCharacter;
+			switch(checkedButton) {
+				case 0: 
+					myCharacter = Sage.create(character, location.getLatitude(), location.getLongitude());
+					break;
+				case 1:
+					myCharacter = Warrior.create(character, location.getLatitude(), location.getLongitude());
+					break;
+				default:
+					myCharacter = Wizard.create(character, location.getLatitude(), location.getLongitude());
+					break;
+			}
+			
 			ClientDataWarehouse.getInstance().put(Character.class, myCharacter);
 			
 			Intent intent = new Intent(getApplicationContext(), GameActivity.class);
 			startActivity(intent);
-		} catch (DataWarehouseException e) {
-			Toast.makeText(this, R.string.communication_failure, Toast.LENGTH_SHORT).show();
+		} catch (DataWarehouseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
+		
+		
 		
 		
 	}

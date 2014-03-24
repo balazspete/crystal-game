@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.db4o.collections.MapEntry4;
+import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.library.communication.Communication;
 import com.example.crystalgame.library.communication.CommunicationManager;
 import com.example.crystalgame.library.communication.abstraction.AbstractionModule;
@@ -23,7 +24,6 @@ public class ClientCommunication extends Communication {
 		this.in = new ClientIncomingMessages(abstraction);
 		this.out = out;
 		this.out.setAbstraction(abstraction);
-		AbstractionModule.isClient = true;
 	}
 	
 	/**
@@ -40,6 +40,16 @@ public class ClientCommunication extends Communication {
 	 */
 	public void portChange(int port) {
 		manager.setPort(port);
+	}
+
+	@Override
+	protected AbstractionModule abstraction() {
+		return new AbstractionModule() {
+			@Override
+			protected String myID() {
+				return CrystalGame.getClientID();
+			}
+		};
 	}
 	
 }

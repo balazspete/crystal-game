@@ -51,8 +51,7 @@ public class ClientDataWarehouseTransaction extends DataWarehouseTransaction {
 						break;
 				}
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.err.println("Transaction aborted. Error=" + e.getMessage());
 			}
 		}
 	}
@@ -87,6 +86,7 @@ public class ClientDataWarehouseTransaction extends DataWarehouseTransaction {
 		if (myState != State.BEGIN) {
 			return;
 		}
+		
 		
 		// Get an abstraction for the container
 		DB4OInterface store = new DB4OInterface(container);

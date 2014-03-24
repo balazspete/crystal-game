@@ -2,6 +2,7 @@ package com.example.crystalgame.server.communication;
 
 import com.example.crystalgame.library.communication.Communication;
 import com.example.crystalgame.library.communication.CommunicationManager;
+import com.example.crystalgame.library.communication.abstraction.AbstractionModule;
 import com.example.crystalgame.library.communication.messages.ControlMessage;
 import com.example.crystalgame.library.events.MessageEvent;
 import com.example.crystalgame.library.events.MessageEventListener;
@@ -97,5 +98,15 @@ public class ServerCommunication extends Communication {
 				// Server does not care about this...
 			}
 		});
+	}
+
+	@Override
+	protected AbstractionModule abstraction() {
+		return new AbstractionModule() {
+			@Override
+			protected String myID() {
+				return "SERVER";
+			}
+		};
 	}
 }

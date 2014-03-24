@@ -16,11 +16,8 @@ import com.example.crystalgame.library.util.RandomID;
  * @author Balazs Pete, Shen Chen, Allen Thomas Varghese
  *
  */
-public class AbstractionModule {
+public abstract class AbstractionModule {
 
-	public static String myId;
-	public static boolean isClient = false;
-	
 	private MessageQueue queue;
 	
 	private CommunicationManager manager;
@@ -58,8 +55,10 @@ public class AbstractionModule {
 		String id = message.getSenderId();
 		if (id == null || id.isEmpty()) {
 			// If id is not set => Message originates from this node
-			message.setSenderId(myId);
+			message.setSenderId(myID());
 		}
+		
+		System.out.println("Outgoing message { client:" + message.getReceiverId() + ", type:" + message.getMessageType() + "}");
 		
 		if (message.getReceiverId() == null) {
 			// The message does not have a destination :(
@@ -79,7 +78,7 @@ public class AbstractionModule {
 		Message message = (Message) data;
 		String senderId = message.getSenderId();
 		
-		System.out.println("Message: (" + message.getSenderId() + ")" + message.getMessageType());
+		System.out.println("Incoming message { client:" + message.getSenderId() + ", type:" + message.getMessageType() + "}");
 		
 		if (senderId == null || senderId.isEmpty()) {
 			// If connected client did not have a connection information previously
@@ -89,6 +88,9 @@ public class AbstractionModule {
 			message.setSenderId(senderId);
 			// Let the client know about its new ID
 			manager.sendId(id, senderId);
+			
+			// Don't accept null IDs
+			return;
 		}
 		
 		// Update connection information for client (in case it changed)
@@ -129,4 +131,7 @@ public class AbstractionModule {
 		
 		return id;
 	}
+	
+	protected abstract String myID();
+	
 }

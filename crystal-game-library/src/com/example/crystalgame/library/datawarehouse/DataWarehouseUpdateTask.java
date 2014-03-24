@@ -39,7 +39,7 @@ public class DataWarehouseUpdateTask implements Callable<Boolean> {
 				System.out.println("DataWarehouseUpdateTask|call: Received 'COMMIT' instruction. Result=" + commit);
 				
 				if (commit) {
-					break;
+					return true;
 				} else {
 					// Update failed, throw an exception (as required by the interface)
 					throw new DataWarehouseTaskException();
@@ -48,8 +48,6 @@ public class DataWarehouseUpdateTask implements Callable<Boolean> {
 				System.out.println("DataWarehouseUpdateTask|call: Received non 'COMMIT' instruction");
 			}
 		}
-		
-		return true;
 	}
 	
 	/**
