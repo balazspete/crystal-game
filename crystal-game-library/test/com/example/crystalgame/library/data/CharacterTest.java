@@ -23,7 +23,7 @@ public class CharacterTest extends ArtifactTest {
 	
 	@Test
 	public void test() {
-		fail("Not yet implemented");
+		assertNotNull(new Character(latitude, longitude, CharacterType.SAGE, PlayerType.PLAYER, "C343"){} );
 	}
 
 }

@@ -6,9 +6,11 @@ import org.junit.Test;
 
 public class ThroneRoomTest extends ZoneTest {
 
+	
 	@Test
 	public void test() {
-		fail("Not yet implemented");
+		Location location =new Location(1, 2);
+		assertNotNull(new ThroneRoom(location));
 	}
 
 }

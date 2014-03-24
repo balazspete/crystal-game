@@ -9,7 +9,7 @@ public class InformationTest {
 
 	private Information info;
 	private String key, value;
-	
+	private static final String PREKEY = "com.example.crystalgame.library.data.information.";
 	@Before
 	public void setup() {
 		key = "THEKEY";
@@ -20,7 +20,7 @@ public class InformationTest {
 	@Test
 	public void testGetID() {
 		assertNotNull(info.getID());
-		assertEquals(key, info.getID());
+		assertEquals(PREKEY+key, info.getID());
 	}
 
 	@Test

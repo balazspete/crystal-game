@@ -8,7 +8,7 @@ public class GameLocationTest extends ZoneTest {
 
 	@Test
 	public void test() {
-		fail("Not yet implemented");
+		assertNotNull(new GameLocation());
 	}
 
 }
