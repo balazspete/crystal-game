@@ -46,7 +46,7 @@ public class ClientCommunication extends Communication {
 	protected AbstractionModule abstraction() {
 		return new AbstractionModule() {
 			@Override
-			protected String myID() {
+			public String myID() {
 				return CrystalGame.getClientID();
 			}
 		};

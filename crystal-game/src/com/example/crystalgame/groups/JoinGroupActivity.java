@@ -2,28 +2,28 @@ package com.example.crystalgame.groups;
 
 import java.io.Serializable;
 
-import com.example.crystalgame.CrystalGame;
-import com.example.crystalgame.R;
-import com.example.crystalgame.library.data.Zone;
-import com.example.crystalgame.library.events.InstructionEvent;
-import com.example.crystalgame.library.events.InstructionEventListener;
-import com.example.crystalgame.library.instructions.GroupInstruction;
-import com.example.crystalgame.ui.GameBoundaryActivity;
-
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.crystalgame.CrystalGame;
+import com.example.crystalgame.R;
+import com.example.crystalgame.game.GameBoundaryActivity;
+import com.example.crystalgame.library.data.Zone;
+import com.example.crystalgame.library.events.InstructionEvent;
+import com.example.crystalgame.library.events.InstructionEventListener;
+import com.example.crystalgame.library.instructions.GroupInstruction;
+
+/**
+ * Creating a group functionality
+ * @author Balazs Pete
+ */
 public class JoinGroupActivity extends Activity {
 	private Zone gameBoundary = new Zone();
 	public static final String 
@@ -31,7 +31,6 @@ public class JoinGroupActivity extends Activity {
 		LAUNCH_INTENT_CREATE = "CREATE",
 		LAUNCH_INTENT_JOIN = "JOIN";
 	
-	private ProgressDialog pDialog;
 	private String otherName, otherId;
 	private InstructionEventListener listener;
 	
@@ -57,9 +56,7 @@ public class JoinGroupActivity extends Activity {
 	}
 	
     public void createBoundary(View view) {
-    	//launchJoinGroupActivity(JoinGroupActivity.LAUNCH_INTENT_JOIN);
-    	Toast.makeText(this, "Hi", Toast.LENGTH_SHORT).show();
-		if(this.gameBoundary.isEmpty())
+    	if(this.gameBoundary.isEmpty())
     	{
     		startActivityForResult(new Intent(getApplicationContext(), GameBoundaryActivity.class),2);
     	}
@@ -159,6 +156,9 @@ public class JoinGroupActivity extends Activity {
 			public void onDataSynchronisationInstruction(InstructionEvent event) {}
 			@Override
 			public void onDataTransferInstruction(InstructionEvent event) {}
+
+			@Override
+			public void onCommunicationStatusInstruction(InstructionEvent event) {}
 		};
 		game.getCommunication().in.addInstructionEventListener(listener);
 	}
@@ -172,5 +172,4 @@ public class JoinGroupActivity extends Activity {
 		startActivity(intent);
 	}
 
-	
 }

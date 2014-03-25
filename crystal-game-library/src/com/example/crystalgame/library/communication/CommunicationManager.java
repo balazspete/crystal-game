@@ -3,6 +3,8 @@ package com.example.crystalgame.library.communication;
 import java.io.Serializable;
 
 import com.example.crystalgame.library.communication.abstraction.AbstractionModule;
+import com.example.crystalgame.library.communication.messages.InstructionRelayMessage;
+import com.example.crystalgame.library.instructions.CommunicationStatusInstruction;
 
 /**
  * General description of the CommunicationManager
@@ -57,6 +59,12 @@ public abstract class CommunicationManager extends Thread {
 		System.out.print("Changing port: " + CommunicationManager.port + "->");
 		CommunicationManager.port = port;
 		System.out.println(CommunicationManager.port);
+	}
+	
+	public void notifyOfDisconnectedClient(String clientID) {
+		InstructionRelayMessage message = new InstructionRelayMessage(abstraction.myID());
+		message.setData(CommunicationStatusInstruction.createClientDisconnectedInstruction(clientID));
+		abstraction.forwardData(null, message);
 	}
 	
 	public abstract boolean isClient();

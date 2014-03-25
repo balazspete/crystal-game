@@ -15,6 +15,7 @@ import com.example.crystalgame.library.communication.messages.Message;
 public class MessageQueue extends Thread {
 
 	public static final int SLEEP_TIME = 5000;
+	public static final int MAX_TRIES = 3;
 	
 	private CommunicationManager manager;
 	private static LinkedBlockingQueue<MessageQueueElement> messageQueue;
@@ -85,13 +86,18 @@ public class MessageQueue extends Thread {
 				manager.sendData(communication, element.message);
 			} catch (CommunicationFailureException e) {
 				System.err.println(e.getMessage());
-				boolean success = false;
-				do {
-					// Message failed to send, put it back on the queue
-					success = put(element);
-					// Let's sleep for a bit before we try to send a message again...
-					goToSleep();
-				} while (!success);
+				
+				if (element.incrementTryCount() < MAX_TRIES) {
+					boolean success = false;
+					do {
+						// Message failed to send, put it back on the queue
+						success = put(element);
+						// Let's sleep for a bit before we try to send a message again...
+						goToSleep();
+					} while (!success);
+				} else {
+					manager.notifyOfDisconnectedClient(element.clientID);
+				}
 			}
 		}
 	}
@@ -111,8 +117,9 @@ public class MessageQueue extends Thread {
 	 */
 	public class MessageQueueElement {
 		
-		public String clientID;
-		public Message message;
+		private String clientID;
+		private Message message;
+		private int tries = 0;
 		
 		public MessageQueueElement(String clientID, Message message) {
 			this.clientID = clientID;
@@ -125,6 +132,10 @@ public class MessageQueue extends Thread {
 		
 		public String getCommunicationID() {
 			return AbstractionModule.clientToCommunicationMap.get(clientID);
+		}
+		
+		public int incrementTryCount() {
+			return ++tries;
 		}
 		
 	}

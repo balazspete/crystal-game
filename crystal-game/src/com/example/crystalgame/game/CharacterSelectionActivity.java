@@ -13,9 +13,7 @@ import com.example.crystalgame.library.data.Sage;
 import com.example.crystalgame.library.data.Warrior;
 import com.example.crystalgame.library.data.Wizard;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
-import com.example.crystalgame.ui.GPSTracker;
-import com.example.crystalgame.ui.GameActivity;
-import com.example.crystalgame.ui.InventoryManager;
+import com.example.crystalgame.location.GPSTracker;
 
 import android.location.Location;
 import android.os.Bundle;

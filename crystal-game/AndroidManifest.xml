@@ -82,12 +82,12 @@
         </activity>
         <activity android:name="com.example.crystalgame.game.CreateGameActivity" >
         </activity>
-        <activity android:name="com.example.crystalgame.ui.CreateGroupActivity" >
+        <activity android:name="com.example.crystalgame.groups.CreateGroupActivity" >
         </activity>
-        <activity android:name="com.example.crystalgame.ui.GameBoundaryActivity" >
+        <activity android:name="com.example.crystalgame.game.GameBoundaryActivity" >
         </activity>
         <activity
-            android:name="com.example.crystalgame.ui.GameActivity"
+            android:name="com.example.crystalgame.game.GameActivity"
             android:theme="@style/GameViewTheme" >
         </activity>
         <activity android:name="com.example.crystalgame.DataWarehouseTestActivity" >
@@ -112,7 +112,7 @@
             android:label="@string/title_activity_character_selection" >
         </activity>
 
-        <service android:name="com.example.crystalgame.ui.GPSTracker" >
+        <service android:name="com.example.crystalgame.location.GPSTracker" >
         </service>
 
         <activity

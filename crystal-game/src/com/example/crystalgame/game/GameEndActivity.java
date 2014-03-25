@@ -2,17 +2,23 @@ package com.example.crystalgame.game;
 
 import java.io.Serializable;
 
-import com.example.crystalgame.R;
-import com.example.crystalgame.R.layout;
-import com.example.crystalgame.R.menu;
-import com.example.crystalgame.groups.GroupLobbyActivity;
-
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
+import com.example.crystalgame.R;
+import com.example.crystalgame.groups.GroupLobbyActivity;
+
+/**
+ * End-of-game screen which is displayed for the following conditions :
+ * 1. Out of time
+ * 2. Out of energy
+ * 3. Out of boundary
+ * 
+ * @author Balazs Pete, Allen Thomas Varghese
+ */
 public class GameEndActivity extends Activity {
 
 	public static final String

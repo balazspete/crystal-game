@@ -41,6 +41,12 @@ public abstract class InstructionEventListener implements EventListener {
 	public abstract void onDataTransferInstruction(InstructionEvent event);
 	
 	/**
+	 * Get communication status instruction events
+	 * @param event The event
+	 */
+	public abstract void onCommunicationStatusInstruction(InstructionEvent event);
+	
+	/**
 	 * Implementation of the eventHandlerHelper function of the listener manager
 	 * @param listener The listener
 	 * @param event The event
@@ -62,6 +68,9 @@ public abstract class InstructionEventListener implements EventListener {
 				break;
 			case DATA_TRANSFER:
 				listener.onDataTransferInstruction(event);
+				break;
+			case COMMUNICATION_STATUS:
+				listener.onCommunicationStatusInstruction(event);
 				break;
 			default:
 				return;

@@ -88,6 +88,9 @@ public class SelectPlayerActivity extends Activity implements OnClickListener {
 
 			@Override
 			public void onDataTransferInstruction(InstructionEvent event) { }
+
+			@Override
+			public void onCommunicationStatusInstruction(InstructionEvent event) { }
 		});
 	}
 	

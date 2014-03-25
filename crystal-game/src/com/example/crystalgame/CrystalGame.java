@@ -1,5 +1,7 @@
 package com.example.crystalgame;
 
+import java.util.ArrayList;
+
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -17,11 +19,9 @@ import com.example.crystalgame.game.CreateGameActivity;
 import com.example.crystalgame.game.GameEndActivity;
 import com.example.crystalgame.game.GameEndActivity.GameEndType;
 import com.example.crystalgame.groups.GroupLobbyActivity;
-import com.example.crystalgame.library.communication.abstraction.AbstractionModule;
 import com.example.crystalgame.library.communication.messages.IdMessage;
-import com.example.crystalgame.library.data.HasID;
+import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
-import com.example.crystalgame.library.datawarehouse.DataWrapper;
 import com.example.crystalgame.library.events.InstructionEvent;
 import com.example.crystalgame.library.events.InstructionEventListener;
 import com.example.crystalgame.library.events.MessageEvent;
@@ -30,16 +30,8 @@ import com.example.crystalgame.library.instructions.DataSynchronisationInstructi
 import com.example.crystalgame.library.instructions.DataTransferInstruction;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.GroupInstruction;
-import com.example.crystalgame.library.data.Location;
-import com.example.crystalgame.library.data.MagicalItem;
-import com.example.crystalgame.ui.GPSTracker;
-import com.example.crystalgame.ui.GameActivity;
-import com.example.crystalgame.ui.InformationPresenter;
+import com.example.crystalgame.location.GPSTracker;
 import com.example.crystalgame.ui.UIController;
-
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.ArrayList;
 
 
 /**
@@ -239,11 +231,18 @@ public class CrystalGame extends Application {
 						break;
 				}
 			}
+
+			@Override
+			public void onCommunicationStatusInstruction(InstructionEvent event) {
+				// TODO Auto-generated method stub
+				
+			}
 		});
 	}
 	
 	public void endGame(GameEndType type) {
 		Intent intent = new Intent(getApplicationContext(), GameEndActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		intent.putExtra(GameEndActivity.GAME_END_TYPE, type);
 		startActivity(intent);
 	}
@@ -271,6 +270,12 @@ public class CrystalGame extends Application {
 			@Override
 			public void onDataTransferInstruction(InstructionEvent event) {
 				getCommunication().out.relayInstructionToServer(event.getInstruction());
+			}
+
+			@Override
+			public void onCommunicationStatusInstruction(InstructionEvent event) {
+				// TODO Auto-generated method stub
+				
 			}
 		};
 		
@@ -351,5 +356,15 @@ public class CrystalGame extends Application {
 			System.out.println("Nothing to restore");
 		}
 	}
-	
+
+	@Override
+	public void onTerminate() {
+		Log.d("CrystalGame:onTerminate()","Started cleaning process...");
+		
+		UIController.getInstance().stopComponents();
+		// Stopping GPS tracking service
+		stopService(new Intent(getApplicationContext(), GPSTracker.class));
+		
+		Log.d("CrystalGame:onTerminate()","Finished cleaning process successfully!");
+	}
 }

@@ -18,7 +18,7 @@ public class DataSynchronisationInstruction extends Instruction {
 	 */
 	private static final long serialVersionUID = -8688057254275807103L;
 
-	public enum DataSynchronisationInstructionType {
+	public enum DataSynchronisationInstructionType implements Serializable {
 		UPDATE_REQUEST, DELETE_REQUEST,
 		PREPARE, PREPARE_REPLY, 
 		COMMIT, COMMIT_REPLY

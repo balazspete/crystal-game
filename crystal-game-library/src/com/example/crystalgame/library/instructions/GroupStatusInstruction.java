@@ -14,7 +14,7 @@ public class GroupStatusInstruction extends Instruction {
 	 * 
 	 */
 	private static final long serialVersionUID = 4539411033702746584L;
-	public enum GroupStatusInstructionType {
+	public enum GroupStatusInstructionType implements Serializable  {
 		MEMBER_LIST_REQUEST, MEMBER_LIST_RESPONSE
 	}
 	
