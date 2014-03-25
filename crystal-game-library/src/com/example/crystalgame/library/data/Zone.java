@@ -29,7 +29,7 @@ public class Zone implements Serializable, HasID
 	private static final double EARTH_RADIUS = 6378.1 * 1000;
 	
 	// Entry radius around an item expressed in meters
-	private static final double RADIUS_OF_ENTRY = 0.5;
+	private static final double RADIUS_OF_ENTRY = 1;
 	
 	
 	/**

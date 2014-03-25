@@ -12,6 +12,7 @@ import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.HasID;
+import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
@@ -24,7 +25,7 @@ public class InventoryManager {
 
 	private static InventoryManager inventoryManager = null; 
 
-	private String clientID, playerCharacterID;
+	private String clientID, playerCharacterID, energyLevel;
 	
 	/**
 	 * Private constructor
@@ -126,19 +127,38 @@ public class InventoryManager {
 	 * @param energyLevel
 	 */
 	public synchronized void setEnergyLevel(String energyLevel) {
+		this.energyLevel = energyLevel;
+	}
+	
+	/**
+	 * Update the location of the game character
+	 * @param location
+	 */
+	public synchronized void setCharacterLocation(Location location) {
 		Character c;
 		try {
 			c = getCharacter();
-			if (c == null) {
+			if(null == c || null == location) {
 				return;
 			}
+			
+			// Set the new location for the character
+			c.setLatitude(location.getLatitude());
+			c.setLongitude(location.getLongitude());
+			
+			// Saving energy of character
 			c.setEnergyLevel(energyLevel);
+			
+			// Remove the character
+			ClientDataWarehouse.getInstance().delete(Character.class, c.getID());
+			
+			// Add the characer back
 			ClientDataWarehouse.getInstance().put(Character.class, c);
-			Log.d("InventoryManager:setEnergyLevel(val)","Updated Energy Level to "+energyLevel);
-		} catch (DataWarehouseException e) {
-			Log.e("InventoryManager:setEnergyLevel(val)",e.toString());
+			
+			Log.d("InventoryManager:setCharacterLocation(val)","Updated location to : Lat="+location.getLatitude()+" Lng="+location.getLongitude());
+		} catch(DataWarehouseException e) {
+			Log.d("InventoryManager:setCharacterLocation(val)",e.toString());
 		}
-		
 	}
 	
 	/**

@@ -6,6 +6,7 @@ package com.example.crystalgame.location;
 import java.util.ArrayList;
 
 import com.example.crystalgame.game.GameStateManager;
+import com.example.crystalgame.game.InventoryManager;
 import com.example.crystalgame.library.data.Artifact;
 import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.data.Location;
@@ -74,6 +75,9 @@ public class LocationManager {
 			System.out.println("Zone Changed : "+zoneChangeEvent);
 			GameStateManager.getInstance().zoneProximityAlert(zoneChangeEvent);
 		}
+		
+		// Update the game character location in data warehouse 
+		InventoryManager.getInstance().setCharacterLocation(currentLocation);
 	}
 	
 	public void saveGameBoundary(GameBoundary gameBoundary) {

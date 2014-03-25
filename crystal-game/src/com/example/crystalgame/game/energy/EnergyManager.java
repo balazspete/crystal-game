@@ -98,10 +98,13 @@ public class EnergyManager extends Thread {
 				}
 				
 				// Update the inventory manager with energy level of the game player
-				InventoryManager.getInstance().setEnergyLevel(getEnergyLevel());
+				//InventoryManager.getInstance().setEnergyLevel(getEnergyLevel());
 				
 				// Pushing the new energy level to Game Manager
 				GameManager.getInstance().energyChangeCallBack(energyRemaining);
+				
+				// Updating the energy level of character
+				InventoryManager.getInstance().setEnergyLevel(getEnergyLevel());
 				
 				// No more energy left, end the game
 				if(energyRemaining <= 0.00 && null != GameManager.getInstance().getApplicationObj()) {
