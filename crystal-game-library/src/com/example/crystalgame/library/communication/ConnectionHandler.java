@@ -44,7 +44,7 @@ public class ConnectionHandler implements Runnable {
 	 * @throws CommunicationFailureException Thrown in case of failure
 	 */
 	public void send(Serializable data) throws CommunicationFailureException {
-		if (!socket.isConnected()) {
+		if (!socket.isConnected() || out == null) {
 			throw CommunicationFailureException.FAILED_TO_CONNECT;
 		}
 		
