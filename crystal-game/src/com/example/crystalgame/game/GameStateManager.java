@@ -52,6 +52,7 @@ public class GameStateManager {
 		CrystalGame gameObj = GameManager.getInstance().getApplicationObj();
 		
 		if(item instanceof Crystal) {
+			Log.i("GameStateManager","Crystal captured : "+item.getID());
 			proximityEvent = new ProximityEvent(ArtifactType.CRYSTAL, item);
 			
 			if(null != gameObj) {
@@ -75,6 +76,7 @@ public class GameStateManager {
 			}
 		} else if(item instanceof MagicalItem) {
 			proximityEvent = new ProximityEvent(ArtifactType.MAGICAL_ITEM, item);
+			Log.i("GameStateManager","Magical Item captured : "+item.getID());
 			
 			if(null != gameObj) {
 				try {

@@ -22,8 +22,8 @@ public class EnergyManager extends Thread {
 	private static EnergyManager energyManager		= null						;
 	private EnergyEvent energyEvent 				= null						;
 	
-	private final double OUT_LOCATION_MULTIPLIER 	= 1/300						;
-	private final double IN_LOCATION_MULTIPLIER 	= 2/300						;
+	private final double OUT_LOCATION_MULTIPLIER 	= 1.0/300					;
+	private final double IN_LOCATION_MULTIPLIER 	= 2.0/300					;
 	private final double INITIAL_ENERGY_LEVEL  		= 10.00						;
 	private final double ENERGY_NOTIFY_VALUE 		= 2.0						;
 	private double energyRemaining 					= INITIAL_ENERGY_LEVEL		;
@@ -87,7 +87,11 @@ public class EnergyManager extends Thread {
 					outLocationTime += ENERGY_TRACKING_FREQUENCY/1000;
 				}
 				
-				energyRemaining -= inLocationTime * IN_LOCATION_MULTIPLIER + outLocationTime * OUT_LOCATION_MULTIPLIER;
+				// TODO : Below is the correct code.
+				//energyRemaining = (inLocationTime * IN_LOCATION_MULTIPLIER) + (outLocationTime * OUT_LOCATION_MULTIPLIER);
+				energyRemaining -= (inLocationTime * IN_LOCATION_MULTIPLIER) + (outLocationTime * OUT_LOCATION_MULTIPLIER);
+				
+				Log.i("EnergyManager","inTime : "+inLocationTime+" outTime : "+outLocationTime);
 				
 				if(energyRemaining <= ENERGY_NOTIFY_VALUE) {
 					Log.d("EnergyManager", "Energy Low...");
@@ -97,11 +101,8 @@ public class EnergyManager extends Thread {
 					raiseEnergyLowEvent(energyEvent);
 				}
 				
-				// Update the inventory manager with energy level of the game player
-				//InventoryManager.getInstance().setEnergyLevel(getEnergyLevel());
-				
 				// Pushing the new energy level to Game Manager
-				GameManager.getInstance().energyChangeCallBack(energyRemaining);
+				GameManager.getInstance().energyChangeCallBack(getEnergyLevel());
 				
 				// Updating the energy level of character
 				InventoryManager.getInstance().setEnergyLevel(getEnergyLevel());
@@ -109,12 +110,14 @@ public class EnergyManager extends Thread {
 				// No more energy left, end the game
 				if(energyRemaining <= 0.00 && null != GameManager.getInstance().getApplicationObj()) {
 					// Invoke the end of game screen
-					GameManager.getInstance().getApplicationObj().endGame(GameEndType.OUT_OF_ENERGY);
+					GameManager.getInstance().endGame(GameEndType.OUT_OF_ENERGY);
 					
 					// End the thread
 					isRunning = false;
 				}
 
+				Log.i("EnergyManager", "Energy remaining : "+getEnergyLevel());
+				
 				Thread.sleep(ENERGY_TRACKING_FREQUENCY);
 			} catch (InterruptedException e) {
 				Log.e("EnergyManager:run()", "Energy Tracking Thread is interrupted...");

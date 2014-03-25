@@ -75,7 +75,7 @@ public class UIController {
 		Log.d("UIController","energyLowCallBack() : "+energyEvent.toString());
 	}
 	
-	public synchronized void energyChangeCallBack(double energyLevel) {
+	public synchronized void energyChangeCallBack(String energyLevel) {
 		if (currentActivity == null) {
 			return;
 		}

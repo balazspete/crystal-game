@@ -243,6 +243,10 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 	protected void onStart() {
 		super.onStart();
 
+		// Passing a refrerence to the UIController
+		UIController.getInstance().setCurrentActivity(this);
+
+		
 		// Each time the whole set of markers are created, clear the marker map
 		markersOnMap.clear();
 
@@ -433,11 +437,10 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 
 
 	@Override
-	public synchronized void energyChangeCallBack(final double energyLevel) {
+	public synchronized void energyChangeCallBack(final String energyLevel) {
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				Toast.makeText(getApplicationContext(), "Energy updated to "+energyLevel, Toast.LENGTH_SHORT).show();
 				Energy_Label.setText(""+energyLevel);
 			}
 		});
