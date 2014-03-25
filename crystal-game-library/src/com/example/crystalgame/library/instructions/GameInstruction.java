@@ -17,6 +17,7 @@ public class GameInstruction extends Instruction {
 		GAME_BOUNDARY_OUTSIDE_RESPONSE, ENERGY_DISQUALIFY_RESPONSE,
 		CAPTURE_CRYSTAL_REQUEST, CAPTURE_MAGICAL_ITEM_REQUEST, EXCHANGE_MAGICAL_ITEM,
 		GAME_STARTED, GAME_ENDED
+		, OUT_OF_ENERGY
 	}
 	
 	public final GameInstructionType gameInstruction;
@@ -117,6 +118,10 @@ public class GameInstruction extends Instruction {
 	 */
 	public static GameInstruction createGameEndedSignalInstruction() {
 		return new GameInstruction(GameInstructionType.GAME_ENDED);
+	}
+	
+	public static GameInstruction createPlayerOutOfEnergyRequestInstruction(String playerID, String clientID) {
+		return new GameInstruction(GameInstructionType.OUT_OF_ENERGY, playerID, clientID);
 	}
 	
 }

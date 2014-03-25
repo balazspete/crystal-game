@@ -49,7 +49,7 @@ public class InformationPresenter {
 		Log.d("InformationPresenter","energyLowCallBack() : "+energyEvent.toString());
 	}
 	
-	public synchronized void energyChangeCallBack(double energyLevel) {
+	public synchronized void energyChangeCallBack(String energyLevel) {
 		UIController.getInstance().energyChangeCallBack(energyLevel);
 	}
 	

@@ -5,6 +5,8 @@ package com.example.crystalgame.location;
 
 import java.util.ArrayList;
 
+import android.util.Log;
+
 import com.example.crystalgame.game.GameStateManager;
 import com.example.crystalgame.game.InventoryManager;
 import com.example.crystalgame.library.data.Artifact;
@@ -67,6 +69,7 @@ public class LocationManager {
 		
 		artifact = ArtifactTracker.getInstance().getArtifactsInProximity(currentLocation);
 		if(null != artifact) {
+			Log.i("LocationManager","Artifact detected!");
 			GameStateManager.getInstance().itemProximityAlert(artifact);
 		}
 		
