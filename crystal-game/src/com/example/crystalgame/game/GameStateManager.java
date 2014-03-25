@@ -45,14 +45,6 @@ public class GameStateManager {
 	}
 	
 	/**
-	 * Start the components that is part of this block
-	 */
-	public void startComponents() {
-		//GameState.getInstance().initializeGameState();
-		//GameAgent.getInstance().initializeGameAgent();
-	}
-	
-	/**
 	 * Proximity Alert with a character, crystal or magical item
 	 */
 	public synchronized void itemProximityAlert(Artifact item) {
@@ -60,35 +52,48 @@ public class GameStateManager {
 		CrystalGame gameObj = GameManager.getInstance().getApplicationObj();
 		
 		if(item instanceof Crystal) {
+			Log.i("GameStateManager","Crystal captured : "+item.getID());
 			proximityEvent = new ProximityEvent(ArtifactType.CRYSTAL, item);
 			
 			if(null != gameObj) {
 				try {
+					System.out.println("GameStateManager : Sending crystal capture request to server...");
 					gameObj.getCommunication()
 							.out
 							.relayInstructionToServer(
 									GameInstruction.createCrystalCaptureRequestInstruction(gameObj.getClientID(), item.getID())
 							);
 					
+					System.out.println("GameStateManager : Received crystal capture response from server..");
+					
 					// Send the latest count of crystals
 					GameManager.getInstance().crystalCaptureCallBack(InventoryManager.getInstance().getCharacter().getCrystals().size());
+					
+					System.out.println("GameStateManager : Initiating crystal capture callback...");
 				} catch (InstructionFormatException e) {
 					Log.e("GameStateManager", e.toString());
 				}
 			}
 		} else if(item instanceof MagicalItem) {
 			proximityEvent = new ProximityEvent(ArtifactType.MAGICAL_ITEM, item);
+			Log.i("GameStateManager","Magical Item captured : "+item.getID());
 			
 			if(null != gameObj) {
 				try {
+					System.out.println("GameStateManager : Sending magical item capture request to server...");
+					
 					gameObj.getCommunication()
 							.out
 							.relayInstructionToServer(
 									GameInstruction.createMagicalItemCaptureRequestInstruction(gameObj.getClientID(), item.getID())
 							);
 					
+					System.out.println("GameStateManager : Received magical item capture response from server..");
+					
 					// Send the latest count of magical items
 					GameManager.getInstance().magicalItemCaptureCallBack(InventoryManager.getInstance().getCharacter().getMagicalItems().size());
+					
+					System.out.println("GameStateManager : Initiating magical item capture callback...");
 				} catch (InstructionFormatException e) {
 					Log.e("GameStateManager", e.toString());
 				}

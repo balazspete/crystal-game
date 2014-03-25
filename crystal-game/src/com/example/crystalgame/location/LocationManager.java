@@ -5,7 +5,10 @@ package com.example.crystalgame.location;
 
 import java.util.ArrayList;
 
+import android.util.Log;
+
 import com.example.crystalgame.game.GameStateManager;
+import com.example.crystalgame.game.InventoryManager;
 import com.example.crystalgame.library.data.Artifact;
 import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.data.Location;
@@ -66,6 +69,7 @@ public class LocationManager {
 		
 		artifact = ArtifactTracker.getInstance().getArtifactsInProximity(currentLocation);
 		if(null != artifact) {
+			Log.i("LocationManager","Artifact detected!");
 			GameStateManager.getInstance().itemProximityAlert(artifact);
 		}
 		
@@ -74,6 +78,9 @@ public class LocationManager {
 			System.out.println("Zone Changed : "+zoneChangeEvent);
 			GameStateManager.getInstance().zoneProximityAlert(zoneChangeEvent);
 		}
+		
+		// Update the game character location in data warehouse 
+		InventoryManager.getInstance().setCharacterLocation(currentLocation);
 	}
 	
 	public void saveGameBoundary(GameBoundary gameBoundary) {

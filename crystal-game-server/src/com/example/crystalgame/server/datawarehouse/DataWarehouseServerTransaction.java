@@ -177,6 +177,8 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 		last = DataSynchronisationInstruction.createCommitInstruction(instruction.getTransactionID(), commit);
 		sendInstruction(last);
 		
+		System.out.println("DataWarehouseServerTransaction|commitTransaction: Finishing up transaction. Result=" + commit + " TransactionID=" + instruction.getTransactionID());
+		
 		// Send result to local client
 		((ServerSynchroniser) synchronizer).passInstructionToLocal(last);
 		

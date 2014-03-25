@@ -19,7 +19,7 @@ public interface UIControllerHelperInter {
 	/* Invoked when energy levels are low */
 	public void energyLow(EnergyEvent energyEvent);
 	//public void updateGameEnergy(double noOfEnergyUnits);
-	public  void energyChangeCallBack(double energyLevel);
+	public  void energyChangeCallBack(String energyLevel);
 
 	void updateGameMagicalItemInfo(int noOfMagicalItems);
 

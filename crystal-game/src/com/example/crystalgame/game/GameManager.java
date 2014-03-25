@@ -6,6 +6,7 @@ package com.example.crystalgame.game;
 import java.util.ArrayList;
 
 import com.example.crystalgame.CrystalGame;
+import com.example.crystalgame.game.GameEndActivity.GameEndType;
 import com.example.crystalgame.game.energy.EnergyEvent;
 import com.example.crystalgame.game.energy.EnergyManager;
 import com.example.crystalgame.library.data.Character;
@@ -13,6 +14,7 @@ import com.example.crystalgame.library.data.GameBoundary;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
+import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.location.GPSTracker;
 import com.example.crystalgame.location.LocationManager;
 import com.example.crystalgame.location.ZoneChangeEvent;
@@ -71,7 +73,7 @@ public class GameManager {
 	 * Propagate energy change across different components
 	 * @param energyLevel
 	 */
-	public synchronized void energyChangeCallBack(double energyLevel) {
+	public synchronized void energyChangeCallBack(String energyLevel) {
 		InformationPresenter.getInstance().energyChangeCallBack(energyLevel);		
 	}
 	
@@ -122,5 +124,17 @@ public class GameManager {
 	
 	public synchronized ThroneRoom getThroneRoom() {
 		return InventoryManager.getInstance().getThroneRoom();
+	}
+	
+	/**
+	 * Send instruction to the server to end the game
+	 * @param type
+	 */
+	public synchronized void endGame(GameEndType type) {
+		CrystalGame gameObj = GameManager.getInstance().getApplicationObj();
+		if(null != gameObj) {
+			gameObj.getCommunication().out.relayInstructionToServer(GameInstruction.createPlayerOutOfEnergyRequestInstruction(getGameCharacter().getID(),gameObj.getClientID()));
+			
+		}
 	}
 }

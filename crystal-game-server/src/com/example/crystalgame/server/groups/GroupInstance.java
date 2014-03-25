@@ -234,6 +234,10 @@ public class GroupInstance implements Runnable {
 	 * @return True if removed
 	 */
 	public synchronized boolean removeClientFromGame(String clientID) {
+		if (currentGame == null) {
+			return true;
+		}
+		
 		return currentGame.removeClientFromGame(clientID);
 	}
 	
@@ -270,6 +274,9 @@ public class GroupInstance implements Runnable {
 				break;
 			case EXCHANGE_MAGICAL_ITEM :
 				handleExchangeMagicalItemsRequest(instruction.arguments);
+				break;
+			case OUT_OF_ENERGY :
+				handlePlayerOutOfEnergyRequest(instruction.arguments);
 				break;
 			default:
 				// TODO: handle other cases
@@ -453,6 +460,18 @@ public class GroupInstance implements Runnable {
 	
 	private void handleCommunicationStatusInstruction(CommunicationStatusInstruction instruction) {
 		System.err.println("GroupInstance:465 - Unhandled communication status instruction");
+	}
+
+	private void handlePlayerOutOfEnergyRequest(Serializable[] args) {
+		String playerID = (String)args[0];
+		String clientID = (String)args[1];
+
+		if(currentGame != null && currentGame.removeClientFromGame(clientID)) {
+			InstructionRelayMessage message = new InstructionRelayMessage(clientID);
+			message.setData(GameInstruction.createEnergyDisqualifyInstruction());
+			sequencer.sendMessageToOne(message);
+		}
+
 	}
 	
 }
