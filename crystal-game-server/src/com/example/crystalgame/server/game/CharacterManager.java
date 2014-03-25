@@ -25,20 +25,18 @@ public class CharacterManager
 	private static boolean result;
 	private DataWarehouse dataWarehouse;
 	private Sequencer sequencer;
-	public CharacterManager()
-	{
-		
-	}
+	private GameManager manager;
 	
 	/**
 	 * 
 	 * @param gameLocation
 	 * @param sequencer
 	 */
-	public CharacterManager(GameLocation gameLocation, Sequencer sequencer)
+	public CharacterManager(GameManager manager, GameLocation gameLocation, Sequencer sequencer)
 	{
 		this.gameLocation = gameLocation;
 		this.sequencer = sequencer;
+		this.manager= manager;
 	}
 
 	
@@ -55,6 +53,7 @@ public class CharacterManager
 				if(character.getPlayerType().equals(PlayerType.PLAYER))
 				{
 					sendInstructionToClient(character.getClientId(),GameInstruction.createGameBoundaryDisqualifyInstruction());
+					manager.removeClientFromGame(character.getClientId());
 				}
 			}
 			else
@@ -77,6 +76,7 @@ public class CharacterManager
 				if(character.getPlayerType().equals(PlayerType.PLAYER))
 				{
 					sendInstructionToClient(character.getClientId(),GameInstruction.createEnergyDisqualifyInstruction());
+					manager.removeClientFromGame(character.getClientId());
 				}
 			}
 			else

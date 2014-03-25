@@ -234,6 +234,10 @@ public class GroupInstance implements Runnable {
 	 * @return True if removed
 	 */
 	public synchronized boolean removeClientFromGame(String clientID) {
+		if (currentGame == null) {
+			return true;
+		}
+		
 		return currentGame.removeClientFromGame(clientID);
 	}
 	
