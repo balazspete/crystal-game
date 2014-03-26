@@ -325,33 +325,11 @@ public class GroupInstance implements Runnable {
 	 * @param data Player ID, Crystal ID
 	 */
 	private synchronized void handleCaptureCrystalRequest(Serializable[] data) {
-		String playerID = (String) data[0];
-		String crystalID = (String) data[1];
-		
-		try {
-			HasID resultObj = dataWarehouse.get(Crystal.class, crystalID);
-			
-			// Check if the crystal is available in the crystal pool
-			if(null != resultObj) {
-				HasID playerObj = dataWarehouse.get(Character.class, playerID);
-				
-				// If the player exists
-				if(null != playerObj) {
-					Character player = (Character) playerObj;
-					
-					// Add the crystal to the player
-					player.addCrystal((Crystal)resultObj);
-					
-					// Delete the crystal from the common pool
-					dataWarehouse.delete(Crystal.class, crystalID);
-					
-					// Add the updated player back to the data warehouse
-					dataWarehouse.put(Character.class, player);
-				}
-			}
-		} catch (DataWarehouseException e) {
-			// Ignored. No need to reply to client (Another client might have removed the crystal)
+		if (currentGame == null) {
+			return;
 		}
+		
+		currentGame.handleItemCaptureRequest(Crystal.class, data);
 	}
 	
 	/**
@@ -361,33 +339,11 @@ public class GroupInstance implements Runnable {
 	 * @param data Player ID, Magical Item ID
 	 */
 	private synchronized void handleCaptureMagicalItemRequest(Serializable[] data) {
-		String playerID = (String) data[0];
-		String magicalItemID = (String) data[1];
-		
-		try {
-			HasID resultObj = dataWarehouse.get(MagicalItem.class, magicalItemID);
-			
-			// Check if the magical item is available in the crystal pool
-			if(null != resultObj) {
-				HasID playerObj = dataWarehouse.get(Character.class, playerID);
-				
-				// If the player exists
-				if(null != playerObj) {
-					Character player = (Character) playerObj;
-					
-					// Add the magical item to the player
-					player.addMagicalItem((MagicalItem)resultObj);
-					
-					// Delete the magical item from the common pool
-					dataWarehouse.delete(MagicalItem.class, magicalItemID);
-					
-					// Add the updated player back to the data warehouse
-					dataWarehouse.put(Character.class, player);
-				}
-			}
-		} catch (DataWarehouseException e) {
-			// Ignored. No need to reply to client (Another client might have removed the crystal)
+		if (currentGame == null) {
+			return;
 		}
+		
+		currentGame.handleItemCaptureRequest(MagicalItem.class, data);
 	}
 	
 	/**
