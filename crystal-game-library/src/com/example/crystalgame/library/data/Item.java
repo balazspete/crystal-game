@@ -20,6 +20,7 @@ public abstract class Item extends Artifact {
 	
 	public static final double RADIUS = 100;
 	public final ItemType type;
+	private String zoneID;
 	
 	/**
 	 * Create an item
@@ -31,4 +32,16 @@ public abstract class Item extends Artifact {
 		this.type = type;
 	}
 
+	public String getZoneId() {
+		return zoneID;
+	}
+	
+	public void setZoneID(String zoneID) {
+		this.zoneID = zoneID;
+	}
+	
+	public ItemType getType() {
+		return type;
+	}
+	
 }
