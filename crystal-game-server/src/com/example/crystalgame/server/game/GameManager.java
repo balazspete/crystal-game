@@ -1,7 +1,9 @@
 package com.example.crystalgame.server.game;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.joda.time.DateTime;
@@ -12,8 +14,10 @@ import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.CrystalZone;
 import com.example.crystalgame.library.data.GameLocation;
 import com.example.crystalgame.library.data.HasID;
+import com.example.crystalgame.library.data.Item;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.Character.UnknownPlayerCharacter;
+import com.example.crystalgame.library.data.Item.ItemType;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
 import com.example.crystalgame.library.datawarehouse.DataWarehouse;
@@ -32,6 +36,7 @@ public class GameManager implements Runnable {
 	
 	private final String name;
 	private List<String> clientIDs;
+	private HashMap<String, String> clientIDtoCharacterID;
 	private GameLocation gameLocation;
 	private ThroneRoom throneRoom;
 	private DateTime endTime;
@@ -46,6 +51,7 @@ public class GameManager implements Runnable {
 		this.name = gameName;
 		this.clientIDs = clientIDs;
 		this.gameLocation = new GameLocation();
+		clientIDtoCharacterID = new HashMap<String, String>();
 		this.throneRoom = throneRoom;
 		
 		for(Location location : locations) {
@@ -104,6 +110,29 @@ public class GameManager implements Runnable {
 	public boolean removeClientFromGame(String clientId) {
 		// TODO: remove client from all child components
 		
+		try {
+			HasID c = dataWarehouse.get(Character.class, clientIDtoCharacterID.get(clientId));
+			if (c != null) {
+				Character character = (Character) c;
+				List<HasID> zones = dataWarehouse.getList(CrystalZone.class);
+				if (zones.size() > 0) {
+					List<Item> items = ItemScatter.generate(Crystal.class, (CrystalZone) zones.get(0), character.getCrystals().size());
+					dataWarehouse.putList(Crystal.class, new ArrayList<HasID>(items));
+				}
+				
+				List<HasID> items = new ArrayList<HasID>();
+				for (MagicalItem item : character.getMagicalItems()) {
+					ItemScatter.position(item, gameLocation);
+					items.add(item);
+				}
+				
+				dataWarehouse.putList(MagicalItem.class, items);
+				dataWarehouse.delete(Character.class, clientIDtoCharacterID.get(clientId));
+			}
+		} catch (DataWarehouseException e) {
+			System.err.println("Failed to rescatter items of player. ClientID=" + clientId);
+		}
+		
 		clientIDs.remove(clientId);
 		System.out.println(Arrays.toString(clientIDs.toArray()));
 		if (clientIDs.size() == 0) {
@@ -135,9 +164,10 @@ public class GameManager implements Runnable {
 		
 		ArrayList<HasID> crystals = new ArrayList<HasID>();
 		for (CrystalZone zone : zones) {
-			CrystalScatter scatter = new CrystalScatter(zone);
-			List<Crystal> _crystals = scatter.generateCrystals((int) (Math.random() * 10));
-			crystals.addAll(_crystals);
+			List<Item> _crystals = ItemScatter.generate(Crystal.class, zone, (int) (Math.random() * 10));
+			for (Item c : _crystals) {
+				crystals.add(c);
+			}
 		}
 
 		try {
@@ -148,8 +178,7 @@ public class GameManager implements Runnable {
 	}
 	
 	public void createMagicalItems() {
-		MagicalItemScatter scatter = new MagicalItemScatter(gameLocation);
-		List<MagicalItem> items = scatter.generateMagicItems(6);
+		List<Item> items = ItemScatter.generate(MagicalItem.class, gameLocation, 6);
 		
 		try {
 			dataWarehouse.putList(MagicalItem.class, new ArrayList<HasID>(items));
