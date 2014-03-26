@@ -210,6 +210,54 @@ public class GameManager implements Runnable {
 		
 	}
 	
+	public synchronized void handleItemCaptureRequest(Class type, Serializable[] data) {
+		String clientID = (String) data[0];
+		String itemID = (String) data[1];
+		String characterID = clientIDtoCharacterID.get(clientID);
+		
+		try {
+			if (characterID != null) {
+				HasID _item = dataWarehouse.get(type, itemID);
+				
+				// Check if the crystal is available in the crystal pool
+				if(null != _item) {
+					Item item = (Item) _item;
+					HasID playerObj = dataWarehouse.get(Character.class, characterID);
+					
+					// If the player exists
+					if(null != playerObj) {
+						Character character = (Character) playerObj;
+						
+						switch (item.getType()) {
+							case CRYSTAL:
+								Crystal crystal = (Crystal) item;
+								character.addCrystal(crystal);
+								
+								// Delete the crystal from the common pool
+								dataWarehouse.delete(Crystal.class, crystal.getID());
+								break;
+							case MAGICAL_ITEM:
+								MagicalItem magicalItem = (MagicalItem) item;
+								character.addMagicalItem(magicalItem);
+								
+								// Delete the magical item from the common pool
+								dataWarehouse.delete(MagicalItem.class, magicalItem.getID());
+								break;
+						}
+						
+						System.out.println("GameManager|handleItemCaptureRequest: Added item to character. Type=" + item.getType() + " Character=" + character.getID());
+						
+						// Add the updated player back to the data warehouse
+						dataWarehouse.put(Character.class, character);
+					}
+				}
+			}
+		} catch (DataWarehouseException e) {
+			// Ignored. No need to reply to client (Another client might have removed the crystal)
+			System.out.println("GameManager|handleItemCaptureRequest: Failed to add item to character. Client=" + clientID);
+		}
+	}
+	
 	private void sendGameStartSignal() {
 		InstructionRelayMessage message = new InstructionRelayMessage(null);
 		message.setData(GameInstruction.createGameStartedSignalInstruction());
