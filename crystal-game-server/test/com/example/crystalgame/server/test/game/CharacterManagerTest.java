@@ -11,7 +11,6 @@ import org.junit.Test;
 import com.example.crystalgame.library.data.GameLocation;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.server.game.CharacterManager;
-import com.example.crystalgame.server.game.MagicalItemScatter;
 import com.example.crystalgame.server.groups.Client;
 import com.example.crystalgame.server.groups.Group;
 import com.example.crystalgame.server.sequencer.Sequencer;

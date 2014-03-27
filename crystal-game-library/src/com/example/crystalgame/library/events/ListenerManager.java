@@ -2,6 +2,7 @@ package com.example.crystalgame.library.events;
 
 import java.util.ArrayList;
 import java.util.EventListener;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -14,14 +15,14 @@ import java.util.concurrent.Executors;
  */
 public abstract class ListenerManager<LISTENER extends EventListener, EVENT extends Event> {
 
-	private ArrayList<LISTENER> listeners;
+	private ConcurrentLinkedQueue<LISTENER> listeners;
 	private ExecutorService pool;
 	
 	/**
 	 * Create a listener manager
 	 */
 	public ListenerManager() {
-		listeners = new ArrayList<LISTENER>();
+		listeners = new ConcurrentLinkedQueue<LISTENER>();
 		pool = Executors.newSingleThreadExecutor();
 	}
 	

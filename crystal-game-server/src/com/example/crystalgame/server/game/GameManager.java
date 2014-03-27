@@ -116,7 +116,7 @@ public class GameManager implements Runnable {
 				Character character = (Character) c;
 				List<HasID> zones = dataWarehouse.getList(CrystalZone.class);
 				if (zones.size() > 0) {
-					List<Item> items = ItemScatter.generate(Crystal.class, (CrystalZone) zones.get(0), character.getCrystals().size());
+					List<Item> items = ItemScatter.generate(ItemType.CRYSTAL, (CrystalZone) zones.get(0), character.getCrystals().size());
 					dataWarehouse.putList(Crystal.class, new ArrayList<HasID>(items));
 				}
 				
@@ -164,7 +164,7 @@ public class GameManager implements Runnable {
 		
 		ArrayList<HasID> crystals = new ArrayList<HasID>();
 		for (CrystalZone zone : zones) {
-			List<Item> _crystals = ItemScatter.generate(Crystal.class, zone, (int) (Math.random() * 10));
+			List<Item> _crystals = ItemScatter.generate(ItemType.CRYSTAL, zone, (int) (Math.random() * 10));
 			for (Item c : _crystals) {
 				crystals.add(c);
 			}
@@ -178,7 +178,7 @@ public class GameManager implements Runnable {
 	}
 	
 	public void createMagicalItems() {
-		List<Item> items = ItemScatter.generate(MagicalItem.class, gameLocation, 6);
+		List<Item> items = ItemScatter.generate(ItemType.MAGICAL_ITEM, gameLocation, 6);
 		
 		try {
 			dataWarehouse.putList(MagicalItem.class, new ArrayList<HasID>(items));
