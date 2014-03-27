@@ -48,10 +48,11 @@ public abstract class ListenerManager<LISTENER extends EventListener, EVENT exte
 	 */
 	public void send(final EVENT data) {
 		// Call the handler function for each listener
+		final ListenerManager<LISTENER, EVENT> manager = this;
 		pool.execute(new Runnable(){
 			@Override
 			public void run() {
-				synchronized(ListenerManager.this) {
+				synchronized(manager) {
 					for (LISTENER listener : listeners) {
 						eventHandlerHelper(listener, data);
 					}
