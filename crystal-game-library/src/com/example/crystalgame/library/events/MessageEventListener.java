@@ -23,7 +23,7 @@ public abstract class MessageEventListener implements EventListener {
 	 * @param groupId The group ID
 	 */
 	public MessageEventListener(String groupId) {
-		this.groupId = groupId == null ? null : groupId.intern();
+		this.groupId = groupId == null ? null : groupId;
 	}
 	
 	/**

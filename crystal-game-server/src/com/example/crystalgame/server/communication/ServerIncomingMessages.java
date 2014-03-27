@@ -29,7 +29,7 @@ public class ServerIncomingMessages extends IncomingMessages {
 			@Override
 			protected void eventHandlerHelper(MessageEventListener listener, MessageEvent event) {
 				// If the listener listens to messages from only one group, and the group IDs differ -> return
-				if(listener.groupId != null && listener.groupId != event.getMessage().getGroupId().intern()) {
+				if(listener.groupId != null && listener.groupId.equals(event.getMessage().getGroupId())) {
 					return;
 				}
 				

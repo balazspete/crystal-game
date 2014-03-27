@@ -66,7 +66,7 @@ public abstract class IncomingMessages {
 	 * @param groupId The group ID to allow
 	 */
 	public void addGroupId(String groupId) {
-		groupIDs.add(groupId.intern());
+		groupIDs.add(groupId);
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public abstract class IncomingMessages {
 	 * @param groupId The group ID to not allow any more
 	 */
 	public void removeGroupId(String groupId) {
-		groupIDs.remove(groupId.intern());
+		groupIDs.remove(groupId);
 	}
 	
 	private void initialise() {
