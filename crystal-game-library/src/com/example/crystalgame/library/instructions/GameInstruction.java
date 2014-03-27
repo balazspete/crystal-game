@@ -83,11 +83,11 @@ public class GameInstruction extends Instruction {
 	 * @return The instruction
 	 * @throws InstructionFormatException
 	 */
-	public static GameInstruction createCrystalCaptureRequestInstruction(String playerID, String crystalID) throws InstructionFormatException {
+	public static GameInstruction createCrystalCaptureRequestInstruction(String playerID, String characterID, String crystalID) throws InstructionFormatException {
 		if(null == playerID || null == crystalID) {
 			throw InstructionFormatException.NULL_ARGUMENT;
 		}
-		return new GameInstruction(GameInstructionType.CAPTURE_CRYSTAL_REQUEST, playerID, crystalID); 
+		return new GameInstruction(GameInstructionType.CAPTURE_CRYSTAL_REQUEST, playerID, characterID, crystalID); 
 	}
 	
 	/**
@@ -97,11 +97,11 @@ public class GameInstruction extends Instruction {
 	 * @return The instruction
 	 * @throws InstructionFormatException
 	 */
-	public static GameInstruction createMagicalItemCaptureRequestInstruction(String playerID, String magicalItemID) throws InstructionFormatException {
+	public static GameInstruction createMagicalItemCaptureRequestInstruction(String playerID, String characterID, String magicalItemID) throws InstructionFormatException {
 		if(null == playerID || null == magicalItemID) {
 			throw InstructionFormatException.NULL_ARGUMENT;
 		}
-		return new GameInstruction(GameInstructionType.CAPTURE_MAGICAL_ITEM_REQUEST, playerID, magicalItemID); 
+		return new GameInstruction(GameInstructionType.CAPTURE_MAGICAL_ITEM_REQUEST, playerID, characterID, magicalItemID); 
 	}
 	
 	/**
