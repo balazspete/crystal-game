@@ -36,7 +36,7 @@ public class Location implements Serializable, HasID
 	 * @param longitude
 	 */
 	public Location(double lattitude, double longitude) {
-		id = RandomID.getRandomId().intern();
+		id = RandomID.getRandomId();
 		this.lattitude = lattitude;
 		this.longitude = longitude;
 	}
@@ -88,7 +88,7 @@ public class Location implements Serializable, HasID
 	 * @param markerID the markerID to set
 	 */
 	public void setMarkerID(String markerID) {
-		this.markerID = markerID.intern();
+		this.markerID = markerID;
 	}
 	
 	@Override

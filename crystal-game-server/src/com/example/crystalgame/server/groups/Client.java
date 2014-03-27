@@ -17,7 +17,7 @@ public class Client {
 	 * @param name The client's name
 	 */
 	public Client(String id, String name) {
-		this.id = id.intern();
+		this.id = id;
 		this.name = name;
 	}
 

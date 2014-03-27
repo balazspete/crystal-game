@@ -1,6 +1,6 @@
 package com.example.crystalgame.server.test.game;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -12,7 +12,6 @@ import com.example.crystalgame.library.data.GameLocation;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.server.game.CharacterManager;
 import com.example.crystalgame.server.groups.Client;
-import com.example.crystalgame.server.groups.Group;
 import com.example.crystalgame.server.sequencer.Sequencer;
 
 public class CharacterManagerTest
