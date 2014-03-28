@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.crystalgame.CrystalGame;
+import com.example.crystalgame.communication.ClientCommunication;
 import com.example.crystalgame.communication.ClientOutgoingMessages;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Crystal;
@@ -33,6 +34,10 @@ public class InteractionManager {
 		reset();
 	}
 	
+	public void initiateInteraction(ClientOutgoingMessages out, String otherClientID) {
+		inDuel = true;
+	}
+	
 	public void onInteractionRequest(ClientOutgoingMessages out, CharacterInteractionInstruction instruction) {
 		CharacterInteractionInstruction replyInstruction;
 		try {
@@ -57,12 +62,16 @@ public class InteractionManager {
 	public boolean onInteractionRequestAcknowledgment(CharacterInteractionInstruction instruction) {
 		boolean duel = (Boolean) instruction.arguments[3];
 		if (duel) {
-			inDuel = duel;
+			master = timestamp < ((Long) instruction.arguments[4]);
+		} else {
+			inDuel = false;
 		}
 		
-		master = timestamp < ((Long) instruction.arguments[4]);
-		
 		return duel;
+	}
+	
+	public boolean isMaster() {
+		return master;
 	}
 	
 	public void onRPSSelectionRequest(ClientOutgoingMessages out, CharacterInteractionInstruction instruction) {

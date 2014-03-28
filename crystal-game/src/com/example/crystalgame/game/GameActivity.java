@@ -33,6 +33,7 @@ import com.example.crystalgame.communication.ClientOutgoingMessages;
 import com.example.crystalgame.game.energy.EnergyEvent;
 import com.example.crystalgame.game.maps.LocalMapPolygon;
 import com.example.crystalgame.library.communication.outgoing.OutgoingMessages;
+import com.example.crystalgame.library.data.Character.CharacterType;
 import com.example.crystalgame.library.data.Character.PlayerType;
 import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.Location;
@@ -341,14 +342,14 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 				}
 
 				// If warrior, show players as red dots
-				else if(gameCharacter instanceof Warrior && player.getPlayerType().equals(PlayerType.PLAYER)) {
+				else if(gameCharacter.getCharacterType() == CharacterType.WARRIOR && player.getPlayerType() == PlayerType.PLAYER) {
 					tempMarker = map.addMarker(new MarkerOptions()
 						.position(new LatLng(gameCharacter.getLatitude(),gameCharacter.getLongitude()))
 						.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 				}
 
 				// If wizard, show NPCs as purple dots
-				else if(gameCharacter instanceof Wizard && player.getPlayerType().equals(PlayerType.NPC)) {
+				else if(gameCharacter.getCharacterType() == CharacterType.WIZARD && player.getPlayerType() == PlayerType.NPC) {
 					tempMarker = map.addMarker(new MarkerOptions()
 						.position(new LatLng(gameCharacter.getLatitude(),gameCharacter.getLongitude()))
 						.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
@@ -539,7 +540,9 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 				break;
 			case INTERACTION_REQUEST_ACK:
 				if (InteractionManager.getInstance().onInteractionRequestAcknowledgment(instruction)) {
-					showDuelDialog();
+					if (InteractionManager.getInstance().isMaster()) {
+						showDuelDialog();
+					}
 				}
 				break;
 			case RPS_SELECTION_REPLY:

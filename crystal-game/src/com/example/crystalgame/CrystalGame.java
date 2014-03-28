@@ -69,7 +69,7 @@ public class CrystalGame extends Application {
 	 * Get the communication module
 	 * @return the communication module
 	 */
-	public ClientCommunication getCommunication() {
+	public static ClientCommunication getCommunication() {
 		return communication;
 	}
 	

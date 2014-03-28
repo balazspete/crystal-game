@@ -148,6 +148,13 @@ public abstract class Character extends Artifact {
 	}
 
 	/**
+	 * @return the characterType
+	 */
+	public CharacterType getCharacterType() {
+		return characterType;
+	}
+
+	/**
 	 * A character representation for a client until more information is known
 	 * @author Balazs Pete, Allen Thomas Varghese
 	 *

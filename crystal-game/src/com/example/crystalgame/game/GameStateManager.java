@@ -58,10 +58,10 @@ public class GameStateManager {
 			if(null != gameObj) {
 				try {
 					System.out.println("GameStateManager : Sending crystal capture request to server...");
-					gameObj.getCommunication()
+					CrystalGame.getCommunication()
 							.out
 							.relayInstructionToServer(
-									GameInstruction.createCrystalCaptureRequestInstruction(gameObj.getClientID(), item.getID())
+									GameInstruction.createCrystalCaptureRequestInstruction(CrystalGame.getClientID(), item.getID())
 							);
 					
 					System.out.println("GameStateManager : Received crystal capture response from server..");
@@ -82,10 +82,10 @@ public class GameStateManager {
 				try {
 					System.out.println("GameStateManager : Sending magical item capture request to server...");
 					
-					gameObj.getCommunication()
+					CrystalGame.getCommunication()
 							.out
 							.relayInstructionToServer(
-									GameInstruction.createMagicalItemCaptureRequestInstruction(gameObj.getClientID(), item.getID())
+									GameInstruction.createMagicalItemCaptureRequestInstruction(CrystalGame.getClientID(), item.getID())
 							);
 					
 					System.out.println("GameStateManager : Received magical item capture response from server..");
@@ -99,7 +99,9 @@ public class GameStateManager {
 				}
 			}
 		} else if(item instanceof Character) {
+			Character c  = (Character) item;
 			proximityEvent = new ProximityEvent(ArtifactType.CHARACTER, item);
+			InteractionManager.getInstance().initiateInteraction(CrystalGame.getCommunication().out, c.getClientId());
 		}
 				
 	}
