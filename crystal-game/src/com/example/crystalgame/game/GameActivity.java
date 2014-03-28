@@ -2,10 +2,10 @@ package com.example.crystalgame.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import android.app.Dialog;
-import android.content.Intent;
 import android.graphics.Point;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -28,23 +28,31 @@ import android.widget.Toast;
 
 import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.R;
+import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
 import com.example.crystalgame.game.energy.EnergyEvent;
+import com.example.crystalgame.game.energy.EnergyManager;
 import com.example.crystalgame.game.maps.LocalMapPolygon;
 import com.example.crystalgame.library.data.Character.PlayerType;
 import com.example.crystalgame.library.data.Crystal;
+import com.example.crystalgame.library.data.CrystalZone;
+import com.example.crystalgame.library.data.Item;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
 import com.example.crystalgame.library.data.Warrior;
 import com.example.crystalgame.library.data.Wizard;
+import com.example.crystalgame.library.data.Zone;
+import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
 import com.example.crystalgame.library.instructions.GroupInstruction;
 import com.example.crystalgame.location.GPSTracker;
+import com.example.crystalgame.location.LocationManager;
 import com.example.crystalgame.location.ZoneChangeEvent;
 import com.example.crystalgame.location.ZoneChangeEvent.ZoneType;
 import com.example.crystalgame.ui.UIController;
 import com.example.crystalgame.ui.UIControllerHelperInter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -56,19 +64,24 @@ import com.google.android.gms.maps.model.MarkerOptions;
  * Activity where game play happens 
  * @author Allen Thomas Varghese, Rajan Verma
  */
-public class GameActivity extends FragmentActivity implements UIControllerHelperInter,LocationListener {
+public class GameActivity extends FragmentActivity implements UIControllerHelperInter, LocationListener, OnMarkerClickListener {
 
 	GoogleMap map;
 	private TextView Energy_Label = null; 
 	private TextView Crystal_Label = null; 
 	private TextView Magic_Label = null; 
+	private TextView Time_Label = null; 
 	View mapView;
 	float level = 13.0f;
 	private ArrayList<Location> gameBoundaryPoints= null;
 	private ArrayList<Location> gameLocationPoints = null;
 	private ArrayList<MagicalItem> magicalItemsList = null;
-	private Map<String, Marker> markersOnMap = new HashMap<String, Marker>();
+	private CrystalZone[] crystalZones = null;
+	private ConcurrentHashMap<String, Marker> markersOnMap = new ConcurrentHashMap<String, Marker>();
 
+	// Threads
+	Thread gameUpdateThread, gameTimeThread;
+	
 	// Refresh the position of markers every 5 seconds
 	private int UI_REFRESH_FREQUENCY = 5000;
 
@@ -76,13 +89,16 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 	}
 
 	// Initialize all the components in the client side
-	private void initializeGameComponents() {
+	private synchronized void initializeGameComponents() {
 		// Passing a refrerence to the UIController
 		UIController.getInstance().setCurrentActivity(this);
 
 		// Starting the location tracking service
-		startService(new Intent(this,GPSTracker.class));
-
+		//startService(new Intent(this,GPSTracker.class));
+		GPSTracker.getInstance().setEnableLocationCallbacks(true);
+		
+		Toast.makeText(getApplicationContext(), "LocationTracking status : "+GPSTracker.getInstance().isEnableLocationCallbacks(), Toast.LENGTH_SHORT).show();
+		
 		// Enabling different components
 		UIController.getInstance().startComponents();
 	}
@@ -102,6 +118,7 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 
 		/*Set my location true on map*/
 		map.setMyLocationEnabled(true);
+		map.setOnMarkerClickListener(this);
 
 		// Action Bar
 		Crystal_Label=(TextView) findViewById(R.id.Crystal_message);  
@@ -115,20 +132,10 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 		Magic_Label=(TextView) findViewById(R.id.Magic_message);  
 		Magic_Label.setVisibility(View.VISIBLE);  
 		Magic_Label.setText("0");
-
-		// Searching for location services as a thread to avoid application deadlock
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				android.location.Location location = null;
-				do {
-					location = GPSTracker.getInstance().getLocation();
-				} while(null != location);
-
-				LatLng newLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-				map.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng, 17));
-			}
-		}).start();
+		
+		Time_Label=(TextView) findViewById(R.id.Time_message);  
+		Time_Label.setVisibility(View.VISIBLE);  
+		Time_Label.setText("0");
 
 		final RadioButton magicItemButton = (RadioButton) findViewById(R.id.main_tab_magic);
 		magicItemButton.setOnClickListener(new OnClickListener() {
@@ -186,17 +193,22 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 		});
 
 		// Update the map information
-		new Thread(new Runnable() {
+		gameUpdateThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				boolean isRunning = true;
 				while(isRunning) {
 					try {
+						Thread.sleep(UI_REFRESH_FREQUENCY);
+						
+						System.out.println("In game update thread");
+						/*
 						// Check if elements are already added to the marker map
 						if(null != markersOnMap && markersOnMap.size() > 0) {
-							Map<String, Marker> accessedMarkers = new HashMap<String, Marker>();
+							ConcurrentHashMap<String, Marker> accessedMarkers = new ConcurrentHashMap<String, Marker>();
 
-							for(Crystal crystal : UIController.getInstance().getGameCrystals()) {
+							Crystal[] crystals = UIController.getInstance().getGameCrystals();
+							for(Crystal crystal : crystals) {
 								// Add the marker to the temp map
 								accessedMarkers.put(crystal.getID(), markersOnMap.get(crystal.getID()));
 
@@ -204,7 +216,10 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 								markersOnMap.remove(crystal.getID());
 							}
 
-							for(MagicalItem magicalItem : UIController.getInstance().getGameMagicalItems()) {
+							System.out.println("Processed crystals...");
+							
+							MagicalItem[] magicalItems = UIController.getInstance().getGameMagicalItems();
+							for(MagicalItem magicalItem : magicalItems) {
 								// Add the marker to the temp map
 								accessedMarkers.put(magicalItem.getID(), markersOnMap.get(magicalItem.getID()));
 
@@ -212,138 +227,235 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 								markersOnMap.remove(magicalItem.getID());
 							}
 
-							for(com.example.crystalgame.library.data.Character character : UIController.getInstance().getGameCharacters()) {
-								// Add the marker to the temp map
-								accessedMarkers.put(character.getID(), markersOnMap.get(character.getID()));
-
-								// Remove the marker from the existing map
-								markersOnMap.remove(character.getID());
+							System.out.println("Processed magical items...");
+							
+							com.example.crystalgame.library.data.Character gameCharacter = UIController.getInstance().getGameCharacter();
+							com.example.crystalgame.library.data.Character[] gameCharacters = UIController.getInstance().getGameCharacters();
+							if(null!=gameCharacter && null!= gameCharacters) {
+								for(com.example.crystalgame.library.data.Character character : gameCharacters) {
+									if(character.getID().equals(gameCharacter.getID())) {
+										continue;
+									}
+									
+									// Add the marker to the temp map
+									accessedMarkers.put(character.getID(), markersOnMap.get(character.getID()));
+	
+									// Remove the marker from the existing map
+									markersOnMap.remove(character.getID());
+								}
 							}
 
-							// If there are any marker left in the map, then those items 
+							System.out.println("Processed character markers...");
+							
+							Marker tempMarker = null;
+							
+							// If there are any markers left in the map, then those items 
 							// are no longer available. So remove it.
 							for(Object itemID : markersOnMap.keySet().toArray()) {
-								((Marker)markersOnMap.get(itemID)).remove();
+								//((Marker)markersOnMap.get(itemID)).remove();
+								tempMarker = (Marker)markersOnMap.get(itemID);
+								System.out.println("Extra marker : "+tempMarker);
+								tempMarker.remove();
 							}
-
+							
 							markersOnMap = accessedMarkers;
+							*/
+							if(crystalZones!=null){
+								Crystal[] crystals = UIController.getInstance().getGameCrystals();
+								for(CrystalZone crystalZone:crystalZones)
+								{
+									com.example.crystalgame.library.data.Character gameCharacter = UIController.getInstance().getGameCharacter();
+									if(null != gameCharacter && crystalZone.getLocationList().size() > 0) {
+										if(Zone.inQuadZone(crystalZone.getLocationList(), gameCharacter.getLocation()))
+										{
+											if(crystals!=null){
+												for(Crystal crystal:crystals)
+												{
+													if(crystal.getZoneId().equals(crystalZone.getID()))
+													{
+														map.addMarker(new MarkerOptions()
+														.position(new LatLng(crystal.getLatitude(),crystal.getLongitude()))
+														.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))); 
+													}
+												}
+											}
+											break;
+										}
+									}
+								}
+							//}
+							
 						}
-						
-						Thread.sleep(UI_REFRESH_FREQUENCY);
 					} catch (InterruptedException e) {
 						// Stop thread execution
 						isRunning = false;
+						System.out.println("Game updated thread stopped...");
 					}
 				}
 			}
-		}).start();
+		});
+		gameUpdateThread.start();
 	}
 
 	@Override
 	protected void onStart() {
 		super.onStart();
 
+		System.out.println("In onStart()");
+		
 		// Passing a refrerence to the UIController
 		UIController.getInstance().setCurrentActivity(this);
-
 		
-		// Each time the whole set of markers are created, clear the marker map
-		markersOnMap.clear();
-
-		gameBoundaryPoints = UIController.getInstance().getGameBoundaryPoints();
-
-		if(null != gameBoundaryPoints) {
-			for(Location location: gameBoundaryPoints) {
-				map.addMarker(new MarkerOptions()
-				.position(new LatLng(location.getLatitude(),location.getLongitude()))
-				.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
-			}
-		}
-
-		gameLocationPoints = UIController.getInstance().getGameLocationPoints();
-
-		if(null != gameLocationPoints) {
-			for(Location location: gameLocationPoints) {
-				map.addMarker(new MarkerOptions()
+		/*
+		crystalZones = UIController.getInstance().getCrystalZones();
+		
+		if(crystalZones!=null){
+			for(CrystalZone crystalZone:crystalZones){
+				for(Location location:crystalZone.getLocationList()){
+					map.addMarker(new MarkerOptions()
 					.position(new LatLng(location.getLatitude(),location.getLongitude()))
-					.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+					.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))); 
+				}
 			}
 		}
+		*/
+		
+		// Searching for location services as a thread to avoid application deadlock
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				android.location.Location location = null;
+				do {
+					location = GPSTracker.getInstance().getLocation();
+				} while(null != location);
 
-		Crystal[] crystals = UIController.getInstance().getGameCrystals();
-
-		if(null != crystals) {
-			Marker tempMarker = null;
-			// Displaying Crystals
-			for(Location location : crystals) {
-				tempMarker = map.addMarker(new MarkerOptions()
-					.position(new LatLng(location.getLatitude(),location.getLongitude()))
-					.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
-				markersOnMap.put(location.getID(), tempMarker);
+				LatLng newLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+				map.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng, 17));
 			}
-		}
-
-		MagicalItem[] magicalItems = UIController.getInstance().getGameMagicalItems();
-
-		if(null != magicalItems) {
-			Marker tempMarker = null;
-
-			// Displaying Magical Items
-			for(Location location : magicalItems) {
-				tempMarker = map.addMarker(new MarkerOptions()
-					.position(new LatLng(location.getLatitude(),location.getLongitude()))
-					.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-				markersOnMap.put(location.getID(), tempMarker);
-			}
-		}
-
-		com.example.crystalgame.library.data.Character gameCharacter = UIController.getInstance().getGameCharacter();
-		com.example.crystalgame.library.data.Character[] gameCharacters = UIController.getInstance().getGameCharacters(); 
-
-		if(null != gameCharacter && null != gameCharacters) {
-			// Displaying Characters and different markers based on player types
-			for(com.example.crystalgame.library.data.Character player : gameCharacters) {
-				Marker tempMarker = null;
-
-				// If the character is same as the game character, skip
-				if(gameCharacter.getID().equals(player.getID())) {
-					continue;
-				}
-
-				// If warrior, show players as red dots
-				else if(gameCharacter instanceof Warrior && player.getPlayerType().equals(PlayerType.PLAYER)) {
-					tempMarker = map.addMarker(new MarkerOptions()
-						.position(new LatLng(gameCharacter.getLatitude(),gameCharacter.getLongitude()))
-						.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-				}
-
-				// If wizard, show NPCs as purple dots
-				else if(gameCharacter instanceof Wizard && player.getPlayerType().equals(PlayerType.NPC)) {
-					tempMarker = map.addMarker(new MarkerOptions()
-						.position(new LatLng(gameCharacter.getLatitude(),gameCharacter.getLongitude()))
-						.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
-				}
-				else {
-					tempMarker = map.addMarker(new MarkerOptions()
-						.position(new LatLng(player.getLatitude(),player.getLongitude()))
-						.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))); 
-				}
-				markersOnMap.put(player.getID(), tempMarker);
-			}
-		}
-
-		// Adding throne room to the current location of the host
-		ThroneRoom throneRoom = UIController.getInstance().getThroneRoom();
-		if(null != throneRoom) {
-			Location location = throneRoom.getLocation();
-			map.addMarker(new MarkerOptions()
-				.position(new LatLng(location.getLatitude(),location.getLongitude()))
-				.icon(BitmapDescriptorFactory.fromResource(R.drawable.throne)));
+		}).start();
+		
+		if(null != markersOnMap) {
+					// Each time the whole set of markers are created, clear the marker map
+					markersOnMap.clear();
+			
+					gameBoundaryPoints = UIController.getInstance().getGameBoundaryPoints();
+			
+					
+					if(null != gameBoundaryPoints) {
+						for(Location location: gameBoundaryPoints) {
+							map.addMarker(new MarkerOptions()
+							.position(new LatLng(location.getLatitude(),location.getLongitude()))
+							.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+						}
+						System.out.println("Setting boundary point markers");
+					}
+			
+					gameLocationPoints = UIController.getInstance().getGameLocationPoints();
+			
+					if(null != gameLocationPoints) {
+						for(Location location: gameLocationPoints) {
+							map.addMarker(new MarkerOptions()
+								.position(new LatLng(location.getLatitude(),location.getLongitude()))
+								.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN)));
+						}
+						System.out.println("Setting location point markers");
+					}
+			
+					
+					Crystal[] crystals = UIController.getInstance().getGameCrystals();
+			
+					if(null != crystals) {
+						Marker tempMarker = null;
+						// Displaying Crystals
+						for(Location location : crystals) {
+							tempMarker = map.addMarker(new MarkerOptions()
+								.position(new LatLng(location.getLatitude(),location.getLongitude()))
+								.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW)));
+							markersOnMap.put(location.getID(), tempMarker);
+						}
+						System.out.println("Setting crystal point markers");
+					}
+					
+					
+					MagicalItem[] magicalItems = UIController.getInstance().getGameMagicalItems();
+			
+					if(null != magicalItems) {
+						Marker tempMarker = null;
+			
+						// Displaying Magical Items
+						for(Location location : magicalItems) {
+							tempMarker = map.addMarker(new MarkerOptions()
+								.position(new LatLng(location.getLatitude(),location.getLongitude()))
+								.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+							markersOnMap.put(location.getID(), tempMarker);
+						}
+						System.out.println("Setting magical item point markers");
+					}
+					
+					
+					com.example.crystalgame.library.data.Character gameCharacter = UIController.getInstance().getGameCharacter();
+					com.example.crystalgame.library.data.Character[] gameCharacters = UIController.getInstance().getGameCharacters(); 
+			
+					if(null != gameCharacter && null != gameCharacters) {
+					
+						// Update Crystal count
+						updateGameCrystalInfo(gameCharacter.getCrystals().size());
+						
+						// Update Magical Item count
+						updateGameMagicalItemInfo(gameCharacter.getMagicalItems().size());
+						
+						
+						Log.i("GameActivity","GameCharacter ID : "+gameCharacter.getID());
+						
+						// Displaying Characters and different markers based on player types
+						for(com.example.crystalgame.library.data.Character player : gameCharacters) {
+							Marker tempMarker = null;
+			
+							Log.i("GameActivity","PlayerCharacter ID : "+player.getID());
+							// If the character is same as the game character, skip
+							if(gameCharacter.getID().equals(player.getID())) {
+								continue;
+							}
+			
+							// If warrior, show players as red dots
+							else if(gameCharacter instanceof Warrior && player.getPlayerType().equals(PlayerType.PLAYER)) {
+								tempMarker = map.addMarker(new MarkerOptions()
+									.position(new LatLng(gameCharacter.getLatitude(),gameCharacter.getLongitude()))
+									.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+							}
+			
+							// If wizard, show NPCs as purple dots
+							else if(gameCharacter instanceof Wizard && player.getPlayerType().equals(PlayerType.NPC)) {
+								tempMarker = map.addMarker(new MarkerOptions()
+									.position(new LatLng(gameCharacter.getLatitude(),gameCharacter.getLongitude()))
+									.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
+							}
+							else {
+								tempMarker = map.addMarker(new MarkerOptions()
+									.position(new LatLng(player.getLatitude(),player.getLongitude()))
+									.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))); 
+							}
+							markersOnMap.put(player.getID(), tempMarker);
+						}
+						System.out.println("Setting player point markers");
+					}
+			
+					// Adding throne room to the current location of the host
+					ThroneRoom throneRoom = UIController.getInstance().getThroneRoom();
+					if(null != throneRoom) {
+						Location location = throneRoom.getLocation();
+						map.addMarker(new MarkerOptions()
+							.position(new LatLng(location.getLatitude(),location.getLongitude()))
+							.icon(BitmapDescriptorFactory.fromResource(R.drawable.throne)));
+						
+						System.out.println("Setting throne room point marker");
+					}
 		}
 	}
 
 	@Override
-	public void zoneChanged(final ZoneChangeEvent zoneChangeEvent) {
+	public synchronized void zoneChanged(final ZoneChangeEvent zoneChangeEvent) {
+		/*
 		if (mapView.getViewTreeObserver().isAlive()) {
 			mapView.getViewTreeObserver().addOnGlobalLayoutListener(
 			new OnGlobalLayoutListener() {
@@ -395,10 +507,11 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 				}
 			});
 		}
+		*/
 	} 
 	
 	@Override
-	public void updateGameCrystalInfo(final int noOfCrystals) {
+	public synchronized  void updateGameCrystalInfo(final int noOfCrystals) {
 		Log.d("GameActivity", "Crystal Count updated to "+noOfCrystals);
 
 		runOnUiThread(new Runnable() {
@@ -411,7 +524,7 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 	}
 
 	@Override
-	public void updateGameMagicalItemInfo(final int noOfMagicalItems) {
+	public synchronized void updateGameMagicalItemInfo(final int noOfMagicalItems) {
 		Log.d("GameActivity", "Magical Item count updated to "+noOfMagicalItems);
 
 		runOnUiThread(new Runnable() {
@@ -425,7 +538,7 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 
 	@Override
 	public synchronized void energyLow(EnergyEvent energyEvent) {
-		Log.d("GameActivity", "energy is low"+energyEvent);
+		Log.d("GameActivity", "Energy is low"+energyEvent);
 
 		runOnUiThread(new Runnable() {
 			@Override
@@ -484,9 +597,88 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 		}
 	}
 
-	private void leaveGroup() {
+	private synchronized void leaveGroup() {
 		GroupInstruction instruction = GroupInstruction.leaveGroup();
 		((CrystalGame)getApplication()).getCommunication().out.sendGroupInstructionToServer(instruction);
 	}
 
+	@Override
+	public void onStop() {
+		super.onStop();
+		gameTimeThread.destroy();
+		gameUpdateThread.destroy();
+		EnergyManager.getInstance().stopEnergyManager();
+		System.out.println("Threads destroyed");
+	}
+
+	/**
+	 * Invoke the location tracker callback to detect the item manually
+	 */
+	@Override
+	public boolean onMarkerClick(Marker clickedMarker) {
+		Toast.makeText(getBaseContext(), "Inside Marker click handler : "+clickedMarker, Toast.LENGTH_LONG).show();
+		if(null != markersOnMap) {
+			for(Entry <String, Marker> entry : markersOnMap.entrySet()) {
+				if(clickedMarker.getId().equals(entry.getValue().getId())) {
+					Crystal crystalItem = null;
+					MagicalItem magicalItem = null;
+					
+					try {
+						crystalItem = (Crystal)ClientDataWarehouse.getInstance().get(Crystal.class, entry.getKey());
+						magicalItem = (MagicalItem)ClientDataWarehouse.getInstance().get(MagicalItem.class, entry.getKey());
+					} catch (DataWarehouseException e) {
+						e.printStackTrace();
+					}
+					
+					if(crystalItem != null) {
+						Toast.makeText(getBaseContext(), "Crystal Detected : "+crystalItem, Toast.LENGTH_LONG).show();
+						GameStateManager.getInstance().itemProximityAlert(crystalItem);
+					}
+					
+					if(magicalItem != null) {
+						Toast.makeText(getBaseContext(), "Magical Item Detected : "+magicalItem, Toast.LENGTH_LONG).show();
+						GameStateManager.getInstance().itemProximityAlert(magicalItem);
+					}
+					
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+
+	@Override
+	public void removeCrystalFromMap(final Crystal item) {
+		runOnUiThread(new Runnable(){
+			@Override
+			public void run() {
+				markersOnMap.get(item.getID()).setVisible(false);
+				markersOnMap.get(item.getID()).remove();
+				System.out.println("Crystal Item removed...");
+			}
+		});
+	}
+
+	@Override
+	public void removeMagicalItemFromMap(final MagicalItem item) {
+		runOnUiThread(new Runnable(){
+			@Override
+			public void run() {
+				markersOnMap.get(item.getID()).setVisible(false);
+				markersOnMap.get(item.getID()).remove();
+				System.out.println("Magical Item removed...");
+			}
+		});
+	}
+
+	@Override
+	public void timeChangeCallback(final String newTime) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				Time_Label.setText(newTime);
+			}
+		});
+	}
 }

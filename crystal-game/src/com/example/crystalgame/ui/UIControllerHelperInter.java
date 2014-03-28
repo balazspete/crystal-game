@@ -1,6 +1,8 @@
 package com.example.crystalgame.ui;
 
 import com.example.crystalgame.game.energy.EnergyEvent;
+import com.example.crystalgame.library.data.Crystal;
+import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.location.ZoneChangeEvent;
 
 /**
@@ -24,4 +26,10 @@ public interface UIControllerHelperInter {
 	void updateGameMagicalItemInfo(int noOfMagicalItems);
 
 	void updateGameCrystalInfo(int noOfCrystals);
+
+	public void removeCrystalFromMap(Crystal item);
+
+	public void removeMagicalItemFromMap(MagicalItem item);
+
+	public void timeChangeCallback(String newTime);
 }

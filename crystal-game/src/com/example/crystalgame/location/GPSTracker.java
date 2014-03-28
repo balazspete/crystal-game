@@ -36,10 +36,10 @@ public class GPSTracker extends Service implements LocationListener {
     double longitude; // longitude
  
     // The minimum distance to change Updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 1 meters
+    private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 1; // 1 meters
  
     // The minimum time between updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1; // 1 minute
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 3;
  
     // Declaring a Location Manager
     protected LocationManager locationManager;
@@ -48,6 +48,8 @@ public class GPSTracker extends Service implements LocationListener {
     private com.example.crystalgame.library.data.Location currentLocation, previousLocation;
  
     private static GPSTracker gpsTracker = null;
+    
+    private boolean enableLocationCallbacks = false;
     
     public GPSTracker() {
     	super();
@@ -121,6 +123,7 @@ public class GPSTracker extends Service implements LocationListener {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            location = null;
         }
  
         return location;
@@ -132,7 +135,7 @@ public class GPSTracker extends Service implements LocationListener {
      * */
     public void stopUsingGPS(){
         if(locationManager != null){
-            locationManager.removeUpdates(GPSTracker.this);
+            locationManager.removeUpdates(gpsTracker);
         }      
     }
      
@@ -204,7 +207,11 @@ public class GPSTracker extends Service implements LocationListener {
 	public void onLocationChanged(Location location) {
 		previousLocation = currentLocation;
 		currentLocation = new com.example.crystalgame.library.data.Location(location.getLatitude(),location.getLongitude());
-		gameLocationManager.locationTrackerCallback(previousLocation, currentLocation);
+		
+		// Once location callbacks are enabled, then invoke the callback functions
+		if(isEnableLocationCallbacks()) {
+			gameLocationManager.locationTrackerCallback(previousLocation, currentLocation);
+		}
 	}
 
 	@Override
@@ -238,6 +245,14 @@ public class GPSTracker extends Service implements LocationListener {
     	gameLocationManager = com.example.crystalgame.location.LocationManager.getInstance();
 		getLocation();  
 		return START_STICKY;
+	}
+
+	public boolean isEnableLocationCallbacks() {
+		return enableLocationCallbacks;
+	}
+
+	public void setEnableLocationCallbacks(boolean enableLocationCallbacks) {
+		this.enableLocationCallbacks = enableLocationCallbacks;
 	}
 	
 }

@@ -27,8 +27,6 @@ public class EnergyManager extends Thread {
 	private final double INITIAL_ENERGY_LEVEL  		= 10.00						;
 	private final double ENERGY_NOTIFY_VALUE 		= 2.0						;
 	private double energyRemaining 					= INITIAL_ENERGY_LEVEL		;
-	private double inLocationTime 					= 0.0						;
-	private double outLocationTime 					= 0.0						;
 	
 	// 2 energy units gained when capturing a crystal 
 	private final int CRYSTAL_ENERGY_GAIN 			= 2							;
@@ -37,7 +35,7 @@ public class EnergyManager extends Thread {
 	private final int ENERGY_TRACKING_FREQUENCY 	= 3000						;
 	
 	private boolean inLocation;
-	private boolean isRunning = true;
+	private boolean isRunning;
 	
 	
 	// Private Constructor for internal invocation
@@ -56,7 +54,7 @@ public class EnergyManager extends Thread {
 	/**
 	 * Initiate the tracking of energy as a thread in the background
 	 */
-	public void startEnergyManager() {
+	public synchronized void startEnergyManager() {
 		// Checking if the thread has already started
 		if(!this.isAlive()) {
 			this.start();
@@ -66,15 +64,16 @@ public class EnergyManager extends Thread {
 	/**
 	 * Stop the energy manager thread
 	 */
-	public void stopEnergyManager() {
+	public synchronized void stopEnergyManager() {
 		if(this.isAlive()) {
 			this.isRunning = false;
 		}
 	}
 	
 	@Override
-	public void run() {
+	public synchronized void run() {
 		Log.d("EnergyManager", "Energy Tracking thread started...");
+		this.isRunning = true;
 		while(isRunning)
 		{
 			try {				
@@ -82,16 +81,10 @@ public class EnergyManager extends Thread {
 				
 				// Tracking is done in seconds. Do divide by 1000 to convert from milliseconds to seconds
 				if(inLocation) {
-					inLocationTime += ENERGY_TRACKING_FREQUENCY/1000;
+					energyRemaining -= ((ENERGY_TRACKING_FREQUENCY/1000) * IN_LOCATION_MULTIPLIER);
 				} else {
-					outLocationTime += ENERGY_TRACKING_FREQUENCY/1000;
+					energyRemaining -= ((ENERGY_TRACKING_FREQUENCY/1000) * OUT_LOCATION_MULTIPLIER);
 				}
-				
-				// TODO : Below is the correct code.
-				//energyRemaining = (inLocationTime * IN_LOCATION_MULTIPLIER) + (outLocationTime * OUT_LOCATION_MULTIPLIER);
-				energyRemaining -= (inLocationTime * IN_LOCATION_MULTIPLIER) + (outLocationTime * OUT_LOCATION_MULTIPLIER);
-				
-				Log.i("EnergyManager","inTime : "+inLocationTime+" outTime : "+outLocationTime);
 				
 				if(energyRemaining <= ENERGY_NOTIFY_VALUE) {
 					Log.d("EnergyManager", "Energy Low...");
@@ -115,12 +108,11 @@ public class EnergyManager extends Thread {
 					// End the thread
 					isRunning = false;
 				}
-
-				Log.i("EnergyManager", "Energy remaining : "+getEnergyLevel());
 				
 				Thread.sleep(ENERGY_TRACKING_FREQUENCY);
 			} catch (InterruptedException e) {
 				Log.e("EnergyManager:run()", "Energy Tracking Thread is interrupted...");
+				this.isRunning = false;
 			}
 		}
 	}
@@ -137,7 +129,7 @@ public class EnergyManager extends Thread {
 	 * 
 	 * @return A string
 	 */
-	public String getEnergyLevel() {
+	public synchronized String getEnergyLevel() {
 		return new DecimalFormat("#.00").format(energyRemaining);
 	}
 

@@ -49,9 +49,13 @@ public class DB4OInterface implements KeyValueStore {
 		
 		pending.add(wrapper);
 		db.ext().store(wrapper, Integer.MAX_VALUE);
-		return get(type, value.getID());
+		if(db.ext().isStored(wrapper)) {
+			return value;
+		}
+		
+		return null;
 	}
-
+	
 	@Override
 	public HasID get(@SuppressWarnings("rawtypes") Class type, String key) {
 		return get(type.toString(), key);

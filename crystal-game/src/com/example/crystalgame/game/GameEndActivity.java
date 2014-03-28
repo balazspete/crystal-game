@@ -9,7 +9,9 @@ import android.view.Menu;
 import android.view.View;
 
 import com.example.crystalgame.R;
+import com.example.crystalgame.game.energy.EnergyManager;
 import com.example.crystalgame.groups.GroupLobbyActivity;
+import com.example.crystalgame.ui.UIController;
 
 /**
  * End-of-game screen which is displayed for the following conditions :
@@ -37,6 +39,8 @@ public class GameEndActivity extends Activity {
 		setContentView(R.layout.activity_game_end);
 		
 		GameEndType endType = (GameEndType) getIntent().getSerializableExtra(GAME_END_TYPE);
+		
+		EnergyManager.getInstance().stopEnergyManager();
 	}
 
 	@Override
@@ -46,7 +50,7 @@ public class GameEndActivity extends Activity {
 		return true;
 	}
 	
-	public void goToLobby(View view) {
+	public synchronized void goToLobby(View view) {
 		startActivity(new Intent(this, GroupLobbyActivity.class));
 	}
 
