@@ -17,6 +17,8 @@ import com.example.crystalgame.library.data.HasID;
  */
 public class DB4OInterface implements KeyValueStore {
 	
+	public static final int TIMEOUT = 5000;
+	
     private ObjectContainer db;    
     private List<DataWrapper<HasID>> pending;
 	
@@ -35,22 +37,29 @@ public class DB4OInterface implements KeyValueStore {
 	}
 	
 	public HasID put(String type, HasID value) {
-		DataWrapper<HasID> wrapper = getWrapper(type, value.getID());
-		if (wrapper == null) {
-			wrapper = new DataWrapper<HasID>(type, value);
-		} else {
-			try {
-				db.ext().activate(wrapper, Integer.MAX_VALUE);
-				wrapper.setValue(value);
-			} catch (DataWarehouseException e) {
-				return null;
+		try {
+			boolean locked = db.ext().setSemaphore(getLockName(value), TIMEOUT);
+			if (locked) {
+				DataWrapper<HasID> wrapper = getWrapper(type, value.getID());
+				if (wrapper == null) {
+					wrapper = new DataWrapper<HasID>(type, value);
+				} else {
+					try {
+						//db.ext().activate(wrapper, Integer.MAX_VALUE);
+						wrapper.setValue(value);
+					} catch (DataWarehouseException e) {
+						return null;
+					}
+				}
+				
+				pending.add(wrapper);
+				db.ext().store(wrapper, Integer.MAX_VALUE);
+				if(db.ext().isStored(wrapper)) {
+					return value;
+				}
 			}
-		}
-		
-		pending.add(wrapper);
-		db.ext().store(wrapper, Integer.MAX_VALUE);
-		if(db.ext().isStored(wrapper)) {
-			return value;
+		} finally {
+			db.ext().releaseSemaphore(getLockName(value));
 		}
 		
 		return null;
@@ -62,12 +71,19 @@ public class DB4OInterface implements KeyValueStore {
 	}
 	
 	public HasID get(String type, String key) {
-		DataWrapper<HasID> result = getWrapper(type, key);
-		if(result != null) {
-			return result.getValue();
+		try {
+			boolean locked = db.ext().setSemaphore(getLockName(key), TIMEOUT);
+			if (locked) {
+				DataWrapper<HasID> result = getWrapper(type, key);
+				if(result != null) {
+					return result.getValue();
+				}
+			}
+			
+			return null;
+		} finally {
+			db.ext().releaseSemaphore(getLockName(key));
 		}
-		
-		return null;
 	}
 	
 	@Override
@@ -91,8 +107,13 @@ public class DB4OInterface implements KeyValueStore {
 		
 		List<HasID> results = new ArrayList<HasID>();
 		for(DataWrapper<HasID> wrapper : wrappers) {
-			if (!wrapper.isWriteLocked()) {
-				results.add(wrapper.getValue());
+			try {
+				boolean locked = db.ext().setSemaphore(getLockName(wrapper.getKey()), TIMEOUT);
+				if (locked) {
+					results.add(wrapper.getValue());
+				}
+			} finally {
+				db.ext().releaseSemaphore(getLockName(wrapper.getKey()));
 			}
 		}
 		
@@ -105,14 +126,21 @@ public class DB4OInterface implements KeyValueStore {
 	}
 	
 	public boolean delete(String type, String key) {
-		DataWrapper<HasID> found = getWrapper(type, key);
-		if(found == null) {
+		try {
+			boolean locked = db.ext().setSemaphore(getLockName(key), TIMEOUT);
+			if (locked) {
+				DataWrapper<HasID> found = getWrapper(type, key);
+				if(found != null) {
+					db.delete(found);
+					pending.add(found);
+					return true;
+				}
+			}
+			
 			return false;
+		} finally {
+			db.ext().releaseSemaphore(getLockName(key));
 		}
-		
-		db.delete(found);
-		pending.add(found);
-		return true;
 	}
 	
 	/**
@@ -198,6 +226,14 @@ public class DB4OInterface implements KeyValueStore {
 		}
 		
 		return list;
+	}
+	
+	private String getLockName(HasID value) {
+		return getLockName(value.getID());
+	}
+	
+	private String getLockName(String ID) {
+		return "LOCK_" + ID;
 	}
 	
 }
