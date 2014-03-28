@@ -71,11 +71,11 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	 * @return The value
 	 */
 	public DATA getValue() {
-		getLock().readLock().lock();
+		//getLock().readLock().lock();
 		try {
 			return value;
 		} finally {
-			getLock().readLock().unlock();
+			//getLock().readLock().unlock();
 		}
 	}
 	
@@ -93,16 +93,16 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 		}
 		
 		// Get the write lock
-		getLock().readLock().lock();
-		getLock().writeLock().lock();
+//		getLock().readLock().lock();
+//		getLock().writeLock().lock();
 		try {
 			// Update value & version
 			this.value = value;
 			version++;
 		} finally {
 			// Release locks
-			getLock().writeLock().unlock();
-			getLock().readLock().unlock();
+//			getLock().writeLock().unlock();
+//			getLock().readLock().unlock();
 		}
 	}
 	
@@ -111,7 +111,7 @@ public class DataWrapper<DATA extends HasID> implements Serializable {
 	 * @return True if write locked
 	 */
 	public boolean isWriteLocked() {
-		return getLock().isWriteLocked();
+		return false;// getLock().isWriteLocked();
 	}
 	
 	/**
