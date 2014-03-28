@@ -91,6 +91,10 @@ public abstract class Character extends Artifact {
 		return false;
 	}
 	
+	public boolean removeOneCrystal() {
+		return crystalList.remove(0) != null;
+	}
+	
 	/**
 	 * Retrieves the list of crystals available with the character
 	 * @return List of crystals

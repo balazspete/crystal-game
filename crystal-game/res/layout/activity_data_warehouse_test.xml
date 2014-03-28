@@ -33,13 +33,13 @@
         android:layout_alignLeft="@+id/button_create"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/button2"
+        android:layout_below="@+id/button_paper"
         android:layout_marginTop="14dp"
         android:ems="10"
         android:inputType="textMultiLine|none" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/button_paper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/button_create"

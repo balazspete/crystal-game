@@ -69,6 +69,11 @@ public class GroupInstance implements Runnable {
 				message.setData(event.getInstruction());
 				sequencer.sendMessageToAll(message);
 			}
+
+			@Override
+			public void onCommunicationStatusInstruction(InstructionEvent event) {
+				handleCommunicationStatusInstruction((CommunicationStatusInstruction) event.getInstruction());
+			}
 			
 			@Override
 			public void onGroupStatusInstruction(InstructionEvent event) {}
@@ -78,11 +83,8 @@ public class GroupInstance implements Runnable {
 			public void onGameInstruction(InstructionEvent event) {}
 			@Override
 			public void onDataTransferInstruction(InstructionEvent event) {}
-
 			@Override
-			public void onCommunicationStatusInstruction(InstructionEvent event) {
-				handleCommunicationStatusInstruction((CommunicationStatusInstruction) event.getInstruction());
-			}
+			public void onCharacterInteractionInstruction(InstructionEvent event) { }
 		});
 		
 		// Add a sequencer event listener for local events

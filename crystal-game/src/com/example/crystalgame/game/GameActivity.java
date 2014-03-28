@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -28,8 +29,10 @@ import android.widget.Toast;
 
 import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.R;
+import com.example.crystalgame.communication.ClientOutgoingMessages;
 import com.example.crystalgame.game.energy.EnergyEvent;
 import com.example.crystalgame.game.maps.LocalMapPolygon;
+import com.example.crystalgame.library.communication.outgoing.OutgoingMessages;
 import com.example.crystalgame.library.data.Character.PlayerType;
 import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.Location;
@@ -37,7 +40,12 @@ import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
 import com.example.crystalgame.library.data.Warrior;
 import com.example.crystalgame.library.data.Wizard;
+import com.example.crystalgame.library.events.InstructionEvent;
+import com.example.crystalgame.library.events.InstructionEventListener;
+import com.example.crystalgame.library.instructions.CharacterInteractionInstruction;
 import com.example.crystalgame.library.instructions.GroupInstruction;
+import com.example.crystalgame.library.instructions.InstructionFormatException;
+import com.example.crystalgame.library.instructions.CharacterInteractionInstruction.RPSSelection;
 import com.example.crystalgame.location.GPSTracker;
 import com.example.crystalgame.location.ZoneChangeEvent;
 import com.example.crystalgame.location.ZoneChangeEvent.ZoneType;
@@ -71,6 +79,8 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 
 	// Refresh the position of markers every 5 seconds
 	private int UI_REFRESH_FREQUENCY = 5000;
+	
+	private InstructionEventListener instructionEventListener;
 
 	public GameActivity() {	
 	}
@@ -237,6 +247,26 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 				}
 			}
 		}).start();
+		
+		instructionEventListener = new InstructionEventListener() {
+			@Override
+			public void onGroupStatusInstruction(InstructionEvent event) { }
+			@Override
+			public void onGroupInstruction(InstructionEvent event) { }
+			@Override
+			public void onGameInstruction(InstructionEvent event) { }
+			@Override
+			public void onDataTransferInstruction(InstructionEvent event) { }
+			@Override
+			public void onDataSynchronisationInstruction(InstructionEvent event) { }
+			@Override
+			public void onCommunicationStatusInstruction(InstructionEvent event) { }
+			
+			@Override
+			public void onCharacterInteractionInstruction(InstructionEvent event) {
+				handleCharacterInteractionInstruction((CharacterInteractionInstruction) event.getInstruction());
+			}
+		};
 	}
 
 	@Override
@@ -340,6 +370,18 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 				.position(new LatLng(location.getLatitude(),location.getLongitude()))
 				.icon(BitmapDescriptorFactory.fromResource(R.drawable.throne)));
 		}
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		((CrystalGame) getApplication()).getCommunication().in.addInstructionEventListener(instructionEventListener);
+	}
+	
+	@Override
+	protected void onPause() {
+		super.onPause();
+		((CrystalGame) getApplication()).getCommunication().in.removeInstructionEventListener(instructionEventListener);
 	}
 
 	@Override
@@ -487,6 +529,84 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 	private void leaveGroup() {
 		GroupInstruction instruction = GroupInstruction.leaveGroup();
 		((CrystalGame)getApplication()).getCommunication().out.sendGroupInstructionToServer(instruction);
+	}
+	
+	private void handleCharacterInteractionInstruction(CharacterInteractionInstruction instruction) {
+		ClientOutgoingMessages out = ((CrystalGame) getApplication()).getCommunication().out;
+		switch (instruction.characterInteractionInstructionType) {
+			case INTERACTION_REQUEST:
+				InteractionManager.getInstance().onInteractionRequest(out, instruction);
+				break;
+			case INTERACTION_REQUEST_ACK:
+				if (InteractionManager.getInstance().onInteractionRequestAcknowledgment(instruction)) {
+					showDuelDialog();
+				}
+				break;
+			case RPS_SELECTION_REPLY:
+				int result = InteractionManager.getInstance().onRPSSelectionReply(instruction);
+				if (result == -1) {
+					Toast.makeText(this, "You lost the duel", Toast.LENGTH_SHORT).show();
+					InteractionManager.getInstance().removeWin();
+				} else if (result == 1) {
+					Toast.makeText(this, "You won the duel", Toast.LENGTH_SHORT).show();
+					InteractionManager.getInstance().localWin();
+				} else {
+					showDuelDialog();
+				}
+				break;
+			case RPS_SELECTION_REQUEST:
+				showDuelDialog();
+				break;
+			case RESULT:
+				boolean r = (Boolean) instruction.arguments[0];
+				Toast.makeText(this, r ? "You won the duel" : "You lost the duel", Toast.LENGTH_SHORT).show();
+				break;
+			default:
+				System.err.println("GameActivity|handleCaracterInteractionInstruction: Unhandled CharacterInteractionInstruction");
+		}
+	}
+	
+	private void showDuelDialog() {
+		final Dialog dialog = new Dialog(this);
+		dialog.setContentView(R.layout.layout_duel);
+		dialog.setTitle("Duel");
+		TextView text = (TextView) dialog.findViewById(R.id.instruction_text);
+		text.setText("TODO");
+		
+		Button[] buttons = new Button[] {
+			(Button) dialog.findViewById(R.id.button_rock),
+			(Button) dialog.findViewById(R.id.button_paper),
+			(Button) dialog.findViewById(R.id.button_scissor)
+		};
+		
+		OnClickListener listener = new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				CharacterInteractionInstruction.RPSSelection selection;
+				switch (v.getId()) {
+					case R.id.button_paper:
+						selection = RPSSelection.PAPER;
+						break;
+					case R.id.button_rock:
+						selection = RPSSelection.ROCK;
+					case R.id.button_scissor:
+						selection = RPSSelection.SCISSORS;
+					default:
+						selection = null;
+				}
+				
+				ClientOutgoingMessages out = ((CrystalGame) getApplication()).getCommunication().out;
+				if (InteractionManager.getInstance().onRPSSelection(out, selection)) {
+					dialog.hide();
+				}
+			}
+		};
+		
+		for (Button button : buttons) {
+			button.setOnClickListener(listener);
+		}
+		
+		dialog.show();
 	}
 
 }

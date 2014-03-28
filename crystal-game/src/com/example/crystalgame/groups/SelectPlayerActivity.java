@@ -91,6 +91,9 @@ public class SelectPlayerActivity extends Activity implements OnClickListener {
 
 			@Override
 			public void onCommunicationStatusInstruction(InstructionEvent event) { }
+
+			@Override
+			public void onCharacterInteractionInstruction(InstructionEvent event) { }
 		});
 	}
 	

@@ -9,7 +9,7 @@
     tools:context=".MainActivity" >
 
     <TextView
-        android:id="@+id/textView1"
+        android:id="@+id/instruction_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hello_world" />
@@ -18,8 +18,8 @@
         android:id="@+id/editText2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView1"
-        android:layout_below="@+id/textView1"
+        android:layout_alignLeft="@+id/instruction_text"
+        android:layout_below="@+id/instruction_text"
         android:layout_marginTop="17dp"
         android:ems="10" />
 
@@ -53,7 +53,7 @@
         android:text="Create" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/button_paper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/button_create"
@@ -63,12 +63,12 @@
         android:text="Join" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/button_scissor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/button2"
-        android:layout_alignBottom="@+id/button2"
-        android:layout_toRightOf="@+id/button2"
+        android:layout_alignBaseline="@+id/button_paper"
+        android:layout_alignBottom="@+id/button_paper"
+        android:layout_toRightOf="@+id/button_paper"
         android:onClick="leaveGroup"
         android:text="Leave" />
 

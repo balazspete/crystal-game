@@ -234,8 +234,12 @@ public class CrystalGame extends Application {
 
 			@Override
 			public void onCommunicationStatusInstruction(InstructionEvent event) {
-				// TODO Auto-generated method stub
-				
+				// TODO this can be used to detect disconnection and reconnection to the server
+			}
+
+			@Override
+			public void onCharacterInteractionInstruction(InstructionEvent event) {
+				// TODO 
 			}
 		});
 	}
@@ -259,6 +263,11 @@ public class CrystalGame extends Application {
 				getCommunication().out.relayInstructionToServer(event.getInstruction());
 			}
 			
+			@Override
+			public void onDataTransferInstruction(InstructionEvent event) {
+				getCommunication().out.relayInstructionToServer(event.getInstruction());
+			}
+			
 			// Ignore these events as they will not be emitted
 			@Override
 			public void onGroupStatusInstruction(InstructionEvent event) {}
@@ -266,17 +275,10 @@ public class CrystalGame extends Application {
 			public void onGroupInstruction(InstructionEvent event) {}
 			@Override
 			public void onGameInstruction(InstructionEvent event) {}
-
 			@Override
-			public void onDataTransferInstruction(InstructionEvent event) {
-				getCommunication().out.relayInstructionToServer(event.getInstruction());
-			}
-
+			public void onCommunicationStatusInstruction(InstructionEvent event) {}
 			@Override
-			public void onCommunicationStatusInstruction(InstructionEvent event) {
-				// TODO Auto-generated method stub
-				
-			}
+			public void onCharacterInteractionInstruction(InstructionEvent event) {}
 		};
 		
 		getCommunication().out.relayInstructionToServer(DataTransferInstruction.createDataWarehouseDownloadRequestInstruction());
