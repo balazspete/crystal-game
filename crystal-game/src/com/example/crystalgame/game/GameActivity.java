@@ -546,10 +546,10 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 				int result = InteractionManager.getInstance().onRPSSelectionReply(instruction);
 				if (result == -1) {
 					Toast.makeText(this, "You lost the duel", Toast.LENGTH_SHORT).show();
-					InteractionManager.getInstance().removeWin();
+					InteractionManager.getInstance().remoteWin(out);
 				} else if (result == 1) {
 					Toast.makeText(this, "You won the duel", Toast.LENGTH_SHORT).show();
-					InteractionManager.getInstance().localWin();
+					InteractionManager.getInstance().localWin(out);
 				} else {
 					showDuelDialog();
 				}
