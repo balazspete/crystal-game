@@ -11,7 +11,10 @@ import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Crystal;
+import com.example.crystalgame.library.data.CrystalZone;
 import com.example.crystalgame.library.data.HasID;
+import com.example.crystalgame.library.data.Item;
+import com.example.crystalgame.library.data.Item.ItemType;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
@@ -91,6 +94,8 @@ public class InventoryManager {
 			if (characters == null || characters.size() == 0) {
 				return new Character[0];
 			}
+			
+			System.out.println("InventoryManager | getCharacters() : "+characters);
 			
 			return characters.toArray(new Character[0]);
 		} catch (DataWarehouseException e) {
@@ -178,5 +183,21 @@ public class InventoryManager {
 		}
 		
 		return null;
+	}
+	
+	
+	/**
+	 * Returns the list of crystal zones
+	 */
+	public synchronized CrystalZone[] getCrystalZones() {
+		CrystalZone[] crystalZones;
+		
+		try {
+			crystalZones = ClientDataWarehouse.getInstance().getList(CrystalZone.class).toArray(new CrystalZone[0]);
+		} catch (DataWarehouseException e1) {
+			crystalZones = new CrystalZone[0];
+		}
+		
+		return crystalZones;
 	}
 }

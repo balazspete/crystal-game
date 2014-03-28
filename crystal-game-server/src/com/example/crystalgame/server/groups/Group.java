@@ -103,7 +103,7 @@ public class Group {
 	 * @return The client or null
 	 */
 	public synchronized Client getClient(String id) {
-		String _id = id.intern();
+		String _id = id;
 		for(Client client : clients) {
 			if(client.getId() == _id) {
 				return client;
@@ -118,7 +118,7 @@ public class Group {
 	 * @return True if in the group, false otherwise
 	 */
 	public synchronized boolean isClientInGroup(String id) {
-		String _id = id.intern();
+		String _id = id;
 		for(Client client : clients) {
 			if(client.getId() == _id) {
 				return true;

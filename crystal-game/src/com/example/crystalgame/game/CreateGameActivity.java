@@ -10,6 +10,7 @@ import java.io.Serializable;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -104,6 +105,11 @@ public class CreateGameActivity extends Activity {
 			showErrorToast();
 			return;
 		}
+		
+		// Saving the game time in seconds
+		((CrystalGame) getApplication()).setTimeDuration(gameTime * 60);
+		
+		GameManager.getInstance().saveGameDuration(gameTime * 60);
 		
 		((CrystalGame) getApplication()).getCommunication().out.relayInstructionToServer(instruction);
 		Intent intent = new Intent(this, GroupLobbyActivity.class);

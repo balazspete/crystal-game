@@ -14,6 +14,7 @@ import com.example.crystalgame.game.energy.EnergyEvent;
 import com.example.crystalgame.game.maps.LocalMapInformation;
 import com.example.crystalgame.game.maps.MapInformation;
 import com.example.crystalgame.library.data.Crystal;
+import com.example.crystalgame.library.data.CrystalZone;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
@@ -38,12 +39,12 @@ public class InformationPresenter {
 		return informationPresenter;
 	}
 	
-	public void zoneChangeCallBack(ZoneChangeEvent zoneChangeEvent)
+	public synchronized void zoneChangeCallBack(ZoneChangeEvent zoneChangeEvent)
 	{
 		UIController.getInstance().zoneChangeCallBack(zoneChangeEvent);
 	}
 	
-	public  void energyLowCallBack(EnergyEvent energyEvent)
+	public synchronized  void energyLowCallBack(EnergyEvent energyEvent)
 	{
 		UIController.getInstance().energyLowCallBack(energyEvent);
 		Log.d("InformationPresenter","energyLowCallBack() : "+energyEvent.toString());
@@ -53,12 +54,12 @@ public class InformationPresenter {
 		UIController.getInstance().energyChangeCallBack(energyLevel);
 	}
 	
-	public ArrayList<Location> getGameBoundaryPoints()
+	public synchronized  ArrayList<Location> getGameBoundaryPoints()
 	{
 		return GameManager.getInstance().getGameBoundaryPoints();
 	}
 	
-	public ArrayList<Location> getGameLocationPoints()
+	public synchronized ArrayList<Location> getGameLocationPoints()
 	{
 		return GameManager.getInstance().getGameLocationPoints();
 	}
@@ -89,7 +90,7 @@ public class InformationPresenter {
 	 * Get reference to the Application object
 	 * @return Application object
 	 */
-	public CrystalGame getApplicationObj() {
+	public synchronized CrystalGame getApplicationObj() {
 		Activity activity = (Activity)UIController.getInstance().getCurrentActivity();
 		if(null != activity) {
 			return (CrystalGame)activity.getApplication();
@@ -113,6 +114,14 @@ public class InformationPresenter {
 		UIController.getInstance().magicalItemCaptureCallBack(noOfMagicalItems);
 	}
 	
+	public synchronized void removeCrystalFromMap(Crystal item) {
+		UIController.getInstance().removeCrystalFromMap(item);
+	}
+	
+	public synchronized void removeMagicalItemFromMap(MagicalItem item) {
+		UIController.getInstance().removeMagicalItemFromMap(item);
+	}
+	
 	public synchronized com.example.crystalgame.library.data.Character[] getCharacters() {
 		return InventoryManager.getInstance().getCharacters();
 	}
@@ -124,4 +133,13 @@ public class InformationPresenter {
 	public synchronized Crystal[] getGameCrystals() {
 		return InventoryManager.getInstance().getCrystals();
 	}
+	
+	public synchronized CrystalZone[] getCrystalZones(){
+		return GameManager.getInstance().getCrystalZones();
+	}
+
+	public synchronized void timeChangeCallback(String newTime) {
+		UIController.getInstance().timeChangeCallback(newTime);
+	}
+	
 }

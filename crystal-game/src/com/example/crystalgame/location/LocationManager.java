@@ -51,20 +51,20 @@ public class LocationManager {
 		return gameLocationManager;
 	}
 	
-	public void startComponents() {
+	public synchronized void startComponents() {
 		// Starts the GPS tracking service
 		//startTracking();
 	}
 	
-	public void addStateChangeEventListener(StateChangeEventListener listener) {
+	public synchronized void addStateChangeEventListener(StateChangeEventListener listener) {
 		manager.addEventListener(listener);
 	}
 	
-	public void removeStateChangeEventListener(StateChangeEventListener listener) {
+	public synchronized void removeStateChangeEventListener(StateChangeEventListener listener) {
 		manager.removeEventListener(listener);
 	}
 	
-	public void locationTrackerCallback(Location previousLocation, Location currentLocation) {
+	public synchronized void locationTrackerCallback(Location previousLocation, Location currentLocation) {
 		Artifact artifact = null;
 		
 		artifact = ArtifactTracker.getInstance().getArtifactsInProximity(currentLocation);
@@ -83,25 +83,26 @@ public class LocationManager {
 		InventoryManager.getInstance().setCharacterLocation(currentLocation);
 	}
 	
-	public void saveGameBoundary(GameBoundary gameBoundary) {
+	public synchronized void saveGameBoundary(GameBoundary gameBoundary) {
 		ZoneTracker.getInstance().setBoundaryPoints(gameBoundary);
 	}
 	
-	public ArrayList<Location> getGameBoundaryPoints()
+	public synchronized ArrayList<Location> getGameBoundaryPoints()
 	{
 		return ZoneTracker.getInstance().getBoundaryPoints();
 		
 	}
 	
-	public ArrayList<Location> getGameLocationPoints()
+	public synchronized ArrayList<Location> getGameLocationPoints()
 	{
 		return ZoneTracker.getInstance().getGameLocationPoints();
 	}
-	public void saveGameLocation(GameBoundary gameBoundary) {
+	
+	public synchronized void saveGameLocation(GameBoundary gameBoundary) {
 		ZoneTracker.getInstance().setGameLocationPoints(gameBoundary);
 	}
 	
-	public boolean isGameBoundary() {
+	public synchronized boolean isGameBoundary() {
 		if(
 				zoneChangeEvent != null
 			&&	zoneChangeEvent.getLocationState() == LocationState.IN
@@ -111,7 +112,7 @@ public class LocationManager {
 		return false;
 	}
 	
-	public boolean isGameLocation() {
+	public synchronized boolean isGameLocation() {
 		if(
 				zoneChangeEvent != null	
 			&&  zoneChangeEvent.getLocationState() == LocationState.IN

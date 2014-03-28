@@ -52,6 +52,8 @@ public class CrystalGame extends Application {
 	private SharedPreferences preferences;
 	private InstructionEventListener listenerForDW;
 	
+	private static int timeDuration = 0;
+	
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -363,10 +365,19 @@ public class CrystalGame extends Application {
 	public void onTerminate() {
 		Log.d("CrystalGame:onTerminate()","Started cleaning process...");
 		
-		UIController.getInstance().stopComponents();
+		//UIController.getInstance().stopComponents();
 		// Stopping GPS tracking service
 		stopService(new Intent(getApplicationContext(), GPSTracker.class));
 		
 		Log.d("CrystalGame:onTerminate()","Finished cleaning process successfully!");
 	}
+
+	public static int getTimeDuration() {
+		return timeDuration;
+	}
+
+	public static void setTimeDuration(int duration) {
+		timeDuration = duration;
+	}
+	
 }

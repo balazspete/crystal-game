@@ -9,6 +9,7 @@ import com.example.crystalgame.game.GamePlayState;
 import com.example.crystalgame.game.energy.EnergyEvent;
 import com.example.crystalgame.game.maps.MapInformation;
 import com.example.crystalgame.library.data.Crystal;
+import com.example.crystalgame.library.data.CrystalZone;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
@@ -38,24 +39,24 @@ public class UIController {
 		return uiController;
 	}
 	
-	public void startComponents() {
+	public synchronized void startComponents() {
 		GameManager.getInstance().startComponents();
 	}
 
-	public void stopComponents() {
+	public synchronized void stopComponents() {
 		GameManager.getInstance().stopComponents();
 	}
 	
-	public UIControllerHelperInter getCurrentActivity() {
+	public synchronized UIControllerHelperInter getCurrentActivity() {
 		return currentActivity;
 	}
 
-	public void setCurrentActivity(UIControllerHelperInter currentActivity) {
+	public synchronized void setCurrentActivity(UIControllerHelperInter currentActivity) {
 		this.currentActivity = currentActivity;
 		System.out.println("Activity Reference : "+this.currentActivity);
 	}
 	
-	public void zoneChangeCallBack(ZoneChangeEvent zoneChangeEvent)
+	public synchronized void zoneChangeCallBack(ZoneChangeEvent zoneChangeEvent)
 	{
 		System.out.println("Calling Activity : "+currentActivity);
 		if (currentActivity == null) {
@@ -65,7 +66,7 @@ public class UIController {
 		currentActivity.zoneChanged(zoneChangeEvent);
 	}
 	
-	public void energyLowCallBack(EnergyEvent energyEvent)
+	public synchronized void energyLowCallBack(EnergyEvent energyEvent)
 	{
 		if (currentActivity == null) {
 			return;
@@ -83,18 +84,18 @@ public class UIController {
 		currentActivity.energyChangeCallBack(energyLevel);
 	}
 	
-	public ArrayList<Location> getGameBoundaryPoints()
+	public synchronized ArrayList<Location> getGameBoundaryPoints()
 	{
 		return InformationPresenter.getInstance().getGameBoundaryPoints();
 		
 	}
 	
-	public ArrayList<Location> getGameLocationPoints()
+	public synchronized ArrayList<Location> getGameLocationPoints()
 	{
 		return InformationPresenter.getInstance().getGameLocationPoints();
 	}
 	
-	public  ArrayList<MagicalItem> getMagicalItemInfoList()
+	public synchronized  ArrayList<MagicalItem> getMagicalItemInfoList()
 	{
 		
 		return InformationPresenter.getInstance().getMagicalItemInfoList();
@@ -140,6 +141,23 @@ public class UIController {
 		currentActivity.updateGameMagicalItemInfo(noOfMagicalItems);
 	}
 	
+	public synchronized void removeCrystalFromMap(Crystal item) {
+		if (currentActivity == null) {
+			return;
+		}
+		
+		currentActivity.removeCrystalFromMap(item);
+	}
+	
+
+	public synchronized void removeMagicalItemFromMap(MagicalItem item) {
+		if (currentActivity == null) {
+			return;
+		}
+		
+		currentActivity.removeMagicalItemFromMap(item);
+	}
+	
 	/**
 	 * Get list of all characters
 	 * @return Array of characters
@@ -162,6 +180,18 @@ public class UIController {
 	 */
 	public synchronized Crystal[] getGameCrystals() {
 		return InformationPresenter.getInstance().getGameCrystals();
+	}
+	
+	public synchronized CrystalZone[] getCrystalZones(){
+		return InformationPresenter.getInstance().getCrystalZones();
+	}
+
+	public void timeChangeCallback(String newTime) {
+		if (currentActivity == null) {
+			return;
+		}
+		
+		currentActivity.timeChangeCallback(newTime);
 	}
 	
 }
