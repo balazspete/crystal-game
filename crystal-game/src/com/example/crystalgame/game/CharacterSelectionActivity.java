@@ -98,15 +98,13 @@ public class CharacterSelectionActivity extends Activity implements OnCheckedCha
 		Location location = GPSTracker.getInstance().getLocation();
 		System.out.println("location:" + location + " " + GPSTracker.getInstance().getLatitude());
 		
-		Character character = InventoryManager.getInstance().getCharacter();
+		Character character = InventoryManager.getInstance().getUnknownCharacter();
 		if (character == null) {
 			Toast.makeText(this, "You did not receive your place yet!", Toast.LENGTH_SHORT).show();
 			return;
 		}
 		
 		try {
-			ClientDataWarehouse.getInstance().delete(Character.class, character.id);
-			
 			Character myCharacter;
 			switch(checkedButton) {
 				case 0: 
@@ -121,6 +119,13 @@ public class CharacterSelectionActivity extends Activity implements OnCheckedCha
 			}
 			
 			ClientDataWarehouse.getInstance().put(Character.class, myCharacter);
+			
+			if (InventoryManager.getInstance().getCharacter() == null) {
+				Toast.makeText(getApplicationContext(), "Synchronisation error. Try again!", Toast.LENGTH_LONG ).show();
+				return;
+			}
+			
+			ClientDataWarehouse.getInstance().delete(Character.class, character.id);
 			
 			Intent intent = new Intent(getApplicationContext(), GameActivity.class);
 			startActivity(intent);

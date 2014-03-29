@@ -10,6 +10,8 @@ import android.util.Log;
 import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
 import com.example.crystalgame.library.data.Character;
+import com.example.crystalgame.library.data.Character.CharacterType;
+import com.example.crystalgame.library.data.Character.PlayerType;
 import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.CrystalZone;
 import com.example.crystalgame.library.data.HasID;
@@ -118,7 +120,27 @@ public class InventoryManager {
 		}
 		
 		for (Character c : characters) {
-			if (CrystalGame.getClientID().equals(c.getClientId())) {
+			if (CrystalGame.getClientID().equals(c.getClientId()) && c.getCharacterType() != CharacterType.UNKNOWN) {
+				character = c;
+				break;
+			}
+		}
+		
+		return character;
+	}
+	
+	public synchronized Character getUnknownCharacter() {
+		Character character = null;
+		Character[] characters;
+		
+		try {
+			characters = ClientDataWarehouse.getInstance().getList(Character.class).toArray(new Character[0]);
+		} catch (DataWarehouseException e1) {
+			characters = new Character[0];
+		}
+		
+		for (Character c : characters) {
+			if (CrystalGame.getClientID().equals(c.getClientId()) && c.getCharacterType() == CharacterType.UNKNOWN) {
 				character = c;
 				break;
 			}
