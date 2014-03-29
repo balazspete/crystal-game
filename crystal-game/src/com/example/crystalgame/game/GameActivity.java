@@ -108,7 +108,7 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 		//startService(new Intent(this,GPSTracker.class));
 		GPSTracker.getInstance().setEnableLocationCallbacks(true);
 		
-		Toast.makeText(getApplicationContext(), "LocationTracking status : "+GPSTracker.getInstance().isEnableLocationCallbacks(), Toast.LENGTH_SHORT).show();
+		//Toast.makeText(getApplicationContext(), "LocationTracking status : "+GPSTracker.getInstance().isEnableLocationCallbacks(), Toast.LENGTH_SHORT).show();
 		
 		// Enabling different components
 		UIController.getInstance().startComponents();
@@ -600,7 +600,7 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				Toast.makeText(getApplicationContext(), "Crystal Count Updated to "+noOfCrystals, Toast.LENGTH_LONG).show();
+				//Toast.makeText(getApplicationContext(), "Crystal Count Updated to "+noOfCrystals, Toast.LENGTH_LONG).show();
 				Crystal_Label.setText(""+noOfCrystals);
 			}
 		});
@@ -613,7 +613,7 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 		runOnUiThread(new Runnable() {
 			@Override
 			public void run() {
-				Toast.makeText(getApplicationContext(), "Magical Item count updated to "+noOfMagicalItems, Toast.LENGTH_LONG).show();
+				//Toast.makeText(getApplicationContext(), "Magical Item count updated to "+noOfMagicalItems, Toast.LENGTH_LONG).show();
 				Magic_Label.setText(""+noOfMagicalItems);
 			}
 		});
@@ -779,7 +779,7 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 	 */
 	@Override
 	public boolean onMarkerClick(Marker clickedMarker) {
-		Toast.makeText(getBaseContext(), "Inside Marker click handler : "+clickedMarker, Toast.LENGTH_LONG).show();
+		//Toast.makeText(getBaseContext(), "Inside Marker click handler : "+clickedMarker, Toast.LENGTH_LONG).show();
 		if(null != markersOnMap) {
 			for(Entry <String, Marker> entry : markersOnMap.entrySet()) {
 				if(clickedMarker.getId().equals(entry.getValue().getId())) {
@@ -794,13 +794,20 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 					}
 					
 					if(crystalItem != null) {
-						Toast.makeText(getBaseContext(), "Crystal Detected : "+crystalItem, Toast.LENGTH_LONG).show();
+						//Toast.makeText(getBaseContext(), "Crystal Detected : "+crystalItem, Toast.LENGTH_LONG).show();
 						GameStateManager.getInstance().itemProximityAlert(crystalItem);
 					}
 					
 					if(magicalItem != null) {
-						Toast.makeText(getBaseContext(), "Magical Item Detected : "+magicalItem, Toast.LENGTH_LONG).show();
+						//Toast.makeText(getBaseContext(), "Magical Item Detected : "+magicalItem, Toast.LENGTH_LONG).show();
 						GameStateManager.getInstance().itemProximityAlert(magicalItem);
+					}
+					
+					// If none of the items exist, then remove it from the game map
+					if(null == crystalItem && null == magicalItem) {
+						markersOnMap.get(entry.getKey()).setVisible(false);
+						markersOnMap.get(entry.getKey()).remove();
+						Toast.makeText(getBaseContext(), "Item has been picked up by another player", Toast.LENGTH_LONG).show();
 					}
 					
 					return true;
