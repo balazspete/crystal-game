@@ -105,7 +105,7 @@ public class Group {
 	public synchronized Client getClient(String id) {
 		String _id = id;
 		for(Client client : clients) {
-			if(_id.equals(client.getId()) {
+			if(_id.equals(client.getId())) {
 				return client;
 			}
 		}
