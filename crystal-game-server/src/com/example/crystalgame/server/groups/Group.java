@@ -105,7 +105,7 @@ public class Group {
 	public synchronized Client getClient(String id) {
 		String _id = id;
 		for(Client client : clients) {
-			if(client.getId() == _id) {
+			if(_id.equals(client.getId()) {
 				return client;
 			}
 		}
@@ -120,7 +120,7 @@ public class Group {
 	public synchronized boolean isClientInGroup(String id) {
 		String _id = id;
 		for(Client client : clients) {
-			if(client.getId() == _id) {
+			if(_id.equals(client.getId())) {
 				return true;
 			}
 		}
