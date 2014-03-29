@@ -57,11 +57,11 @@ public class GameManagerTest {
 		assertFalse("Thread has stopped", t.isAlive());
 	}
 	
-	@Test
-	public void testRemoveClientFromGame() {
-		assertTrue("Client removed from game", manager.removeClientFromGame("2"));
-		assertTrue("Nonexisting client removal handled", manager.removeClientFromGame("2"));
-	}
+//	@Test
+//	public void testRemoveClientFromGame() {
+//		assertTrue("Client removed from game", manager.removeClientFromGame("2"));
+//		assertTrue("Nonexisting client removal handled", manager.removeClientFromGame("2"));
+//	}
 	
 	@Test
 	public void testGetClientsInGame() {

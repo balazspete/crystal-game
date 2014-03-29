@@ -39,8 +39,8 @@ public abstract class Character extends Artifact {
 	protected CharacterType characterType;
 	protected String clientId;
 
-	private ArrayList<Crystal> crystalList = new ArrayList<Crystal>();
-	private ArrayList<MagicalItem> magicalItemList = new ArrayList<MagicalItem>();
+	private List<Crystal> crystalList;
+	private List<MagicalItem> magicalItemList;
 	
 	private double energy = 10;
 	private String energyLevel = null;
@@ -56,6 +56,9 @@ public abstract class Character extends Artifact {
 		this.playerType = playerType;
 		this.characterType = characterType;
 		this.clientId = clientId;
+		
+		this.crystalList = new ArrayList<Crystal>();
+		this.magicalItemList = new ArrayList<MagicalItem>();
 	}
 
 	/**
@@ -83,7 +86,7 @@ public abstract class Character extends Artifact {
 	 * @param crystal A crystal object
 	 * @return true if addition of crystal is successful
 	 */
-	public boolean addCrystal(Crystal crystal) {
+	public synchronized boolean addCrystal(Crystal crystal) {
 		if(null != crystal) {
 			return this.crystalList.add(crystal);
 		}
@@ -99,8 +102,8 @@ public abstract class Character extends Artifact {
 	 * Retrieves the list of crystals available with the character
 	 * @return List of crystals
 	 */
-	public List<Crystal> getCrystals() {
-		return this.crystalList;
+	public synchronized List<Crystal> getCrystals() {
+		return crystalList;
 	}
 	
 	/**
@@ -108,7 +111,7 @@ public abstract class Character extends Artifact {
 	 * @param crystal A crystal object
 	 * @return true if addition of crystal is successful
 	 */
-	public boolean addMagicalItem(MagicalItem magicalItem) {
+	public synchronized boolean addMagicalItem(MagicalItem magicalItem) {
 		if(null != magicalItem) {
 			return this.magicalItemList.add(magicalItem);
 		}
@@ -120,8 +123,8 @@ public abstract class Character extends Artifact {
 	 * Retrieves the list of crystals available with the character
 	 * @return List of crystals
 	 */
-	public List<MagicalItem> getMagicalItems() {
-		return this.magicalItemList;
+	public synchronized List<MagicalItem> getMagicalItems() {
+		return magicalItemList;
 	}
 	
 	/**

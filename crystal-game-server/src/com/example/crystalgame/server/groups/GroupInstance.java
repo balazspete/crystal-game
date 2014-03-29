@@ -19,6 +19,7 @@ import com.example.crystalgame.library.data.Information;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
+import com.example.crystalgame.library.data.Item.ItemType;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
 import com.example.crystalgame.library.events.InstructionEvent;
 import com.example.crystalgame.library.events.InstructionEventListener;
@@ -235,12 +236,12 @@ public class GroupInstance implements Runnable {
 	 * @param clientID The ID of the client
 	 * @return True if removed
 	 */
-	public synchronized boolean removeClientFromGame(String clientID) {
+	public synchronized void removeClientFromGame(String clientID) {
 		if (currentGame == null) {
-			return true;
+			return;
 		}
 		
-		return currentGame.removeClientFromGame(clientID);
+		currentGame.removeClientFromGame(clientID);
 	}
 	
 	private void handleInstruction(Instruction instruction, String sender) {
@@ -281,6 +282,7 @@ public class GroupInstance implements Runnable {
 				handlePlayerOutOfEnergyRequest(instruction.arguments);
 				break;
 			default:
+				System.err.println("Unhandled GameInstruction: " + instruction.gameInstruction);
 				// TODO: handle other cases
 				break;
 		}
@@ -335,7 +337,7 @@ public class GroupInstance implements Runnable {
 			return;
 		}
 		
-		currentGame.handleItemCaptureRequest(Crystal.class, data);
+		currentGame.handleItemCaptureRequest(ItemType.CRYSTAL, data);
 	}
 	
 	/**
@@ -349,7 +351,7 @@ public class GroupInstance implements Runnable {
 			return;
 		}
 		
-		currentGame.handleItemCaptureRequest(MagicalItem.class, data);
+		currentGame.handleItemCaptureRequest(ItemType.MAGICAL_ITEM, data);
 	}
 	
 	/**
@@ -424,7 +426,8 @@ public class GroupInstance implements Runnable {
 		String playerID = (String)args[0];
 		String clientID = (String)args[1];
 
-		if(currentGame != null && currentGame.removeClientFromGame(clientID)) {
+		if(currentGame != null) {
+			currentGame.removeClientFromGame(clientID);
 			InstructionRelayMessage message = new InstructionRelayMessage(clientID);
 			message.setData(GameInstruction.createEnergyDisqualifyInstruction());
 			sequencer.sendMessageToOne(message);

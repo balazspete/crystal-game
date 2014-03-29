@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.joda.time.DateTime;
 
+import com.db4o.foundation.BlockingQueue;
 import com.example.crystalgame.library.communication.messages.InstructionRelayMessage;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Crystal;
@@ -36,10 +37,11 @@ public class GameManager implements Runnable {
 	
 	private final String name;
 	private List<String> clientIDs;
-	private HashMap<String, String> clientIDtoCharacterID;
 	private GameLocation gameLocation;
 	private ThroneRoom throneRoom;
 	private DateTime endTime;
+	
+	private BlockingQueue<Runnable> instructionQueue;
 	
 	private volatile boolean running = true; 
 	private ListenerManager<InstructionEventListener, InstructionEvent> manager;
@@ -47,11 +49,11 @@ public class GameManager implements Runnable {
 	public GameManager(DataWarehouse dw, Sequencer sequencer, String gameName, List<String> clientIDs, List<Location> locations, ThroneRoom throneRoom, DateTime endTime) {
 		this.dataWarehouse = dw;
 		this.sequencer = sequencer;
+		this.instructionQueue = new BlockingQueue<Runnable>();
 		
 		this.name = gameName;
 		this.clientIDs = clientIDs;
 		this.gameLocation = new GameLocation();
-		clientIDtoCharacterID = new HashMap<String, String>();
 		this.throneRoom = throneRoom;
 		
 		for(Location location : locations) {
@@ -71,12 +73,9 @@ public class GameManager implements Runnable {
 		sendGameStartSignal();
 		
 		while(running) {
-			synchronized(this) {
-				try {
-					System.out.println("Infinite looping at GameManager");
-					wait(2000);
-				} catch (InterruptedException e) {
-				}
+			Runnable task = instructionQueue.next(200);
+			if (task != null) {
+				task.run();
 			}
 			
 			if (isOutOfTime()) {
@@ -107,38 +106,68 @@ public class GameManager implements Runnable {
 		manager.removeEventListener(listener);
 	}
 	
-	public boolean removeClientFromGame(String clientId) {
-		// TODO: remove client from all child components
-		
-		try {
-			HasID c = dataWarehouse.get(Character.class, clientIDtoCharacterID.get(clientId));
-			if (c != null) {
-				Character character = (Character) c;
-				List<HasID> zones = dataWarehouse.getList(CrystalZone.class);
-				if (zones.size() > 0) {
-					List<Item> items = ItemScatter.generate(ItemType.CRYSTAL, (CrystalZone) zones.get(0), character.getCrystals().size());
-					dataWarehouse.putList(Crystal.class, new ArrayList<HasID>(items));
-				}
-				
-				List<HasID> items = new ArrayList<HasID>();
-				for (MagicalItem item : character.getMagicalItems()) {
-					ItemScatter.position(item, gameLocation);
-					items.add(item);
-				}
-				
-				dataWarehouse.putList(MagicalItem.class, items);
-				dataWarehouse.delete(Character.class, clientIDtoCharacterID.get(clientId));
-			}
-		} catch (DataWarehouseException e) {
-			System.err.println("Failed to rescatter items of player. ClientID=" + clientId);
+	private Character getClientsCharacter(String clientID) {
+		if (clientID == null) {
+			return null;
 		}
 		
+		try {
+			List<HasID> characters = dataWarehouse.getList(Character.class);
+			for (HasID e : characters) {
+				Character character = (Character) e;
+				if (clientID.equals(character.getClientId())) {
+					return character;
+				}
+			}
+		} catch (DataWarehouseException e) {
+			// Handled by returning null
+		}
+		
+		return null;
+	}
+	
+	public void removeClientFromGame(final String clientId) {
+		// TODO: remove client from all child components
+		instructionQueue.add(new Runnable() {
+			public void run() {
+				try {
+					Character character = getClientsCharacter(clientId);
+					if (character == null) {
+						return;
+					}
+					
+					List<HasID> zones = dataWarehouse.getList(CrystalZone.class);
+					List<Crystal> crystals = character.getCrystals();
+							
+					if (zones != null && zones.size() > 0 && crystals != null && crystals.size() > 0) {
+						List<Item> items = ItemScatter.generate(ItemType.CRYSTAL, (CrystalZone) zones.get(0), character.getCrystals().size());
+						dataWarehouse.putList(Crystal.class, new ArrayList<HasID>(items));
+					}
+					
+					List<HasID> items = new ArrayList<HasID>();
+					List<MagicalItem> magicalItems = character.getMagicalItems();
+					
+					if (magicalItems != null) {
+						for (MagicalItem item : magicalItems) {
+							ItemScatter.position(item, gameLocation);
+							items.add(item);
+						}
+						
+						dataWarehouse.putList(MagicalItem.class, items);
+					}
+					
+					dataWarehouse.delete(Character.class, character.getID());
+				} catch (DataWarehouseException e) {
+					// No need to do anything
+				}
+			}
+		});
+			
 		clientIDs.remove(clientId);
 		System.out.println(Arrays.toString(clientIDs.toArray()));
 		if (clientIDs.size() == 0) {
 			stopGame();
 		}
-		return !clientIDs.contains(clientId);
 	}
 	
 	public List<String> getClientsInGame() {
@@ -210,52 +239,67 @@ public class GameManager implements Runnable {
 		
 	}
 	
-	public synchronized void handleItemCaptureRequest(Class type, Serializable[] data) {
-		String clientID = (String) data[0];
-		String itemID = (String) data[1];
-		String characterID = clientIDtoCharacterID.get(clientID);
+	public synchronized void handleItemCaptureRequest(final ItemType type, final Serializable[] data) {
+		final String clientID = (String) data[0];
+		final String characterID = (String) data[1];
+		final String itemID = (String) data[2];
 		
-		try {
-			if (characterID != null) {
-				HasID _item = dataWarehouse.get(type, itemID);
-				
-				// Check if the crystal is available in the crystal pool
-				if(null != _item) {
-					Item item = (Item) _item;
-					HasID playerObj = dataWarehouse.get(Character.class, characterID);
+		if (clientID == null || characterID == null || itemID == null) {
+			System.err.println("GameManager|handleCaptureRequest: Null input value(s) ClientID=" + clientID + " CharacterID=" + characterID + " itemID=" + itemID);
+			return;
+		}
+		
+		instructionQueue.add(new Runnable(){
+			public void run() {
+				try {
+					System.out.println("GameManager|handleItemCaptureRequest: Item campure request Type=" + type + " ClientID=" + clientID);
 					
-					// If the player exists
-					if(null != playerObj) {
-						Character character = (Character) playerObj;
-						
-						switch (item.getType()) {
-							case CRYSTAL:
-								Crystal crystal = (Crystal) item;
-								character.addCrystal(crystal);
-								
-								// Delete the crystal from the common pool
-								dataWarehouse.delete(Crystal.class, crystal.getID());
-								break;
-							case MAGICAL_ITEM:
-								MagicalItem magicalItem = (MagicalItem) item;
-								character.addMagicalItem(magicalItem);
-								
-								// Delete the magical item from the common pool
-								dataWarehouse.delete(MagicalItem.class, magicalItem.getID());
-								break;
-						}
-						
-						System.out.println("GameManager|handleItemCaptureRequest: Added item to character. Type=" + item.getType() + " Character=" + character.getID());
-						
-						// Add the updated player back to the data warehouse
-						dataWarehouse.put(Character.class, character);
+					HasID playerObj = dataWarehouse.get(Character.class, characterID);
+					if (playerObj == null) {
+						System.err.println("GameManager|handleItemCaptureRequest: Could not retrieve character. CharacterID=" + characterID);
+						return;
 					}
+					
+					Character character = (Character) playerObj;
+					
+					HasID item;
+					switch (type) {
+						case CRYSTAL:
+							item = dataWarehouse.get(Crystal.class, itemID);
+							if (item == null) {
+								return;
+							}
+							
+							Crystal crystal = (Crystal) item;
+							character.addCrystal(crystal);
+							
+							// Delete the crystal from the common pool
+							dataWarehouse.delete(Crystal.class, crystal.getID());
+							break;
+						case MAGICAL_ITEM:
+							item = dataWarehouse.get(Crystal.class, itemID);
+							if (item == null) {
+								return;
+							}
+							
+							MagicalItem magicalItem = (MagicalItem) item;
+							character.addMagicalItem(magicalItem);
+							
+							// Delete the magical item from the common pool
+							dataWarehouse.delete(MagicalItem.class, magicalItem.getID());
+							break;
+					}
+					
+					System.out.println("GameManager|handleItemCaptureRequest: Added item to character. Type=" + type + " Character=" + character.getID());
+					
+					// Add the updated player back to the data warehouse
+					dataWarehouse.put(Character.class, character);
+				} catch (DataWarehouseException e) {
+					// Ignored. No need to reply to client (Another client might have removed the crystal)
+					System.out.println("GameManager|handleItemCaptureRequest: Failed to add item to character. Type=" + type + " Client=" + clientID);
 				}
 			}
-		} catch (DataWarehouseException e) {
-			// Ignored. No need to reply to client (Another client might have removed the crystal)
-			System.out.println("GameManager|handleItemCaptureRequest: Failed to add item to character. Client=" + clientID);
-		}
+		});
 	}
 	
 	private void sendGameStartSignal() {

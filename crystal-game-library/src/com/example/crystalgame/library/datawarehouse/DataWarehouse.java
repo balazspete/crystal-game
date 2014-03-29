@@ -1,6 +1,7 @@
 package com.example.crystalgame.library.datawarehouse;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -55,6 +56,10 @@ public class DataWarehouse {
 	 * @throws DataWarehouseException Thrown in case of an error
 	 */
 	public List<HasID> putList(@SuppressWarnings("rawtypes") Class type, List<HasID> value) throws DataWarehouseException {
+		if (type == null || value == null || value.size() == 0) {
+			return Collections.emptyList();
+		}
+		
 		ObjectContainer container = db.ext().openSession();
 		DB4OInterface store = new DB4OInterface(container);
 

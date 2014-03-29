@@ -51,6 +51,7 @@ public class ItemScatter {
 				break;
 			case MAGICAL_ITEM:
 				item = new MagicalItem(latitude, longitude);
+				break;
 			default: 
 				throw new ScatterException("Item type " + type + " not supported!");
 		}

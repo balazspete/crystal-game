@@ -94,6 +94,8 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 		
 		String[] data = (String[]) instruction.arguments[1];
 		
+		System.out.println("Starting transaction to UPDATE " + data.length + " items. Type=" + type + " TransactionID=" + instruction.getTransactionID());
+		
 		// Store the transmitted IDs (second to n arguments are the data items)
 		for (int i = 0; i < data.length; i++) {
 			store.delete(type, (String) data[i]); 
@@ -120,6 +122,8 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 		String type = (String) instruction.arguments[0];
 		
 		HasID[] data = (HasID[]) instruction.arguments[1];
+
+		System.out.println("Starting transaction to UPDATE " + data.length + " items. Type=" + type + " TransactionID=" + instruction.getTransactionID());
 		
 		// Store the transmitted data items (second to n arguments are the data items)
 		for (int i = 0; i < data.length; i++) {
