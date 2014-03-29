@@ -29,6 +29,8 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 	private HashMap<String, State> clientMap;
 	private int count;
 	
+	private DB4OInterface store;
+	
 	private State myState;
 	
 	public DataWarehouseServerTransaction(Synchronizer synchronizer, 
@@ -89,7 +91,7 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 		}
 		
 		// Get an abstraction for the container
-		DB4OInterface store = new DB4OInterface(lockManager, container);
+		store = new DB4OInterface(lockManager, container);
 		
 		// Get the type of the wrapped data (first argument is the type)
 		String type = (String) instruction.arguments[0];
@@ -118,7 +120,7 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 		}
 		
 		// Get an abstraction for the container
-		DB4OInterface store = new DB4OInterface(lockManager, container);
+		store = new DB4OInterface(lockManager, container);
 		
 		// Get the type of the wrapped data (first argument is the type)
 		String type = (String) instruction.arguments[0];
@@ -178,6 +180,8 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 			// No need to wait for further messages
 			container.rollback();
 		}
+		
+		store.releaseLocks();
 		
 		// Send a commit instruction with the result (true: commit, false: abort)
 		last = DataSynchronisationInstruction.createCommitInstruction(instruction.getTransactionID(), commit);
