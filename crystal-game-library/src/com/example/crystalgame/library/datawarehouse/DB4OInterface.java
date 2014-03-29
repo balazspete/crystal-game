@@ -40,32 +40,28 @@ public class DB4OInterface implements KeyValueStore {
 	
 	public HasID put(String type, HasID value) {
 		try {
-			boolean locked = lockManager.readLock(getLockName(value));
+			boolean locked = lockManager.lock(getLockName(value));
 			if (locked) {
-				locked = lockManager.writeLock(getLockName(value));
-				if (locked) {
-					DataWrapper<HasID> wrapper = getWrapper(type, value.getID());
-					if (wrapper == null) {
-						wrapper = new DataWrapper<HasID>(type, value);
-					} else {
-						try {
-							//db.ext().activate(wrapper, Integer.MAX_VALUE);
-							wrapper.setValue(value);
-						} catch (DataWarehouseException e) {
-							return null;
-						}
+				DataWrapper<HasID> wrapper = getWrapper(type, value.getID());
+				if (wrapper == null) {
+					wrapper = new DataWrapper<HasID>(type, value);
+				} else {
+					try {
+						//db.ext().activate(wrapper, Integer.MAX_VALUE);
+						wrapper.setValue(value);
+					} catch (DataWarehouseException e) {
+						return null;
 					}
-					
-					pending.add(wrapper);
-					db.ext().store(wrapper, Integer.MAX_VALUE);
-					if(db.ext().isStored(wrapper)) {
-						return value;
-					}
+				}
+				
+				pending.add(wrapper);
+				db.ext().store(wrapper, Integer.MAX_VALUE);
+				if(db.ext().isStored(wrapper)) {
+					return value;
 				}
 			}
 		} finally {
-			lockManager.writeUnlock(getLockName(value));
-			lockManager.readUnlock(getLockName(value));
+			lockManager.unlock(getLockName(value));
 		}
 		
 		return null;
@@ -78,7 +74,7 @@ public class DB4OInterface implements KeyValueStore {
 	
 	public HasID get(String type, String key) {
 		try {
-			boolean locked = lockManager.readLock(getLockName(key));
+			boolean locked = lockManager.lock(getLockName(key));
 			if (locked) {
 				DataWrapper<HasID> result = getWrapper(type, key);
 				if(result != null) {
@@ -88,7 +84,7 @@ public class DB4OInterface implements KeyValueStore {
 			
 			return null;
 		} finally {
-			lockManager.readUnlock(getLockName(key));
+			lockManager.unlock(getLockName(key));
 		}
 	}
 	
@@ -114,17 +110,12 @@ public class DB4OInterface implements KeyValueStore {
 		List<HasID> results = new ArrayList<HasID>();
 		for(DataWrapper<HasID> wrapper : wrappers) {
 			try {
-				boolean locked = lockManager.readLock(getLockName(wrapper.getKey()));
+				boolean locked = lockManager.lock(getLockName(wrapper.getKey()));
 				if (locked) {
-					locked = lockManager.writeLock(getLockName(wrapper.getKey()));
-					if (locked) {
-						results.add(wrapper.getValue());
-					}
-					
+					results.add(wrapper.getValue());
 				}
 			} finally {
-				lockManager.writeUnlock(getLockName(wrapper.getKey()));
-				lockManager.readUnlock(getLockName(wrapper.getKey()));
+				lockManager.unlock(getLockName(wrapper.getKey()));
 			}
 		}
 		
@@ -138,23 +129,19 @@ public class DB4OInterface implements KeyValueStore {
 	
 	public boolean delete(String type, String key) {
 		try {
-			boolean locked = lockManager.readLock(getLockName(key));
+			boolean locked = lockManager.lock(getLockName(key));
 			if (locked) {
-				locked = lockManager.writeLock(getLockName(key));
-				if (locked) {
-					DataWrapper<HasID> found = getWrapper(type, key);
-					if(found != null) {
-						db.delete(found);
-						pending.add(found);
-						return true;
-					}
+				DataWrapper<HasID> found = getWrapper(type, key);
+				if(found != null) {
+					db.delete(found);
+					pending.add(found);
+					return true;
 				}
 			}
 			
 			return false;
 		} finally {
-			lockManager.writeUnlock(getLockName(key));
-			lockManager.readUnlock(getLockName(key));
+			lockManager.unlock(getLockName(key));
 		}
 	}
 	
