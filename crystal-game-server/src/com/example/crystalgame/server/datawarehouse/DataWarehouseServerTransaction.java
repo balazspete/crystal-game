@@ -29,6 +29,8 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 	private HashMap<String, State> clientMap;
 	private int count;
 	
+	private boolean shouldCommit;
+	
 	private DB4OInterface store;
 	
 	private State myState;
@@ -100,10 +102,14 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 		
 		System.out.println("Starting transaction to UPDATE " + data.length + " items. Type=" + type + " TransactionID=" + instruction.getTransactionID());
 		
+		boolean success = true;
+		
 		// Store the transmitted IDs (second to n arguments are the data items)
 		for (int i = 0; i < data.length; i++) {
-			store.delete(type, (String) data[i]); 
+			success = success && store.delete(type, (String) data[i]); 
 		}
+		
+		shouldCommit = success;
 		
 		// Forward the instruction to the clients
 		last = DataSynchronisationInstruction.createPrepareInstruction(instruction.getTransactionID(), instruction);
@@ -129,10 +135,14 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 
 		System.out.println("Starting transaction to UPDATE " + data.length + " items. Type=" + type + " TransactionID=" + instruction.getTransactionID());
 		
+		boolean success = true;
+		
 		// Store the transmitted data items (second to n arguments are the data items)
 		for (int i = 0; i < data.length; i++) {
-			store.put(type, (HasID) data[i]); 
+			success = success && store.put(type, (HasID) data[i]) !=  null; 
 		}
+		
+		shouldCommit = success;
 		
 		// Forward the instruction to the clients
 		last = DataSynchronisationInstruction.createPrepareInstruction(instruction.getTransactionID(), instruction);
@@ -158,8 +168,8 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 		// Let's get the current state of the client so that we can tell if it has talked to us before (in this state)
 		State state = clientMap.get(clientID);
 
-		boolean commit = false;
-		if (commitResult) {
+		boolean commit = shouldCommit;
+		if (shouldCommit && commitResult) {
 			// Client replied positively and is now in the prepraed state
 			if (state != State.PREPARED) {
 				// If the client has not checked in before, update status and count
