@@ -7,6 +7,7 @@ import com.db4o.ObjectContainer;
 import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.datawarehouse.DB4OInterface;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseTransaction;
+import com.example.crystalgame.library.datawarehouse.LockManager;
 import com.example.crystalgame.library.datawarehouse.Synchronizer;
 import com.example.crystalgame.library.instructions.DataSynchronisationInstruction;
 import com.example.crystalgame.library.instructions.DataSynchronisationInstruction.DataSynchronisationInstructionType;
@@ -29,8 +30,9 @@ public class ClientDataWarehouseTransaction extends DataWarehouseTransaction {
 	public ClientDataWarehouseTransaction(Synchronizer synchronizer,
 			LinkedBlockingQueue<DataSynchronisationInstruction> queue,
 			ObjectContainer container,
+			LockManager lockManager,
 			String myID) {
-		super(synchronizer, queue, container);
+		super(synchronizer, queue, container, lockManager);
 		this.myID = myID;  
 	}
 
@@ -89,7 +91,7 @@ public class ClientDataWarehouseTransaction extends DataWarehouseTransaction {
 		
 		
 		// Get an abstraction for the container
-		DB4OInterface store = new DB4OInterface(container);
+		DB4OInterface store = new DB4OInterface(lockManager, container);
 		
 		boolean success = true;
 		

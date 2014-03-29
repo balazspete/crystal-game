@@ -7,6 +7,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.db4o.ObjectContainer;
 
+import com.example.crystalgame.library.datawarehouse.LockManager;
 import com.example.crystalgame.library.datawarehouse.Synchronizer;
 import com.example.crystalgame.library.instructions.DataSynchronisationInstruction;
 import com.example.crystalgame.server.groups.Client;
@@ -21,11 +22,13 @@ public class ServerSynchroniser extends Synchronizer {
 
 	private HashMap<String, LinkedBlockingQueue<DataSynchronisationInstruction>> queues;
 	private Group group;
+	private LockManager lockManager;
 	
-	protected ServerSynchroniser(ObjectContainer container, Group group) {
+	protected ServerSynchroniser(ObjectContainer container, Group group, LockManager lockManager) {
 		super(container);
 		queues = new HashMap<String, LinkedBlockingQueue<DataSynchronisationInstruction>>();
 		this.group = group;
+		this.lockManager = lockManager;
 	}
 
 	@Override
@@ -71,8 +74,8 @@ public class ServerSynchroniser extends Synchronizer {
 	 * @param container The container
 	 * @return The synchroniser
 	 */
-	public static ServerSynchroniser getGameSynchroniser(ObjectContainer container, Group group) {	
-		return new ServerSynchroniser(container, group);
+	public static ServerSynchroniser getGameSynchroniser(ObjectContainer container, Group group, LockManager lockManager) {	
+		return new ServerSynchroniser(container, group, lockManager);
 	}
 	
 	/**
@@ -116,7 +119,7 @@ public class ServerSynchroniser extends Synchronizer {
 			queues.put(instruction.getTransactionID(), queue);
 			
 			System.out.println("ServerSynchroniser|handleRequest: Creating new transaction. TransactionID=" + instruction.getTransactionID() + " Type=" + instruction.getDataSynchronisationInstructiontype());
-			pool.execute(new DataWarehouseServerTransaction(this, queue, container, getClientIDs()));
+			pool.execute(new DataWarehouseServerTransaction(this, queue, container, lockManager, getClientIDs()));
 		}
 
 		// Put the instruction on the queue

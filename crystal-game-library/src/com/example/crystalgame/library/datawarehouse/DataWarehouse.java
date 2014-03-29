@@ -23,10 +23,13 @@ public class DataWarehouse {
 	protected ObjectContainer db;
 	private ExecutorService pool;
 	
+	protected LockManager lockManager;
+	
 	protected DataWarehouse(ObjectContainer db, Synchronizer synchroniser) {
 		this.db = db;
 		this.synchronizer = synchroniser;
 		this.pool = Executors.newScheduledThreadPool(20);
+		lockManager = new LockManager();
 	}
 	
 	/**
@@ -60,8 +63,7 @@ public class DataWarehouse {
 			return Collections.emptyList();
 		}
 		
-		ObjectContainer container = db.ext().openSession();
-		DB4OInterface store = new DB4OInterface(container);
+		DB4OInterface store = new DB4OInterface(lockManager, db);
 
 		System.out.println("DataWarehouse|putList: Initiating PutList operation...");
 		
@@ -80,10 +82,7 @@ public class DataWarehouse {
 			} 
 		} catch (Exception e) {
 //			System.out.println("DataWarehouse|putList: PutList operation failed, rolling back");
-			store.rollback();
 			throw DataWarehouseException.FAILED_TO_UPDATE;
-		} finally {
-			container.close();
 		}
 		
 		return result;
@@ -98,7 +97,7 @@ public class DataWarehouse {
 	 */
 	public HasID get(@SuppressWarnings("rawtypes") Class type, String id) throws DataWarehouseException {
 		// Just read local copy
-		return new DB4OInterface(db).get(type, id);
+		return new DB4OInterface(lockManager, db).get(type, id);
 	}
 
 	/**
@@ -150,7 +149,7 @@ public class DataWarehouse {
 	public List<HasID> getList(@SuppressWarnings("rawtypes") Class type) throws DataWarehouseException {
 		// Just read local copy
 		System.out.println("DataWarehouse|getList: Retrieving desired list for " + type + " items.");
-		return new DB4OInterface(db).getAll(type);
+		return new DB4OInterface(lockManager, db).getAll(type);
 	}
 	
 	/**

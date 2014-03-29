@@ -21,12 +21,14 @@ public class DB4OInterface implements KeyValueStore {
 	
     private ObjectContainer db;    
     private List<DataWrapper<HasID>> pending;
+    private LockManager lockManager;
 	
     /**
      * Create a DB4OInterface with the input container
      * @param container the container
      */
-	public DB4OInterface(ObjectContainer container) {
+	public DB4OInterface(LockManager lockManager, ObjectContainer container) {
+		this.lockManager = lockManager;
 		this.db = container;
 		this.pending = new ArrayList<DataWrapper<HasID>>();
 	}
@@ -38,28 +40,32 @@ public class DB4OInterface implements KeyValueStore {
 	
 	public HasID put(String type, HasID value) {
 		try {
-			boolean locked = db.ext().setSemaphore(getLockName(value), TIMEOUT);
+			boolean locked = lockManager.readLock(getLockName(value));
 			if (locked) {
-				DataWrapper<HasID> wrapper = getWrapper(type, value.getID());
-				if (wrapper == null) {
-					wrapper = new DataWrapper<HasID>(type, value);
-				} else {
-					try {
-						//db.ext().activate(wrapper, Integer.MAX_VALUE);
-						wrapper.setValue(value);
-					} catch (DataWarehouseException e) {
-						return null;
+				locked = lockManager.writeLock(getLockName(value));
+				if (locked) {
+					DataWrapper<HasID> wrapper = getWrapper(type, value.getID());
+					if (wrapper == null) {
+						wrapper = new DataWrapper<HasID>(type, value);
+					} else {
+						try {
+							//db.ext().activate(wrapper, Integer.MAX_VALUE);
+							wrapper.setValue(value);
+						} catch (DataWarehouseException e) {
+							return null;
+						}
 					}
-				}
-				
-				pending.add(wrapper);
-				db.ext().store(wrapper, Integer.MAX_VALUE);
-				if(db.ext().isStored(wrapper)) {
-					return value;
+					
+					pending.add(wrapper);
+					db.ext().store(wrapper, Integer.MAX_VALUE);
+					if(db.ext().isStored(wrapper)) {
+						return value;
+					}
 				}
 			}
 		} finally {
-			db.ext().releaseSemaphore(getLockName(value));
+			lockManager.writeUnlock(getLockName(value));
+			lockManager.readUnlock(getLockName(value));
 		}
 		
 		return null;
@@ -72,7 +78,7 @@ public class DB4OInterface implements KeyValueStore {
 	
 	public HasID get(String type, String key) {
 		try {
-			boolean locked = db.ext().setSemaphore(getLockName(key), TIMEOUT);
+			boolean locked = lockManager.readLock(getLockName(key));
 			if (locked) {
 				DataWrapper<HasID> result = getWrapper(type, key);
 				if(result != null) {
@@ -82,7 +88,7 @@ public class DB4OInterface implements KeyValueStore {
 			
 			return null;
 		} finally {
-			db.ext().releaseSemaphore(getLockName(key));
+			lockManager.readUnlock(getLockName(key));
 		}
 	}
 	
@@ -108,12 +114,17 @@ public class DB4OInterface implements KeyValueStore {
 		List<HasID> results = new ArrayList<HasID>();
 		for(DataWrapper<HasID> wrapper : wrappers) {
 			try {
-				boolean locked = db.ext().setSemaphore(getLockName(wrapper.getKey()), TIMEOUT);
+				boolean locked = lockManager.readLock(getLockName(wrapper.getKey()));
 				if (locked) {
-					results.add(wrapper.getValue());
+					locked = lockManager.writeLock(getLockName(wrapper.getKey()));
+					if (locked) {
+						results.add(wrapper.getValue());
+					}
+					
 				}
 			} finally {
-				db.ext().releaseSemaphore(getLockName(wrapper.getKey()));
+				lockManager.writeUnlock(getLockName(wrapper.getKey()));
+				lockManager.readUnlock(getLockName(wrapper.getKey()));
 			}
 		}
 		
@@ -127,19 +138,23 @@ public class DB4OInterface implements KeyValueStore {
 	
 	public boolean delete(String type, String key) {
 		try {
-			boolean locked = db.ext().setSemaphore(getLockName(key), TIMEOUT);
+			boolean locked = lockManager.readLock(getLockName(key));
 			if (locked) {
-				DataWrapper<HasID> found = getWrapper(type, key);
-				if(found != null) {
-					db.delete(found);
-					pending.add(found);
-					return true;
+				locked = lockManager.writeLock(getLockName(key));
+				if (locked) {
+					DataWrapper<HasID> found = getWrapper(type, key);
+					if(found != null) {
+						db.delete(found);
+						pending.add(found);
+						return true;
+					}
 				}
 			}
 			
 			return false;
 		} finally {
-			db.ext().releaseSemaphore(getLockName(key));
+			lockManager.writeUnlock(getLockName(key));
+			lockManager.readUnlock(getLockName(key));
 		}
 	}
 	

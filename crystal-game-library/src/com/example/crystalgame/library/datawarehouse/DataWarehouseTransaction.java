@@ -15,13 +15,16 @@ public abstract class DataWarehouseTransaction implements Runnable {
 	protected Synchronizer synchronizer;
 	protected LinkedBlockingQueue<DataSynchronisationInstruction> queue;
 	protected ObjectContainer container;
+	protected LockManager lockManager;
 	
 	public DataWarehouseTransaction(Synchronizer synchronizer, 
 			LinkedBlockingQueue<DataSynchronisationInstruction> queue, 
-			ObjectContainer container) {
+			ObjectContainer container,
+			LockManager lockManager) {
 		this.synchronizer = synchronizer;
 		this.queue = queue;
 		this.container = container.ext().openSession();
+		this.lockManager = lockManager;
 	}
 	
 	@Override

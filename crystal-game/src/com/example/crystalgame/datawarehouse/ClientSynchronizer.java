@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.db4o.ObjectContainer;
+import com.example.crystalgame.library.datawarehouse.LockManager;
 import com.example.crystalgame.library.datawarehouse.Synchronizer;
 import com.example.crystalgame.library.instructions.DataSynchronisationInstruction;
 
@@ -16,10 +17,12 @@ public class ClientSynchronizer extends Synchronizer {
 
 	private HashMap<String, LinkedBlockingQueue<DataSynchronisationInstruction>> queues;
 	private String myID;
+	private LockManager lockManager;
 	
-	protected ClientSynchronizer(ObjectContainer dataStore, String myID) {
+	protected ClientSynchronizer(ObjectContainer dataStore, LockManager lockManager, String myID) {
 		super(dataStore);
 		queues = new HashMap<String, LinkedBlockingQueue<DataSynchronisationInstruction>>();
+		this.lockManager = lockManager;
 		this.myID = myID;
 	}
 
@@ -63,7 +66,7 @@ public class ClientSynchronizer extends Synchronizer {
 		putOnQueue(queues.get(instruction.getTransactionID()), instruction);
 		
 		// Initiate the transaction
-		pool.execute(new ClientDataWarehouseTransaction(this, queue, container.ext().openSession(), myID));
+		pool.execute(new ClientDataWarehouseTransaction(this, queue, container.ext().openSession(), lockManager, myID));
 	}
 
 	private void handleCommitInstruction(final DataSynchronisationInstruction instruction) {

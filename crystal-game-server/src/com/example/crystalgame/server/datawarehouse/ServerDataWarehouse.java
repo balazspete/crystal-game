@@ -1,12 +1,14 @@
 package com.example.crystalgame.server.datawarehouse;
 
 import java.io.Serializable;
+import java.util.concurrent.locks.Lock;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.ObjectContainer;
 
 import com.example.crystalgame.library.datawarehouse.DB4OInterface;
 import com.example.crystalgame.library.datawarehouse.DataWarehouse;
+import com.example.crystalgame.library.datawarehouse.LockManager;
 import com.example.crystalgame.library.instructions.DataTransferInstruction;
 import com.example.crystalgame.server.groups.Group;
 
@@ -26,7 +28,8 @@ public class ServerDataWarehouse extends DataWarehouse {
 	
 	public static ServerDataWarehouse getWarehouseForGroup(Group group) {
 		ObjectContainer container = createGroupObjectContainer(group.groupId);
-		return new ServerDataWarehouse(container, new ServerSynchroniser(container, group));
+		LockManager manager = new LockManager();
+		return new ServerDataWarehouse(container, new ServerSynchroniser(container, group, manager));
 	}
 	
 	private static ObjectContainer createGroupObjectContainer(String groupId) {
@@ -35,7 +38,7 @@ public class ServerDataWarehouse extends DataWarehouse {
 	
 	public DataTransferInstruction getDownloadReply(DataTransferInstruction instruction)
 	{
-		DB4OInterface i = new DB4OInterface(this.db); 
+		DB4OInterface i = new DB4OInterface(this.lockManager, this.db); 
 		
 		DataTransferInstruction reply = 
 				DataTransferInstruction.createDataWarehouseDownloadReplyInstruction(i.getAllWrappers().toArray(new Serializable[0]));

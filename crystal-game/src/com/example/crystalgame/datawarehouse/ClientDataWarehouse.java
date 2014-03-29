@@ -13,6 +13,7 @@ import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.datawarehouse.DataWarehouse;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
 import com.example.crystalgame.library.datawarehouse.DataWrapper;
+import com.example.crystalgame.library.datawarehouse.LockManager;
 import com.example.crystalgame.library.datawarehouse.Synchronizer;
 import com.example.crystalgame.library.events.InstructionEventListener;
 import com.example.crystalgame.library.instructions.DataSynchronisationInstruction;
@@ -115,7 +116,8 @@ public class ClientDataWarehouse extends DataWarehouse {
 		}
 		
 		ObjectContainer c = Db4oEmbedded.openFile(DB_PATH + "/" + groupID);
-		instance = new ClientDataWarehouse(c, new ClientSynchronizer(c, myID));
+		LockManager manager = new LockManager();
+		instance = new ClientDataWarehouse(c, new ClientSynchronizer(c, manager, myID));
 	}
 	
 	

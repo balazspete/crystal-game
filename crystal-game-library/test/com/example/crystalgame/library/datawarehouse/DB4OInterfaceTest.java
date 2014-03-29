@@ -16,7 +16,7 @@ public class DB4OInterfaceTest {
 	
 	@Before
 	public void setup() {
-		ds = new DB4OInterface(Db4oEmbedded.openFile("/Users/balazspete/Documents/testdb-" + RandomID.getRandomId()));
+		ds = new DB4OInterface(new LockManager(), Db4oEmbedded.openFile("/Users/balazspete/Documents/testdb-" + RandomID.getRandomId()));
 	}
 
 	@Test
