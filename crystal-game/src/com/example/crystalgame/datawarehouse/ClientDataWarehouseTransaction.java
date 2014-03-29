@@ -27,6 +27,8 @@ public class ClientDataWarehouseTransaction extends DataWarehouseTransaction {
 	private boolean running = true;
 	private String myID;
 	
+	private DB4OInterface store;
+	
 	public ClientDataWarehouseTransaction(Synchronizer synchronizer,
 			LinkedBlockingQueue<DataSynchronisationInstruction> queue,
 			ObjectContainer container,
@@ -73,6 +75,8 @@ public class ClientDataWarehouseTransaction extends DataWarehouseTransaction {
 			container.rollback();
 		}
 		
+		store.releaseLocks();
+		
 		synchronizer.passInstruction(instruction);
 		sendInstruction(DataSynchronisationInstruction.createCommitInstructionReply(instruction.getTransactionID(), myID));
 		
@@ -89,9 +93,8 @@ public class ClientDataWarehouseTransaction extends DataWarehouseTransaction {
 			return;
 		}
 		
-		
 		// Get an abstraction for the container
-		DB4OInterface store = new DB4OInterface(lockManager, container);
+		store = new DB4OInterface(lockManager, container);
 		
 		boolean success = true;
 		
