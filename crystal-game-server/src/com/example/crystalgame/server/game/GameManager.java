@@ -10,6 +10,7 @@ import org.joda.time.DateTime;
 
 import com.db4o.foundation.BlockingQueue;
 import com.example.crystalgame.library.communication.messages.InstructionRelayMessage;
+import com.example.crystalgame.library.data.Artifact.ArtifactType;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.CrystalZone;
@@ -18,7 +19,6 @@ import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.data.Item;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.Character.UnknownPlayerCharacter;
-import com.example.crystalgame.library.data.Item.ItemType;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
 import com.example.crystalgame.library.datawarehouse.DataWarehouse;
@@ -140,7 +140,7 @@ public class GameManager implements Runnable {
 					List<Crystal> crystals = character.getCrystals();
 							
 					if (zones != null && zones.size() > 0 && crystals != null && crystals.size() > 0) {
-						List<Item> items = ItemScatter.generate(ItemType.CRYSTAL, (CrystalZone) zones.get(0), character.getCrystals().size());
+						List<Item> items = ItemScatter.generate(ArtifactType.CRYSTAL, (CrystalZone) zones.get(0), character.getCrystals().size());
 						dataWarehouse.putList(Crystal.class, new ArrayList<HasID>(items));
 					}
 					
@@ -193,7 +193,7 @@ public class GameManager implements Runnable {
 		
 		ArrayList<HasID> crystals = new ArrayList<HasID>();
 		for (CrystalZone zone : zones) {
-			List<Item> _crystals = ItemScatter.generate(ItemType.CRYSTAL, zone, (int) (Math.random() * 10));
+			List<Item> _crystals = ItemScatter.generate(ArtifactType.CRYSTAL, zone, (int) (Math.random() * 10));
 			for (Item c : _crystals) {
 				crystals.add(c);
 			}
@@ -207,7 +207,7 @@ public class GameManager implements Runnable {
 	}
 	
 	public void createMagicalItems() {
-		List<Item> items = ItemScatter.generate(ItemType.MAGICAL_ITEM, gameLocation, 6);
+		List<Item> items = ItemScatter.generate(ArtifactType.MAGICAL_ITEM, gameLocation, 6);
 		
 		try {
 			dataWarehouse.putList(MagicalItem.class, new ArrayList<HasID>(items));
@@ -239,7 +239,7 @@ public class GameManager implements Runnable {
 		
 	}
 	
-	public synchronized void handleItemCaptureRequest(final ItemType type, final Serializable[] data) {
+	public synchronized void handleItemCaptureRequest(final ArtifactType type, final Serializable[] data) {
 		final String clientID = (String) data[0];
 		final String characterID = (String) data[1];
 		final String itemID = (String) data[2];

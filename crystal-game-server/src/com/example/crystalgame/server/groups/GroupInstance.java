@@ -19,7 +19,7 @@ import com.example.crystalgame.library.data.Information;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
-import com.example.crystalgame.library.data.Item.ItemType;
+import com.example.crystalgame.library.data.Artifact.ArtifactType;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
 import com.example.crystalgame.library.events.InstructionEvent;
 import com.example.crystalgame.library.events.InstructionEventListener;
@@ -337,7 +337,7 @@ public class GroupInstance implements Runnable {
 			return;
 		}
 		
-		currentGame.handleItemCaptureRequest(ItemType.CRYSTAL, data);
+		currentGame.handleItemCaptureRequest(ArtifactType.CRYSTAL, data);
 	}
 	
 	/**
@@ -351,7 +351,7 @@ public class GroupInstance implements Runnable {
 			return;
 		}
 		
-		currentGame.handleItemCaptureRequest(ItemType.MAGICAL_ITEM, data);
+		currentGame.handleItemCaptureRequest(ArtifactType.MAGICAL_ITEM, data);
 	}
 	
 	/**

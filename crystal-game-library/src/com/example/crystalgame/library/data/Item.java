@@ -14,12 +14,7 @@ public abstract class Item extends Artifact {
 	 */
 	private static final long serialVersionUID = 6807516195771430780L;
 	
-	public enum ItemType implements Serializable {
-		CRYSTAL, MAGICAL_ITEM
-	}
-	
 	public static final double RADIUS = 100;
-	public final ItemType type;
 	private String zoneID;
 	
 	/**
@@ -27,9 +22,8 @@ public abstract class Item extends Artifact {
 	 * @param latitude the latitude
 	 * @param longitude the longitude
 	 */
-	protected Item(double latitude, double longitude, ItemType type) {
-		super(latitude, longitude, RADIUS);
-		this.type = type;
+	protected Item(ArtifactType type, double latitude, double longitude) {
+		super(type, latitude, longitude, RADIUS);
 	}
 
 	public String getZoneId() {
@@ -38,10 +32,6 @@ public abstract class Item extends Artifact {
 	
 	public void setZoneID(String zoneID) {
 		this.zoneID = zoneID;
-	}
-	
-	public ItemType getType() {
-		return type;
 	}
 	
 }

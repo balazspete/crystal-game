@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.example.crystalgame.library.data.Artifact;
-import com.example.crystalgame.library.events.ProximityEvent.ArtifactType;
+import com.example.crystalgame.library.data.Artifact.ArtifactType;
 
 /**
  * @author Allen Thomas Varghese
@@ -37,9 +37,9 @@ public class ProximityEventTest {
 	 */
 	@Test
 	public void testProximityEvent() {
-		assertNotNull(new ProximityEvent(ArtifactType.CHARACTER, new Artifact(1,2,3) {}));
-		assertNotNull(new ProximityEvent(ArtifactType.CRYSTAL, new Artifact(1,2,3) {}));
-		assertNotNull(new ProximityEvent(ArtifactType.MAGICAL_ITEM, new Artifact(1,2,3) {}));
+		assertNotNull(new ProximityEvent(ArtifactType.CHARACTER, new Artifact(ArtifactType.CHARACTER, 1,2,3) {}));
+		assertNotNull(new ProximityEvent(ArtifactType.CRYSTAL, new Artifact(ArtifactType.CRYSTAL, 1,2,3) {}));
+		assertNotNull(new ProximityEvent(ArtifactType.MAGICAL_ITEM, new Artifact(ArtifactType.MAGICAL_ITEM, 1,2,3) {}));
 	}
 
 }

@@ -52,7 +52,7 @@ public abstract class Character extends Artifact {
 	 * @param type the character's type
 	 */
 	protected Character(double latitude, double longitude, CharacterType characterType, PlayerType playerType, String clientId) {
-		super(latitude, longitude, RADIUS);
+		super(ArtifactType.CHARACTER, latitude, longitude, RADIUS);
 		this.playerType = playerType;
 		this.characterType = characterType;
 		this.clientId = clientId;

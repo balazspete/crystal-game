@@ -4,6 +4,7 @@
 package com.example.crystalgame.library.events;
 
 import com.example.crystalgame.library.data.Artifact;
+import com.example.crystalgame.library.data.Artifact.ArtifactType;
 
 /**
  * Proximity Event class to signify the object 
@@ -15,12 +16,6 @@ public class ProximityEvent {
 
 	private ArtifactType type;
 	private Artifact artifact;
-	
-	public enum ArtifactType {
-			CHARACTER 
-		,	CRYSTAL
-		,	MAGICAL_ITEM
-	}
 	
 	/**
 	 * 

@@ -9,12 +9,12 @@ import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
 import com.example.crystalgame.game.energy.EnergyEvent;
 import com.example.crystalgame.library.data.Artifact;
+import com.example.crystalgame.library.data.Artifact.ArtifactType;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
 import com.example.crystalgame.library.events.ProximityEvent;
-import com.example.crystalgame.library.events.ProximityEvent.ArtifactType;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.InstructionFormatException;
 import com.example.crystalgame.location.ZoneChangeEvent;
@@ -55,7 +55,7 @@ public class GameStateManager {
 		ProximityEvent proximityEvent = null;
 		final CrystalGame gameObj = GameManager.getInstance().getApplicationObj();
 		
-		if(item instanceof Crystal) {
+		if(item.getArtifactType() == Artifact.ArtifactType.CRYSTAL) {
 			Log.i("GameStateManager","Crystal captured : "+item.getID());
 			proximityEvent = new ProximityEvent(ArtifactType.CRYSTAL, item);
 			
@@ -121,7 +121,7 @@ public class GameStateManager {
 					}).start();
 				}
 			}
-		} else if(item instanceof MagicalItem) {
+		} else if(item.getArtifactType() == ArtifactType.MAGICAL_ITEM) {
 			proximityEvent = new ProximityEvent(ArtifactType.MAGICAL_ITEM, item);
 			Log.i("GameStateManager","Magical Item captured : "+item.getID());
 			
@@ -190,10 +190,12 @@ public class GameStateManager {
 //				}
 					}
 			}
-		} else if(item instanceof Character) {
+		} else if(item.getArtifactType() == Artifact.ArtifactType.CHARACTER) {
 			Character c  = (Character) item;
 			proximityEvent = new ProximityEvent(ArtifactType.CHARACTER, item);
 			InteractionManager.getInstance().initiateInteraction(CrystalGame.getCommunication().out, c.getClientId());
+		} else {
+			Log.e("GameStateManager", "Unhandled proximity event.");
 		}
 		
 	}

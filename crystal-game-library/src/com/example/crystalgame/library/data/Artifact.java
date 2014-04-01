@@ -14,15 +14,22 @@ public abstract class Artifact extends Location {
 	
 	private double radius;
 	
+	public enum ArtifactType {
+		CRYSTAL, MAGICAL_ITEM, CHARACTER
+	}
+	
+	private ArtifactType artifactType;
+	
 	/**
 	 * Create an artifact
 	 * @param latitude the latitude
 	 * @param longitude The longitude
 	 * @param radius The radius
 	 */
-	public Artifact(double latitude, double longitude, double radius) {
+	public Artifact(ArtifactType artifactType, double latitude, double longitude, double radius) {
 		super(latitude, longitude);
 		this.radius = radius;
+		this.artifactType = artifactType;
 	}
 
 	/**
@@ -37,6 +44,13 @@ public abstract class Artifact extends Location {
 	 */
 	public void setRadius(double radius) {
 		this.radius = radius;
+	}
+
+	/**
+	 * @return the artifactType
+	 */
+	public ArtifactType getArtifactType() {
+		return artifactType;
 	}
 	
 	

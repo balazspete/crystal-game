@@ -7,13 +7,11 @@ package com.example.crystalgame.server.game;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.crystalgame.library.data.Artifact.ArtifactType;
 import com.example.crystalgame.library.data.Crystal;
-import com.example.crystalgame.library.data.CrystalZone;
 import com.example.crystalgame.library.data.Item;
-import com.example.crystalgame.library.data.Item.ItemType;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.Zone;
-import com.example.crystalgame.library.datawarehouse.DB4OInterface;
 import com.example.crystalgame.library.util.RandomNumber;
 
 public class ItemScatter {
@@ -36,7 +34,7 @@ public class ItemScatter {
 	 * 
 	 * @return
 	 */
-	public static Item generate(ItemType type, Zone zone) throws ScatterException {
+	public static Item generate(ArtifactType type, Zone zone) throws ScatterException {
 		Double latitude = RandomNumber.getRandomDoubleNumber(
 				zone.getMinLattitudeValue(), 
 				zone.getMaxLattitudeValue());
@@ -65,7 +63,7 @@ public class ItemScatter {
 	 * @param amount The number of generated crystals
 	 * @return Generated list of crystals
 	 */
-	public static List<Item> generate(ItemType type, Zone zone, int amount) {
+	public static List<Item> generate(ArtifactType type, Zone zone, int amount) {
 		List<Item> items = new ArrayList<Item>();
 		for(int i = 0; i < amount; i++) {
 			try {

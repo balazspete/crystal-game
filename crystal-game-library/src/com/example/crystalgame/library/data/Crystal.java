@@ -18,7 +18,7 @@ public class Crystal extends Item {
 	 * @param longitude The longitude
 	 */
 	public Crystal(double latitude, double longitude) {
-		super(latitude, longitude, ItemType.CRYSTAL);
+		super(ArtifactType.CRYSTAL, latitude, longitude);
 	}
 
 	/**

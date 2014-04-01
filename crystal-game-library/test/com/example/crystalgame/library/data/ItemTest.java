@@ -5,9 +5,9 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.example.crystalgame.library.data.Artifact.ArtifactType;
 import com.example.crystalgame.library.data.Character.CharacterType;
 import com.example.crystalgame.library.data.Character.PlayerType;
-import com.example.crystalgame.library.data.Item.ItemType;
 
 public class ItemTest extends ArtifactTest {
 
@@ -18,13 +18,13 @@ public class ItemTest extends ArtifactTest {
 		latitude = 345;
 		longitude = 523;
 		radius = 234;
-		location = artifact = item = new Item(latitude, longitude, ItemType.CRYSTAL) {
+		location = artifact = item = new Item(ArtifactType.CRYSTAL, latitude, longitude) {
 		};
 	}
 	
 	@Test
 	public void test() {
-		assertNotNull(new Item(latitude, longitude, ItemType.CRYSTAL){});
+		assertNotNull(new Item(ArtifactType.CRYSTAL, latitude, longitude){});
 	}
 
 }

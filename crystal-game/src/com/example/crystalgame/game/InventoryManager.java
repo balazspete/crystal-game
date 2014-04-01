@@ -11,12 +11,9 @@ import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Character.CharacterType;
-import com.example.crystalgame.library.data.Character.PlayerType;
 import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.CrystalZone;
 import com.example.crystalgame.library.data.HasID;
-import com.example.crystalgame.library.data.Item;
-import com.example.crystalgame.library.data.Item.ItemType;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
@@ -206,7 +203,6 @@ public class InventoryManager {
 		
 		return null;
 	}
-	
 	
 	/**
 	 * Returns the list of crystal zones

@@ -15,7 +15,7 @@ public class ArtifactTest extends LocationTest {
 		latitude = 345;
 		longitude = 523;
 		radius = 234;
-		location = artifact = new Artifact(latitude, longitude, radius) {
+		location = artifact = new Artifact(null, latitude, longitude, radius) {
 		};
 	}
 	

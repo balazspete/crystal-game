@@ -24,7 +24,7 @@ public class MagicalItem extends Item {
 	 * @param longitude the longitude
 	 */
 	public MagicalItem(double latitude, double longitude) {
-		super(latitude, longitude, ItemType.MAGICAL_ITEM);
+		super(ArtifactType.MAGICAL_ITEM, latitude, longitude);
 	}
 	
 	public void setZoneID(String zoneID)
