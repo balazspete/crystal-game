@@ -337,7 +337,7 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 		// Passing a refrerence to the UIController
 		UIController.getInstance().setCurrentActivity(this);
 		
-		/*
+		
 		crystalZones = UIController.getInstance().getCrystalZones();
 		
 		if(crystalZones!=null){
@@ -389,7 +389,7 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 >>>>>>> 6ccfec415acaed3b93b750cb4b99d6ca4fab4cd3
 			}
 		}
-		*/
+		
 		
 		// Searching for location services as a thread to avoid application deadlock
 		new Thread(new Runnable() {
@@ -433,6 +433,7 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 					}
 			
 					
+					/*
 					Crystal[] crystals = UIController.getInstance().getGameCrystals();
 			
 					if(null != crystals) {
@@ -446,7 +447,7 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 						}
 						System.out.println("Setting crystal point markers");
 					}
-					
+					*/
 					
 					MagicalItem[] magicalItems = UIController.getInstance().getGameMagicalItems();
 			
