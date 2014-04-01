@@ -393,7 +393,7 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 					}
 			
 					
-					/*
+					
 					Crystal[] crystals = UIController.getInstance().getGameCrystals();
 			
 					if(null != crystals) {
@@ -407,7 +407,7 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 						}
 						System.out.println("Setting crystal point markers");
 					}
-					*/
+					
 					
 					MagicalItem[] magicalItems = UIController.getInstance().getGameMagicalItems();
 			
@@ -755,7 +755,20 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 					}
 					
 					if(crystalItem != null) {
-						//Toast.makeText(getBaseContext(), "Crystal Detected : "+crystalItem, Toast.LENGTH_LONG).show();
+						com.example.crystalgame.library.data.Character c = UIController.getInstance().getGameCharacter();
+						
+						android.location.Location location1 = new android.location.Location("character");
+						location1.setLatitude(c.getLatitude());
+						location1.setLongitude(c.getLongitude());
+						
+						android.location.Location location2 = new android.location.Location("crystal");
+						location1.setLatitude(crystalItem.getLatitude());
+						location1.setLongitude(crystalItem.getLongitude());
+						
+						float distancebetween  = location1.distanceTo(location2);
+						
+						Toast.makeText(getBaseContext(), "Crystal Detected : "+distancebetween, Toast.LENGTH_LONG).show();
+						
 						GameStateManager.getInstance().itemProximityAlert(crystalItem);
 					}
 					
