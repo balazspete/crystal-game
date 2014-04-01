@@ -94,7 +94,6 @@ public class ClientDataWarehouseTransaction extends DataWarehouseTransaction {
 		}
 		
 		// Get an abstraction for the container
-		container = container.ext().openSession();
 		store = new DB4OInterface(lockManager, container);
 		
 		boolean success = true;
