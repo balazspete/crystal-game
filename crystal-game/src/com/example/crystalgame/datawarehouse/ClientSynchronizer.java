@@ -66,7 +66,7 @@ public class ClientSynchronizer extends Synchronizer {
 		putOnQueue(queues.get(instruction.getTransactionID()), instruction);
 		
 		// Initiate the transaction
-		pool.execute(new ClientDataWarehouseTransaction(this, queue, container.ext().openSession(), lockManager, myID));
+		pool.execute(new ClientDataWarehouseTransaction(this, queue, container, lockManager, myID));
 	}
 
 	private void handleCommitInstruction(final DataSynchronisationInstruction instruction) {
