@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.db4o.ObjectContainer;
 import com.example.crystalgame.library.data.HasID;
@@ -77,6 +78,7 @@ public class DataWarehouseServerTransaction extends DataWarehouseTransaction {
 						// Ignore
 						break;
 				}
+
 			} catch (InterruptedException e) {
 				// Try again...
 			}

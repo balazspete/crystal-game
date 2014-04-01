@@ -1,6 +1,7 @@
 package com.example.crystalgame.library.datawarehouse;
 
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.db4o.ObjectContainer;
 import com.example.crystalgame.library.instructions.DataSynchronisationInstruction;
@@ -23,7 +24,7 @@ public abstract class DataWarehouseTransaction implements Runnable {
 			LockManager lockManager) {
 		this.synchronizer = synchronizer;
 		this.queue = queue;
-		this.container = container.ext().openSession();
+		this.container = container;
 		this.lockManager = lockManager;
 	}
 	
@@ -45,9 +46,7 @@ public abstract class DataWarehouseTransaction implements Runnable {
 	 */
 	public void cleanUp() {
 		System.out.println("DataWarehouseTransaction|cleanUp: Cleaning up transaction's resources.");
-		
 		queue = null;
-		container.close();
 		container = null;
 	}
 	

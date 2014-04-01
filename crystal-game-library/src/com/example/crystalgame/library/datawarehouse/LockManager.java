@@ -9,7 +9,7 @@ public class LockManager {
 	
 	public final int TIMEOUT = 2;
 
-	private ConcurrentHashMap<String, ReentrantLock> locks;
+	private static transient ConcurrentHashMap<String, ReentrantLock> locks;
 	
 	public LockManager() {
 		locks = new ConcurrentHashMap<String, ReentrantLock>();
