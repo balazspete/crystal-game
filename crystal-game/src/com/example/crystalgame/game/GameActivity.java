@@ -345,48 +345,8 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 				for(Location location:crystalZone.getLocationList()){
 					map.addMarker(new MarkerOptions()
 					.position(new LatLng(location.getLatitude(),location.getLongitude()))
-<<<<<<< HEAD
-					.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
-				markersOnMap.put(location.getID(), tempMarker);
-			}
-		}
-
-		com.example.crystalgame.library.data.Character gameCharacter = UIController.getInstance().getGameCharacter();
-		com.example.crystalgame.library.data.Character[] gameCharacters = UIController.getInstance().getGameCharacters(); 
-
-		if(null != gameCharacter && null != gameCharacters) {
-			// Displaying Characters and different markers based on player types
-			for(com.example.crystalgame.library.data.Character player : gameCharacters) {
-				Marker tempMarker = null;
-
-				// If the character is same as the game character, skip
-				if(gameCharacter.getID().equals(player.getID())) {
-					continue;
-				}
-
-				// If warrior, show players as red dots
-				else if(gameCharacter.getCharacterType() == CharacterType.WARRIOR && player.getPlayerType() == PlayerType.PLAYER) {
-					tempMarker = map.addMarker(new MarkerOptions()
-						.position(new LatLng(gameCharacter.getLatitude(),gameCharacter.getLongitude()))
-						.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
-				}
-
-				// If wizard, show NPCs as purple dots
-				else if(gameCharacter.getCharacterType() == CharacterType.WIZARD && player.getPlayerType() == PlayerType.NPC) {
-					tempMarker = map.addMarker(new MarkerOptions()
-						.position(new LatLng(gameCharacter.getLatitude(),gameCharacter.getLongitude()))
-						.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)));
-				}
-				else {
-					tempMarker = map.addMarker(new MarkerOptions()
-						.position(new LatLng(player.getLatitude(),player.getLongitude()))
-						.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))); 
-				}
-				markersOnMap.put(player.getID(), tempMarker);
-=======
 					.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))); 
 				}
->>>>>>> 6ccfec415acaed3b93b750cb4b99d6ca4fab4cd3
 			}
 		}
 		
