@@ -49,24 +49,25 @@ public class Zone implements Serializable, HasID
 	public static boolean inRadialZone(Location testPosition, Location itemLocation){
 
 		boolean result = false;
-		double xVali, yVali, xValj, yValj, lng, lat;
+		//double xVali, yVali, xValj, yValj, lng, lat;
 		
-		lng = testPosition.getLongitude() * Math.PI/180;
-	   	lat = testPosition.getLatitude() * Math.PI/180;
+		//lng = testPosition.getLongitude() * Math.PI/180;
+	   	//lat = testPosition.getLatitude() * Math.PI/180;
 	   	//xVali = lng;
 	   	//yVali = Math.log(Math.tan(QUARTERPI + 0.5 * lat));
-	   	xVali = lat;
-	   	yVali = lng;
+	   	//xVali = lat;
+	   	//yVali = lng;
 	   	  
-	   	lng = itemLocation.getLongitude() * Math.PI/180;
-	   	lat = itemLocation.getLatitude() * Math.PI/180;
+	   	//lng = itemLocation.getLongitude() * Math.PI/180;
+	   	//lat = itemLocation.getLatitude() * Math.PI/180;
 	   	//xValj = lng;
 	   	//yValj = Math.log(Math.tan(QUARTERPI + 0.5 * lat));
-	   	xValj = lat;
-	   	yValj = lng;
+	   	//xValj = lat;
+	   	//yValj = lng;
 	   	
 	   	//double distance = (Math.pow(xVali - xValj, 2) + Math.pow(yVali - yValj , 2)) * RADIUS_EARTH;
 	    // Using haversine method to compute distance on the surface of a sphere
+	   	/*
 	   	double distance = 
 	   			2 
 	   		*	EARTH_RADIUS
@@ -83,16 +84,37 @@ public class Zone implements Serializable, HasID
 	   							, 2)
 	   						 )
 	   					 );
+	   	*/
 	   	
+	   	final int R = 6371; // Radius of the earth
+
+	    Double latDistance = deg2rad(testPosition.getLatitude() - itemLocation.getLatitude());
+	    Double lonDistance = deg2rad(testPosition.getLongitude() - itemLocation.getLongitude());
+	    Double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+	            + Math.cos(deg2rad(itemLocation.getLatitude())) * Math.cos(deg2rad(testPosition.getLatitude()))
+	            * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+	    Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+	    double distance = R * c * 1000;									// convert to meters
+	   	
+	    System.out.println("Distance is : "+distance);
+	    
 	   	// The distance between two points is less than the radius of the circle
-	   	//
 	   	if(distance < RADIUS_OF_ENTRY) {
 	   		result = true;
-	   	} else  {
+	   	} else {
 	   		result = false;	
 	   	}
 	   	
 		return result;
+	}
+	
+	/**
+	 * Convert degree to radian
+	 * @param degree value
+	 * @return radian value
+	 */
+	private static double deg2rad(double deg) {
+	    return (deg * Math.PI / 180.0);
 	}
 	
 	/**
