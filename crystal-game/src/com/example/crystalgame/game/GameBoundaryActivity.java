@@ -13,7 +13,6 @@ import com.example.crystalgame.R;
 import com.example.crystalgame.SettingsActivity;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.Zone;
-import com.example.crystalgame.location.GPSTracker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
@@ -31,6 +30,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
  */
 public class GameBoundaryActivity extends FragmentActivity implements LocationListener, OnMapClickListener, OnMarkerDragListener
 {
+	public static final String
+		LOCATIONS = "com.exaple.xrystalgame.game.Game_boundary_activity.locations",
+		MY_LOCATION = "com.exaple.xrystalgame.game.Game_boundary_activity.my_location";
+	
 	private GoogleMap map;
 	private Zone gameBoundary = new Zone();
 	
@@ -40,12 +43,9 @@ public class GameBoundaryActivity extends FragmentActivity implements LocationLi
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_game_boundary);
 
-
         this.map = ((MapFragment) getFragmentManager().findFragmentById(R.id.GameBoundaryMap)).getMap();
         this.map.setMyLocationEnabled(true);
         
-        LatLng newLatLng = new LatLng(GPSTracker.getInstance().getLatitude(), GPSTracker.getInstance().getLongitude());
-        this.map.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng, 17));
         this.map.setOnMapClickListener(this);
 		
         this.map.setOnMarkerDragListener(this);
@@ -66,7 +66,7 @@ public class GameBoundaryActivity extends FragmentActivity implements LocationLi
 		if(getIntent() != null) {
 			Bundle extras = getIntent().getExtras();
 			if(extras !=null) {
-				this.gameBoundary = (Zone) extras.getSerializable("locations");
+				this.gameBoundary = (Zone) extras.getSerializable(LOCATIONS);
 				map.clear();
 				
 				for(int i = 0; i< gameBoundary.getLength(); i++) { 
@@ -150,7 +150,8 @@ public class GameBoundaryActivity extends FragmentActivity implements LocationLi
 
 	public void saveBoundary(MenuItem item) {
 		Intent intent = new Intent();
-    	intent.putExtra("locations", (Serializable) gameBoundary);
+    	intent.putExtra(LOCATIONS, gameBoundary);
+    	intent.putExtra(MY_LOCATION, map.getMyLocation());
     	setResult(RESULT_OK, intent);
     	finish();
 	}

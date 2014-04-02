@@ -120,14 +120,25 @@ public class LocationManager {
 			&&	zoneChangeEvent.getZoneType() == ZoneType.GAME_LOCATION) {
 			return true;
 		}
+		
 		return false;
 	}
 	
+	private Location characterLocation;
 	private DateTime lastCharacterLocationSaveTime = DateTime.now();
 	public void setCharacterLocation(Location location) {
+		Location previous = characterLocation;
+		characterLocation = location;
+		
+		locationTrackerCallback(previous, location);
+		
 		if (lastCharacterLocationSaveTime.plusSeconds(20).isBefore(DateTime.now())) {
 			InventoryManager.getInstance().setCharacterLocation(location);
 		}
+	}
+	
+	public Location getCharacterLocation() {
+		return characterLocation;
 	}
 	
 }

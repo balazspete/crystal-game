@@ -108,7 +108,7 @@ public class JoinGroupActivity extends Activity {
 			if(resultCode == RESULT_OK)
 			{
 				Bundle extras = data.getExtras();
-				this.gameBoundary = (Zone) extras.getSerializable("locations");
+				this.gameBoundary = (Zone) extras.getSerializable(GameBoundaryActivity.LOCATIONS);
 			}
 		}
 	}
@@ -123,12 +123,10 @@ public class JoinGroupActivity extends Activity {
 		String name = ((EditText) findViewById(R.id.player_name)).getText().toString();
 		CrystalGame.setMyName(name);
 		String groupName = ((EditText) findViewById(R.id.group_name)).getText().toString();
-		if(gameBoundary!=null && name !=null && groupName!=null)
-		{
+		
+		if(gameBoundary!=null && name !=null && groupName!=null) {
 			sendInstruction(GroupInstruction.createGroup(groupName, 20, name, gameBoundary.getLocation(0), gameBoundary.getLocation(1), gameBoundary.getLocation(2), gameBoundary.getLocation(3)));	
-		}
-		else
-		{
+		} else {
 			Toast.makeText(this, "Provide full info", Toast.LENGTH_SHORT).show();
 		}
 	}

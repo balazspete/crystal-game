@@ -30,7 +30,7 @@ import com.google.android.gms.ads.identifier.AdvertisingIdClient.Info;
 public class UIController {
 
 	private static UIController uiController = null;
-	private UIControllerHelperInter currentActivity = null;
+	private UIControllerHelper currentActivity = null;
 	
 	private UIController() {
 		
@@ -52,11 +52,11 @@ public class UIController {
 		GameManager.getInstance().stopComponents();
 	}
 	
-	public synchronized UIControllerHelperInter getCurrentActivity() {
+	public synchronized UIControllerHelper getCurrentActivity() {
 		return currentActivity;
 	}
 
-	public synchronized void setCurrentActivity(UIControllerHelperInter currentActivity) {
+	public synchronized void setCurrentActivity(UIControllerHelper currentActivity) {
 		this.currentActivity = currentActivity;
 		System.out.println("Activity Reference : "+this.currentActivity);
 	}
@@ -77,7 +77,7 @@ public class UIController {
 			return;
 		}
 		
-		currentActivity.energyLow(energyEvent);
+		currentActivity.lowEnergyWarning(energyEvent);
 		Log.d("UIController","energyLowCallBack() : "+energyEvent.toString());
 	}
 	
@@ -86,7 +86,7 @@ public class UIController {
 			return;
 		}
 		
-		currentActivity.energyChangeCallBack(energyLevel);
+		currentActivity.updateGameEnergyInfo(energyLevel);
 	}
 	
 	public synchronized ArrayList<Location> getGameBoundaryPoints()

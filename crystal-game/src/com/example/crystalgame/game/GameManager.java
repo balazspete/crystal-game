@@ -17,7 +17,6 @@ import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
 import com.example.crystalgame.library.instructions.GameInstruction;
-import com.example.crystalgame.location.GPSTracker;
 import com.example.crystalgame.location.LocationManager;
 import com.example.crystalgame.location.ZoneChangeEvent;
 import com.example.crystalgame.ui.InformationPresenter;
@@ -57,7 +56,6 @@ public class GameManager {
 	public synchronized void stopComponents() {
 		EnergyManager.getInstance().stopEnergyManager();
 		GameTimer.getInstance().stopTimeManager();
-		GPSTracker.getInstance().stopUsingGPS();
 	}
 	
 	public synchronized void saveGameBoundary(GameBoundary gameBoundary) {

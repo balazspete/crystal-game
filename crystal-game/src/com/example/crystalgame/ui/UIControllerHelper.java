@@ -13,15 +13,14 @@ import com.example.crystalgame.location.ZoneChangeEvent;
  * @author Allen Thomas Varghese, Rajan Verma
  *
  */
-public interface UIControllerHelperInter {
+public interface UIControllerHelper {
 	
 	/* Invoked when zone change happens */
 	public void zoneChanged(ZoneChangeEvent zoneChangeEvent);
 	
-	/* Invoked when energy levels are low */
-	public void energyLow(EnergyEvent energyEvent);
-	//public void updateGameEnergy(double noOfEnergyUnits);
-	public  void energyChangeCallBack(String energyLevel);
+	void lowEnergyWarning(EnergyEvent event);
+	
+	void updateGameEnergyInfo(String energy);
 
 	void updateGameMagicalItemInfo(int noOfMagicalItems);
 

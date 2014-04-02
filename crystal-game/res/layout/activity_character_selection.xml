@@ -44,10 +44,18 @@
        android:id="@+id/textViewCharacterType"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content"
-       android:layout_above="@+id/buttonChooseCharacter"
        android:layout_alignParentLeft="true"
        android:layout_alignParentRight="true"
-       android:layout_below="@+id/select_character_group" />
+       android:layout_below="@+id/select_character_group"
+       android:minHeight="100dp" />
+
+   <fragment
+       android:id="@+id/map"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:layout_above="@+id/buttonChooseCharacter"
+       android:layout_below="@+id/textViewCharacterType"
+       class="com.google.android.gms.maps.SupportMapFragment" />
 
    <Button
        android:id="@+id/buttonChooseCharacter"

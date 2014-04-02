@@ -30,7 +30,6 @@ import com.example.crystalgame.library.instructions.DataSynchronisationInstructi
 import com.example.crystalgame.library.instructions.DataTransferInstruction;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.GroupInstruction;
-import com.example.crystalgame.location.GPSTracker;
 import com.example.crystalgame.ui.UIController;
 
 
@@ -380,7 +379,6 @@ public class CrystalGame extends Application {
 		
 		//UIController.getInstance().stopComponents();
 		// Stopping GPS tracking service
-		stopService(new Intent(getApplicationContext(), GPSTracker.class));
 		
 		Log.d("CrystalGame:onTerminate()","Finished cleaning process successfully!");
 	}

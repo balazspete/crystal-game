@@ -10,7 +10,6 @@ import java.io.Serializable;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -23,8 +22,6 @@ import com.example.crystalgame.library.data.Zone;
 import com.example.crystalgame.library.instructions.GameInstruction;
 import com.example.crystalgame.library.instructions.Instruction;
 import com.example.crystalgame.library.instructions.InstructionFormatException;
-import com.example.crystalgame.location.GPSTracker;
-import com.example.crystalgame.ui.UIController;
 
 /**
  * 
@@ -33,6 +30,7 @@ import com.example.crystalgame.ui.UIController;
  */
 public class CreateGameActivity extends Activity {
 	private Zone gameBoundary = new Zone();
+	Location myLocation;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
@@ -51,7 +49,11 @@ public class CreateGameActivity extends Activity {
 			if(resultCode == RESULT_OK)
 			{
 				Bundle extras = data.getExtras();
-				this.gameBoundary = (Zone) extras.getSerializable("locations");
+				this.gameBoundary = (Zone) extras.getSerializable(GameBoundaryActivity.LOCATIONS);
+				android.location.Location location = (android.location.Location) extras.get(GameBoundaryActivity.MY_LOCATION);
+				if (location != null) {
+					myLocation = new Location(location.getLatitude(), location.getLongitude());
+				}
 			}
 		}
 	}
@@ -86,12 +88,15 @@ public class CreateGameActivity extends Activity {
 			return;
 		}
 		
+		if (myLocation == null) {
+			Toast.makeText(this, "No location! Open map to get it...", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		
 		String name = ((EditText) findViewById(R.id.game_name)).getText().toString();
 		
 		Instruction instruction;
 		try {
-			android.location.Location location = GPSTracker.getInstance().getLocation();
-			Location myLocation = new Location(location.getLatitude(), location.getLongitude());
 			instruction = GameInstruction.createCreateGameGameInstruction(
 					name 															// Name of game
 				,	gameBoundary.getLocation(0) 									// Game Location Top-Left
@@ -133,7 +138,7 @@ public class CreateGameActivity extends Activity {
     	else
     	{
     		Intent intent = new Intent(getApplicationContext(), GameBoundaryActivity.class);
-	    	intent.putExtra("locations", (Serializable) gameBoundary);
+	    	intent.putExtra(GameBoundaryActivity.LOCATIONS, (Serializable) gameBoundary);
 	    	startActivityForResult(intent,1);
     	}
 	}

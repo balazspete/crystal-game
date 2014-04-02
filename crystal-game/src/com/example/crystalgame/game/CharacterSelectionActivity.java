@@ -13,12 +13,16 @@ import com.example.crystalgame.library.data.Sage;
 import com.example.crystalgame.library.data.Warrior;
 import com.example.crystalgame.library.data.Wizard;
 import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
-import com.example.crystalgame.location.GPSTracker;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.SupportMapFragment;
 
 import android.location.Location;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,9 +32,12 @@ import android.widget.TextView;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.Toast;
 
-public class CharacterSelectionActivity extends Activity implements OnCheckedChangeListener, OnClickListener
+public class CharacterSelectionActivity extends FragmentActivity implements OnCheckedChangeListener, OnClickListener
 {
 
+	private GoogleMap map;
+	private View mapView; 
+	
 	private TextView textViewCharacterType ;
 	private Button button;
 	private int checkedButton = -1;
@@ -44,6 +51,16 @@ public class CharacterSelectionActivity extends Activity implements OnCheckedCha
 		RadioGroup radioGroup = (RadioGroup) this.findViewById(R.id.select_character_group);
 		radioGroup.setOnCheckedChangeListener(this);
 		button.setOnClickListener(this);
+		
+		/*Get the map instance*/
+		FragmentManager fragmentManager = getSupportFragmentManager();
+		SupportMapFragment supportMapFragment = (SupportMapFragment)fragmentManager.findFragmentById(R.id.map);
+		map = supportMapFragment.getMap();
+		mapView = supportMapFragment.getView();
+
+		/*Set my location true on map*/
+		map.setMyLocationEnabled(true);
+		
 	}
 
 	@Override
@@ -95,14 +112,13 @@ public class CharacterSelectionActivity extends Activity implements OnCheckedCha
 			return;
 		}
 		
-		Location location = GPSTracker.getInstance().getLocation();
-		System.out.println("location:" + location + " " + GPSTracker.getInstance().getLatitude());
-		
 		Character character = InventoryManager.getInstance().getUnknownCharacter();
 		if (character == null) {
 			Toast.makeText(this, "You did not receive your place yet!", Toast.LENGTH_SHORT).show();
 			return;
 		}
+		
+		Location location = map.getMyLocation();
 		
 		try {
 			Character myCharacter;
