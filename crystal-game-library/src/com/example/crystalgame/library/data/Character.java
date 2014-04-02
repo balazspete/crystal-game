@@ -38,6 +38,7 @@ public abstract class Character extends Artifact {
 	protected PlayerType playerType;
 	protected CharacterType characterType;
 	protected String clientId;
+	protected String name;
 
 	private List<Crystal> crystalList;
 	private List<MagicalItem> magicalItemList;
@@ -166,5 +167,13 @@ public abstract class Character extends Artifact {
 		public UnknownPlayerCharacter(String clientId) {
 			super(0, 0, CharacterType.UNKNOWN, PlayerType.PLAYER, clientId);
 		}
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }
