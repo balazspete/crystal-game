@@ -86,20 +86,8 @@ public class Zone implements Serializable, HasID
 	   					 );
 	   	*/
 	   	
-	   	final int R = 6371; // Radius of the earth
-
-	    Double latDistance = deg2rad(testPosition.getLatitude() - itemLocation.getLatitude());
-	    Double lonDistance = deg2rad(testPosition.getLongitude() - itemLocation.getLongitude());
-	    Double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-	            + Math.cos(deg2rad(itemLocation.getLatitude())) * Math.cos(deg2rad(testPosition.getLatitude()))
-	            * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-	    Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-	    double distance = R * c * 1000;									// convert to meters
-	   	
-	    System.out.println("Distance is : "+distance);
-	    
 	   	// The distance between two points is less than the radius of the circle
-	   	if(distance < RADIUS_OF_ENTRY) {
+	   	if(testPosition.getDistance(itemLocation) < RADIUS_OF_ENTRY) {
 	   		result = true;
 	   	} else {
 	   		result = false;	

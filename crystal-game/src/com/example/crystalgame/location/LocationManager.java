@@ -90,7 +90,6 @@ public class LocationManager {
 	public synchronized ArrayList<Location> getGameBoundaryPoints()
 	{
 		return ZoneTracker.getInstance().getBoundaryPoints();
-		
 	}
 	
 	public synchronized ArrayList<Location> getGameLocationPoints()

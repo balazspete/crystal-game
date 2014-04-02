@@ -193,7 +193,7 @@ public class GameStateManager {
 		} else if(item.getArtifactType() == Artifact.ArtifactType.CHARACTER) {
 			Character c  = (Character) item;
 			proximityEvent = new ProximityEvent(ArtifactType.CHARACTER, item);
-			InteractionManager.getInstance().initiateInteraction(CrystalGame.getCommunication().out, c.getClientId());
+			//InteractionManager.getInstance().initiateInteraction(CrystalGame.getCommunication().out, c.getClientId());
 		} else {
 			Log.e("GameStateManager", "Unhandled proximity event.");
 		}

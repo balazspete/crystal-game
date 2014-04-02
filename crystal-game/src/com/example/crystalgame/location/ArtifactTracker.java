@@ -42,7 +42,7 @@ public class ArtifactTracker {
 	 * Finds the artifact/character in proximity.
 	 * @return the first artifact in proximity
 	 */
-	public Artifact getArtifactsInProximity(Location location) {
+	public synchronized Artifact getArtifactsInProximity(Location location) {
 		Artifact artifactItem = null;
 		
 		crystalList = InventoryManager.getInstance().getCrystals();

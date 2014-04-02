@@ -6,7 +6,7 @@ package com.example.crystalgame.library.data;
  *
  */
 public class Crystal extends Item {
-
+	
 	/**
 	 * 
 	 */

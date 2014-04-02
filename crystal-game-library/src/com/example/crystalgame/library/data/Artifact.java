@@ -6,6 +6,8 @@ package com.example.crystalgame.library.data;
  *
  */
 public abstract class Artifact extends Location {
+	
+	public static final double SHOW_RADUIS = 10;
 
 	/**
 	 * 
@@ -53,5 +55,9 @@ public abstract class Artifact extends Location {
 		return artifactType;
 	}
 	
+	public boolean isInRange(Artifact other) {
+		System.out.println(getDistance(other));
+		return getDistance(other) < SHOW_RADUIS;
+	}
 	
 }

@@ -82,6 +82,7 @@ public class DataWarehouse {
 			} 
 		} catch (Exception e) {
 //			System.out.println("DataWarehouse|putList: PutList operation failed, rolling back");
+			e.printStackTrace();
 			throw DataWarehouseException.FAILED_TO_UPDATE;
 		}
 		

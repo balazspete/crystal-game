@@ -100,4 +100,23 @@ public class Location implements Serializable, HasID
 		return this;
 	}
 	
+	public double getDistance(Location other) {
+	 	final int R = 6371; // Radius of the earth
+
+	    Double latDistance = deg2rad(other.getLatitude() - getLatitude());
+	    Double lonDistance = deg2rad(other.getLongitude() - getLongitude());
+	    Double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+	            + Math.cos(deg2rad(other.getLatitude())) * Math.cos(deg2rad(other.getLatitude()))
+	            * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+	    
+	    Double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+	    double distance = R * c * 1000;									// convert to meters
+	   	
+	    return distance;
+	}
+	
+	private static double deg2rad(double deg) {
+	    return (deg * Math.PI / 180.0);
+	}
+	
 }
