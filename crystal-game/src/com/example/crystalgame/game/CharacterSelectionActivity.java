@@ -118,6 +118,8 @@ public class CharacterSelectionActivity extends Activity implements OnCheckedCha
 					break;
 			}
 			
+			myCharacter.setName(CrystalGame.getMyName());
+			
 			ClientDataWarehouse.getInstance().put(Character.class, myCharacter);
 			
 			if (InventoryManager.getInstance().getCharacter() == null) {

@@ -115,11 +115,13 @@ public class JoinGroupActivity extends Activity {
 	
 	public void joinGroup(View view) {
 		String name = ((EditText) findViewById(R.id.player_name)).getText().toString();
+		CrystalGame.setMyName(name);
 		sendInstruction(GroupInstruction.joinGroup(name, otherId));
 	}
 	
 	public void createGroup(View view) {
 		String name = ((EditText) findViewById(R.id.player_name)).getText().toString();
+		CrystalGame.setMyName(name);
 		String groupName = ((EditText) findViewById(R.id.group_name)).getText().toString();
 		if(gameBoundary!=null && name !=null && groupName!=null)
 		{

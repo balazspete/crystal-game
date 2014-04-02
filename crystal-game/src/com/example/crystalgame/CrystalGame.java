@@ -48,6 +48,7 @@ public class CrystalGame extends Application {
 	private static ClientCommunication communication;
 	private static String clientID;
 	private static String groupID;
+	private static String myName;
 	
 	private SharedPreferences preferences;
 	private InstructionEventListener listenerForDW;
@@ -336,13 +337,25 @@ public class CrystalGame extends Application {
 		e.apply();
 	}
 	
-	public ArrayList<Location> getGameBoundaryPoints()
-	{
+	/**
+	 * @return the myName
+	 */
+	public static String getMyName() {
+		return myName;
+	}
+
+	/**
+	 * @param myName the myName to set
+	 */
+	public static void setMyName(String myName) {
+		CrystalGame.myName = myName;
+	}
+	
+	public ArrayList<Location> getGameBoundaryPoints() {
 		return UIController.getInstance().getGameBoundaryPoints();	
 	}
 	
-	public ArrayList<Location> getGameLocationPoints()
-	{
+	public ArrayList<Location> getGameLocationPoints() {
 		return UIController.getInstance().getGameLocationPoints();
 	}
 	
