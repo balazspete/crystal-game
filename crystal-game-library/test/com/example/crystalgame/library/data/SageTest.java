@@ -17,6 +17,16 @@ public class SageTest extends CharacterTest {
 			 * 
 			 */
 			private static final long serialVersionUID = 1L;
+
+			@Override
+			public double getVisibilityRange() {
+				return 0;
+			}
+
+			@Override
+			public double getInteractionRange() {
+				return 0;
+			}
 		};
 		assertNotNull(new Sage(sage,1,2));
 	}

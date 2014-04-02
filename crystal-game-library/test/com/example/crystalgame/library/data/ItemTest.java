@@ -19,12 +19,32 @@ public class ItemTest extends ArtifactTest {
 		longitude = 523;
 		radius = 234;
 		location = artifact = item = new Item(ArtifactType.CRYSTAL, latitude, longitude) {
+
+			@Override
+			public double getVisibilityRange() {
+				return 0;
+			}
+
+			@Override
+			public double getInteractionRange() {
+				return 0;
+			}
 		};
 	}
 	
 	@Test
 	public void test() {
-		assertNotNull(new Item(ArtifactType.CRYSTAL, latitude, longitude){});
+		assertNotNull(new Item(ArtifactType.CRYSTAL, latitude, longitude){
+
+			@Override
+			public double getVisibilityRange() {
+				return 0;
+			}
+
+			@Override
+			public double getInteractionRange() {
+				return 0;
+			}});
 	}
 
 }

@@ -167,6 +167,16 @@ public abstract class Character extends Artifact {
 		public UnknownPlayerCharacter(String clientId) {
 			super(0, 0, CharacterType.UNKNOWN, PlayerType.PLAYER, clientId);
 		}
+
+		@Override
+		public double getVisibilityRange() {
+			return 0;
+		}
+
+		@Override
+		public double getInteractionRange() {
+			return 0;
+		}
 	}
 
 	public String getName() {
@@ -176,4 +186,5 @@ public abstract class Character extends Artifact {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
 }

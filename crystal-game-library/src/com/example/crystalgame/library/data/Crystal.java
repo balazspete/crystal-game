@@ -34,4 +34,14 @@ public class Crystal extends Item {
 			&&	obj.getClass().equals(getClass())
 			);
 	}
+
+	@Override
+	public double getVisibilityRange() {
+		return 10;
+	}
+
+	@Override
+	public double getInteractionRange() {
+		return 5;
+	}
 }

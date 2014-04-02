@@ -17,6 +17,16 @@ public class WarriorTest extends CharacterTest {
 			 * 
 			 */
 			private static final long serialVersionUID = 1L;
+
+			@Override
+			public double getVisibilityRange() {
+				return 0;
+			}
+
+			@Override
+			public double getInteractionRange() {
+				return 0;
+			}
 		};
 		assertNotNull(new Warrior(sage,1,2));
 	}

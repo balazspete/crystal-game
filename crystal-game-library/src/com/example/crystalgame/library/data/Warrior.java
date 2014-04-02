@@ -38,5 +38,15 @@ public class Warrior extends Character {
 		w.setEnergy(10);
 		return w;
 	}
+
+	@Override
+	public double getVisibilityRange() {
+		return 25;
+	}
+
+	@Override
+	public double getInteractionRange() {
+		return 10;
+	}
 	
 }

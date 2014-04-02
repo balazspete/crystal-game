@@ -1,5 +1,7 @@
 package com.example.crystalgame.library.data;
 
+import java.io.Serializable;
+
 /**
  * Describes a generic artifact
  * @author Balazs Pete, Shen Chen, Rajan Verma, Allen Thomas Varghese
@@ -16,7 +18,7 @@ public abstract class Artifact extends Location {
 	
 	private double radius;
 	
-	public enum ArtifactType {
+	public enum ArtifactType implements Serializable {
 		CRYSTAL, MAGICAL_ITEM, CHARACTER
 	}
 	
@@ -55,9 +57,28 @@ public abstract class Artifact extends Location {
 		return artifactType;
 	}
 	
-	public boolean isInRange(Artifact other) {
-		System.out.println(getDistance(other));
-		return getDistance(other) < SHOW_RADUIS;
+	public boolean isInInteractionRange(Artifact other) {
+		return isInInteractionRange(other, getInteractionRange());
 	}
+
+	private boolean isInInteractionRange(Artifact other, double distance) {
+		return distance < getInteractionRange();
+	}
+	
+	public boolean isInVisibleRange(Artifact other) {
+		return isInVisibleRange(other, getDistance(other));
+	}
+	
+	private boolean isInVisibleRange(Artifact other, double distance) {
+		return distance < getVisibilityRange();
+	}
+	
+	public boolean[] rangeChecks(Artifact other) {
+		double distance = getDistance(other);
+		return new boolean[]{ isInVisibleRange(other, distance), isInInteractionRange(other, distance) };
+	}
+	
+	public abstract double getVisibilityRange();
+	public abstract double getInteractionRange();
 	
 }

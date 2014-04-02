@@ -34,5 +34,15 @@ public class Sage extends Character {
 		s.setEnergy(10);
 		return s;
 	}
+
+	@Override
+	public double getVisibilityRange() {
+		return 20;
+	}
+
+	@Override
+	public double getInteractionRange() {
+		return 5;
+	}
 	
 }

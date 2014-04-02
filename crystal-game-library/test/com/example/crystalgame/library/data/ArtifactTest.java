@@ -16,6 +16,14 @@ public class ArtifactTest extends LocationTest {
 		longitude = 523;
 		radius = 234;
 		location = artifact = new Artifact(null, latitude, longitude, radius) {
+			@Override
+			public double getVisibilityRange() {
+				return 0;
+			}
+			@Override
+			public double getInteractionRange() {
+				return 0;
+			}
 		};
 	}
 	

@@ -37,5 +37,15 @@ public class Wizard extends Character {
 		w.setEnergy(10);
 		return w;
 	}
+
+	@Override
+	public double getVisibilityRange() {
+		return 10;
+	}
+
+	@Override
+	public double getInteractionRange() {
+		return 5;
+	}
 	
 }

@@ -18,12 +18,32 @@ public class CharacterTest extends ArtifactTest {
 		longitude = 523;
 		radius = 234;
 		location = artifact = character = new Character(latitude, longitude, CharacterType.SAGE, PlayerType.PLAYER, "C343") {
+
+			@Override
+			public double getVisibilityRange() {
+				return 0;
+			}
+
+			@Override
+			public double getInteractionRange() {
+				return 0;
+			}
 		};
 	}
 	
 	@Test
 	public void test() {
-		assertNotNull(new Character(latitude, longitude, CharacterType.SAGE, PlayerType.PLAYER, "C343"){} );
+		assertNotNull(new Character(latitude, longitude, CharacterType.SAGE, PlayerType.PLAYER, "C343"){
+
+			@Override
+			public double getVisibilityRange() {
+				return 0;
+			}
+
+			@Override
+			public double getInteractionRange() {
+				return 0;
+			}} );
 	}
 
 }
