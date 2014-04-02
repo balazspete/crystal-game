@@ -132,9 +132,9 @@ public class LocationManager {
 		
 		locationTrackerCallback(previous, location);
 		
-		if (lastCharacterLocationSaveTime.plusSeconds(20).isBefore(DateTime.now())) {
-			InventoryManager.getInstance().setCharacterLocation(location);
-		}
+//		if (lastCharacterLocationSaveTime.plusSeconds(20).isBefore(DateTime.now())) {
+//			InventoryManager.getInstance().setCharacterLocation(location);
+//		}
 	}
 	
 	public Location getCharacterLocation() {

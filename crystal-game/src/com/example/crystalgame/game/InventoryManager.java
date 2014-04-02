@@ -174,7 +174,7 @@ public class InventoryManager {
 			c.setEnergyLevel(energyLevel);
 			
 			// Remove the character
-			ClientDataWarehouse.getInstance().delete(Character.class, c.getID());
+//			ClientDataWarehouse.getInstance().delete(Character.class, c.getID());
 			
 			// Add the characer back
 			ClientDataWarehouse.getInstance().put(Character.class, c);
