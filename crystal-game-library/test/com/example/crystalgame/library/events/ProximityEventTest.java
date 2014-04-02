@@ -37,9 +37,39 @@ public class ProximityEventTest {
 	 */
 	@Test
 	public void testProximityEvent() {
-		assertNotNull(new ProximityEvent(ArtifactType.CHARACTER, new Artifact(ArtifactType.CHARACTER, 1,2,3) {}));
-		assertNotNull(new ProximityEvent(ArtifactType.CRYSTAL, new Artifact(ArtifactType.CRYSTAL, 1,2,3) {}));
-		assertNotNull(new ProximityEvent(ArtifactType.MAGICAL_ITEM, new Artifact(ArtifactType.MAGICAL_ITEM, 1,2,3) {}));
+		assertNotNull(new ProximityEvent(ArtifactType.CHARACTER, new Artifact(ArtifactType.CHARACTER, 1,2,3) {
+
+			@Override
+			public double getVisibilityRange() {
+				return 0;
+			}
+
+			@Override
+			public double getInteractionRange() {
+				return 0;
+			}}));
+		assertNotNull(new ProximityEvent(ArtifactType.CRYSTAL, new Artifact(ArtifactType.CRYSTAL, 1,2,3) {
+
+			@Override
+			public double getVisibilityRange() {
+				return 0;
+			}
+
+			@Override
+			public double getInteractionRange() {
+				return 0;
+			}}));
+		assertNotNull(new ProximityEvent(ArtifactType.MAGICAL_ITEM, new Artifact(ArtifactType.MAGICAL_ITEM, 1,2,3) {
+
+			@Override
+			public double getVisibilityRange() {
+				return 0;
+			}
+
+			@Override
+			public double getInteractionRange() {
+				return 0;
+			}}));
 	}
 
 }

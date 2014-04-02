@@ -38,43 +38,44 @@ public class ArtifactTracker {
 		return artifactTracker;
 	}
 	
-	/**
-	 * Finds the artifact/character in proximity.
-	 * @return the first artifact in proximity
-	 */
-	public synchronized Artifact getArtifactsInProximity(Location location) {
-		Artifact artifactItem = null;
-		
-		crystalList = InventoryManager.getInstance().getCrystals();
-		
-		// Checking the crystal list
-		for(Crystal item : crystalList) {
-			if(Zone.inRadialZone(item.getLocation(), location)) {
-				return item;
-			}
-		}
-		
-		magicalItemList = InventoryManager.getInstance().getMagicalItems();
-		
-		// Checking the magical item list
-		for(MagicalItem item : magicalItemList) {
-			if(Zone.inRadialZone(item.getLocation(), location)) {
-				return item;
-			}
-		}
-		
-		characterList = InventoryManager.getInstance().getCharacters();
-		
-		// Checking the character list
-		for(Character item : characterList) {
-			if(Zone.inRadialZone(item.getLocation(), location)) {
-				return item;
-			}
-		}
-		
-		return artifactItem;
-	}
-	
+//	/**
+//	 * Finds the artifact/character in proximity.
+//	 * @return the first artifact in proximity
+//	 */
+//	public synchronized Artifact getArtifactsInProximity(Location location) {
+//		Artifact artifactItem = null;
+////		
+////		crystalList = InventoryManager.getInstance().getCrystals();
+////		
+////		// Checking the crystal list
+////		for(Crystal item : crystalList) {
+////			if(location.
+////					Zone.inRadialZone(item.getLocation(), location)) {
+////				return item;
+////			}
+////		}
+////		
+////		magicalItemList = InventoryManager.getInstance().getMagicalItems();
+////		
+////		// Checking the magical item list
+////		for(MagicalItem item : magicalItemList) {
+////			if(Zone.inRadialZone(item.getLocation(), location)) {
+////				return item;
+////			}
+////		}
+////		
+////		characterList = InventoryManager.getInstance().getCharacters();
+////		
+////		// Checking the character list
+////		for(Character item : characterList) {
+////			if(Zone.inRadialZone(item.getLocation(), location)) {
+////				return item;
+////			}
+////		}
+////		
+//		return artifactItem;
+//	}
+//	
 	public void markItem(Item item) {
 		
 	}

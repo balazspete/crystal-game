@@ -42,61 +42,6 @@ public class Zone implements Serializable, HasID
 	}
 	
 	/**
-	 * Checks if the given location is within the zone
-	 * @param location 
-	 * @return True if in zone
-	 */
-	public static boolean inRadialZone(Location testPosition, Location itemLocation){
-
-		boolean result = false;
-		//double xVali, yVali, xValj, yValj, lng, lat;
-		
-		//lng = testPosition.getLongitude() * Math.PI/180;
-	   	//lat = testPosition.getLatitude() * Math.PI/180;
-	   	//xVali = lng;
-	   	//yVali = Math.log(Math.tan(QUARTERPI + 0.5 * lat));
-	   	//xVali = lat;
-	   	//yVali = lng;
-	   	  
-	   	//lng = itemLocation.getLongitude() * Math.PI/180;
-	   	//lat = itemLocation.getLatitude() * Math.PI/180;
-	   	//xValj = lng;
-	   	//yValj = Math.log(Math.tan(QUARTERPI + 0.5 * lat));
-	   	//xValj = lat;
-	   	//yValj = lng;
-	   	
-	   	//double distance = (Math.pow(xVali - xValj, 2) + Math.pow(yVali - yValj , 2)) * RADIUS_EARTH;
-	    // Using haversine method to compute distance on the surface of a sphere
-	   	/*
-	   	double distance = 
-	   			2 
-	   		*	EARTH_RADIUS
-	   		*	Math.asin(
-	   				Math.sqrt(
-	   					Math.pow(
-	   						Math.sin((xVali - xValj)/2)
-	   						,2)
-	   						+
-	   						Math.cos(xVali)
-	   					*	Math.cos(xValj)
-	   					*	Math.pow(
-	   							Math.sin((yVali - yValj)/2)
-	   							, 2)
-	   						 )
-	   					 );
-	   	*/
-	   	
-	   	// The distance between two points is less than the radius of the circle
-	   	if(testPosition.getDistance(itemLocation) < RADIUS_OF_ENTRY) {
-	   		result = true;
-	   	} else {
-	   		result = false;	
-	   	}
-	   	
-		return result;
-	}
-	
-	/**
 	 * Convert degree to radian
 	 * @param degree value
 	 * @return radian value
@@ -105,12 +50,16 @@ public class Zone implements Serializable, HasID
 	    return (deg * Math.PI / 180.0);
 	}
 	
+	public boolean isWithin(Location location) {
+		return checkIfWithin(this.locationPoints, location);
+	}
+	
 	/**
 	 * Checks if the given location is within the quadrilateral zone
 	 * @param location
 	 * @return boolean
 	 */
-	public static boolean inQuadZone(ArrayList<Location> locationPoints, Location location){
+	public static boolean checkIfWithin(ArrayList<Location> locationPoints, Location location){
 	  int i;
 	  int j;
 	  boolean result = false;

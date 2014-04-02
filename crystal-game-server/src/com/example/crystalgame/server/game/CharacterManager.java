@@ -47,7 +47,7 @@ public class CharacterManager
 		Character[] characters = getCharacters();
 		for(Character character:characters)
 		{
-			result = Zone.inQuadZone( locationPoints, character.getLocation());
+			result = Zone.checkIfWithin( locationPoints, character.getLocation());
 			if(!(result))
 			{
 				if(character.getPlayerType().equals(PlayerType.PLAYER))

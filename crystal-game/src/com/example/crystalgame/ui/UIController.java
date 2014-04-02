@@ -1,18 +1,23 @@
 package com.example.crystalgame.ui;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.util.Log;
 
+import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
 import com.example.crystalgame.game.GameManager;
 import com.example.crystalgame.game.GamePlayState;
 import com.example.crystalgame.game.energy.EnergyEvent;
 import com.example.crystalgame.game.maps.MapInformation;
 import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.CrystalZone;
+import com.example.crystalgame.library.data.GameLocation;
+import com.example.crystalgame.library.data.HasID;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.ThroneRoom;
+import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
 import com.example.crystalgame.location.ZoneChangeEvent;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient.Info;
 
@@ -192,6 +197,20 @@ public class UIController {
 		}
 		
 		currentActivity.timeChangeCallback(newTime);
+	}
+	
+	public GameLocation getGameLocation() {
+		List<HasID> locs;
+		try {
+			locs = ClientDataWarehouse.getInstance().getList(GameLocation.class);
+			if (locs != null && locs.size() > 0) {
+				return (GameLocation) locs.get(0);
+			}
+		} catch (DataWarehouseException e) {
+			// returning null
+		}
+
+		return null;
 	}
 	
 }

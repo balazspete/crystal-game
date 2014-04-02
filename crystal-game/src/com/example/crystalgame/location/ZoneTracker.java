@@ -102,9 +102,9 @@ public class ZoneTracker {
 		ZoneChangeEvent zoneChangeEvent = null;
 		
 		//boolean isInGameBoundary = Zone.inQuadZone(boundaryPoints, location);
-		boolean isInGameBoundary = Zone.inQuadZone(getBoundaryPoints(), location);
+		boolean isInGameBoundary = Zone.checkIfWithin(getBoundaryPoints(), location);
 		//boolean isInGameLocation = Zone.inQuadZone(gameLocationPoints, location);
-		boolean isInGameLocation = Zone.inQuadZone(gameLocationPoints, location);
+		boolean isInGameLocation = Zone.checkIfWithin(gameLocationPoints, location);
 		
 		if(isInGameBoundary)
 		{

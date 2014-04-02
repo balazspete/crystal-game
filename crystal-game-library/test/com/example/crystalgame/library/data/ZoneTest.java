@@ -46,14 +46,8 @@ public class ZoneTest {
 	}
 	
 	@Test
-	public void testInRadialZone() {
-
-		assertTrue(Zone.inRadialZone(testPosiLocation, itemLocation));
-	}
-
-	@Test
 	public void testInQuadZone() {
-		assertTrue(Zone.inQuadZone(locations, quadLocation));
+		assertTrue(Zone.checkIfWithin(locations, quadLocation));
 	}
 
 	@Test

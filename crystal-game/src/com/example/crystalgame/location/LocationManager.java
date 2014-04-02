@@ -5,6 +5,8 @@ package com.example.crystalgame.location;
 
 import java.util.ArrayList;
 
+import org.joda.time.DateTime;
+
 import android.util.Log;
 
 import com.example.crystalgame.game.GameStateManager;
@@ -65,13 +67,13 @@ public class LocationManager {
 	}
 	
 	public synchronized void locationTrackerCallback(Location previousLocation, Location currentLocation) {
-		Artifact artifact = null;
-		
-		artifact = ArtifactTracker.getInstance().getArtifactsInProximity(currentLocation);
-		if(null != artifact) {
-			Log.i("LocationManager","Artifact detected!");
-			GameStateManager.getInstance().itemProximityAlert(artifact);
-		}
+//		Artifact artifact = null;
+//		
+//		artifact = ArtifactTracker.getInstance().getArtifactsInProximity(currentLocation);
+//		if(null != artifact) {
+//			Log.i("LocationManager","Artifact detected!");
+//			GameStateManager.getInstance().itemProximityAlert(artifact);
+//		}
 		
 		zoneChangeEvent = ZoneTracker.getInstance().searchGameBoundary(currentLocation);
 		if(null != zoneChangeEvent) {
@@ -80,7 +82,7 @@ public class LocationManager {
 		}
 		
 		// Update the game character location in data warehouse 
-		InventoryManager.getInstance().setCharacterLocation(currentLocation);
+//		InventoryManager.getInstance().setCharacterLocation(currentLocation);
 	}
 	
 	public synchronized void saveGameBoundary(GameBoundary gameBoundary) {
@@ -119,6 +121,13 @@ public class LocationManager {
 			return true;
 		}
 		return false;
+	}
+	
+	private DateTime lastCharacterLocationSaveTime = DateTime.now();
+	public void setCharacterLocation(Location location) {
+		if (lastCharacterLocationSaveTime.plusSeconds(20).isBefore(DateTime.now())) {
+			InventoryManager.getInstance().setCharacterLocation(location);
+		}
 	}
 	
 }
