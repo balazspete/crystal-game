@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.joda.time.DateTime;
+
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -352,11 +354,10 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 								
 								if (checks[1]) {
 									Toast.makeText(GameActivity.this, "In capture range of crystal", Toast.LENGTH_SHORT).show();
-									if (!GameStateManager.getInstance().captureCrystal(character, crystal)) {
+									if (!captureCrystal(character, crystal)) {
 										Toast.makeText(GameActivity.this, "Failed to pick up crystal.", Toast.LENGTH_SHORT).show();
 									} else {
 										markersOnMap.remove(crystal.getID()).remove();
-										break;
 									}
 								}
 							} 
@@ -378,11 +379,10 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 								
 								if (checks[1]) {
 									Toast.makeText(GameActivity.this, "In capture range of magical item", Toast.LENGTH_SHORT).show();
-									if (!GameStateManager.getInstance().captureMagicalItem(character, item)) {
+									if (!captureMagicalItem(character, item)) {
 										Toast.makeText(GameActivity.this, "Failed to pick up magical item.", Toast.LENGTH_SHORT).show();
 									} else {
 										markersOnMap.remove(item.getID()).remove();
-										break;
 									}
 								}
 							}
@@ -390,7 +390,7 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 						
 						for (Character c : characters) {
 							addDebugMark(c);
-							if (c.getID().equals(character.getID())) {
+							if (c.getID().equals(character.getID()) || c.getCharacterType() == CharacterType.UNKNOWN) {
 								continue;
 							}
 							
@@ -413,7 +413,6 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 									Toast.makeText(GameActivity.this, "In interaction range of character", Toast.LENGTH_SHORT).show();
 									InteractionManager.getInstance().initiateInteraction(
 											CrystalGame.getCommunication().out, c.getClientId());
-									break;
 								}
 							} 
 						}
@@ -452,6 +451,24 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 		});
 		
 		gameUpdateThread.start();
+	}
+	
+	private DateTime lastCaptureTime = DateTime.now();
+	
+	private boolean captureCrystal(Character character, Crystal crystal) {
+		if (lastCaptureTime.plusSeconds(10).isAfter(DateTime.now())) {
+			return false;
+		}
+		
+		return GameStateManager.getInstance().captureCrystal(character, crystal);
+	}
+	
+	private boolean captureMagicalItem(Character character, MagicalItem item) {
+		if (lastCaptureTime.plusSeconds(10).isAfter(DateTime.now())) {
+			return false;
+		}
+		
+		return GameStateManager.getInstance().captureMagicalItem(character, item);
 	}
 	
 	private void addDebugMark(Artifact location) {
