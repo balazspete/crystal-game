@@ -73,19 +73,12 @@ public class DB4OInterface implements KeyValueStore {
 	}
 	
 	public HasID get(String type, String key) {
-		try {
-			boolean locked = lockManager.lock(getLockName(key));
-			if (locked) {
-				DataWrapper<HasID> result = getWrapper(type, key);
-				if(result != null) {
-					return result.getValue();
-				}
-			}
-			
-			return null;
-		} finally {
-			lockManager.unlock(getLockName(key));
+		DataWrapper<HasID> result = getWrapper(type, key);
+		if(result != null) {
+			return result.getValue();
 		}
+		
+		return null;
 	}
 	
 	@Override
