@@ -105,7 +105,7 @@ public class GameStateManager extends Thread {
 
 					character.addCrystal(crystal);
 					try {
-						ClientDataWarehouse.getInstance().delete(Character.class, character.getID());
+//						ClientDataWarehouse.getInstance().delete(Character.class, character.getID());
 						ClientDataWarehouse.getInstance().put(Character.class, character);
 						System.out.println("Character updated successfully : " + character);
 					} catch (DataWarehouseException e) {
@@ -143,7 +143,7 @@ public class GameStateManager extends Thread {
 
 					character.addMagicalItem(item);
 					try {
-						ClientDataWarehouse.getInstance().delete(Character.class, character.getID());
+//						ClientDataWarehouse.getInstance().delete(Character.class, character.getID());
 						ClientDataWarehouse.getInstance().put(Character.class, character);
 						System.out.println("Character updated successfully : " + character);
 					} catch (DataWarehouseException e) {

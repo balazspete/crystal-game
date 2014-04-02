@@ -47,15 +47,13 @@ public class DB4OInterface implements KeyValueStore {
 			lockIDs.add(lockID);
 			DataWrapper<HasID> wrapper = getWrapper(type, value.getID());
 			if (wrapper == null) {
-				wrapper = new DataWrapper<HasID>(type, value);
+				
 			} else {
-				try {
-					//db.ext().activate(wrapper, Integer.MAX_VALUE);
-					wrapper.setValue(value);
-				} catch (DataWarehouseException e) {
-					return null;
-				}
+				//db.ext().activate(wrapper, Integer.MAX_VALUE);
+				db.delete(wrapper);
 			}
+			
+			wrapper = new DataWrapper<HasID>(type, value);
 			
 			pending.add(wrapper);
 			db.ext().store(wrapper, Integer.MAX_VALUE);
@@ -134,6 +132,10 @@ public class DB4OInterface implements KeyValueStore {
 	 */
 	public void commit() {
 		db.commit();
+		for (DataWrapper<HasID> e : pending) {
+			db.ext().refresh(e, Integer.MAX_VALUE);
+		}
+		
 		pending.clear();
 	}
 	
