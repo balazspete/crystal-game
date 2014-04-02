@@ -147,11 +147,16 @@ public class GameManager {
 	 * @param type
 	 */
 	public synchronized void endGame(GameEndType type) {
-		CrystalGame gameObj = GameManager.getInstance().getApplicationObj();
-		if(null != gameObj) {
-			gameObj.getCommunication().out.relayInstructionToServer(GameInstruction.createPlayerOutOfEnergyRequestInstruction(getGameCharacter().getID(),gameObj.getClientID()));
-			
+		GameInstruction instruction = null;
+		switch (type) {
+			case OUT_OF_BOUNDARY:
+				//instruction = GameInstruction.cr(getGameCharacter().getID(), CrystalGame.getClientID());
+				break;
+			case OUT_OF_ENERGY:
+				instruction = GameInstruction.createPlayerOutOfEnergyRequestInstruction(getGameCharacter().getID(), CrystalGame.getClientID());
+				break;
 		}
+		CrystalGame.getCommunication().out.relayInstructionToServer(instruction);
 	}
 	
 	public synchronized void saveGameDuration(int gameDuration) {

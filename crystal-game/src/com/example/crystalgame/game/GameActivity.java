@@ -33,11 +33,13 @@ import com.example.crystalgame.CrystalGame;
 import com.example.crystalgame.R;
 import com.example.crystalgame.communication.ClientOutgoingMessages;
 import com.example.crystalgame.datawarehouse.ClientDataWarehouse;
+import com.example.crystalgame.game.GameEndActivity.GameEndType;
 import com.example.crystalgame.game.energy.EnergyEvent;
 import com.example.crystalgame.game.energy.EnergyManager;
 import com.example.crystalgame.library.data.Character;
 import com.example.crystalgame.library.data.Crystal;
 import com.example.crystalgame.library.data.CrystalZone;
+import com.example.crystalgame.library.data.GameLocation;
 import com.example.crystalgame.library.data.Location;
 import com.example.crystalgame.library.data.MagicalItem;
 import com.example.crystalgame.library.data.Character.CharacterType;
@@ -49,6 +51,7 @@ import com.example.crystalgame.library.datawarehouse.DataWarehouseException;
 import com.example.crystalgame.library.instructions.GroupInstruction;
 import com.example.crystalgame.library.instructions.CharacterInteractionInstruction.RPSSelection;
 import com.example.crystalgame.location.GPSTracker;
+import com.example.crystalgame.location.LocationManager;
 import com.example.crystalgame.location.ZoneChangeEvent;
 import com.example.crystalgame.ui.UIController;
 import com.example.crystalgame.ui.UIControllerHelperInter;
@@ -57,6 +60,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -123,7 +127,7 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 
 		/*Set my location true on map*/
 		map.setMyLocationEnabled(true);
-		map.setOnMarkerClickListener(this);
+		//map.setOnMarkerClickListener(this);
 
 		// Action Bar
 		Crystal_Label=(TextView) findViewById(R.id.Crystal_message);  
@@ -258,13 +262,13 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 		((CrystalGame) getApplication()).getCommunication().in.removeInstructionEventListener(instructionEventListener);
 	}
 	
-	private void drawPoligon(List<Location> points, PolygonOptions options) {
+	private Polygon drawPolygon(List<Location> points, PolygonOptions options) {
 		for(Location location : points){
 			LatLng l = new LatLng(location.getLatitude(), location.getLongitude());
 			options.add(l);
 		}
 		
-		map.addPolygon(options);
+		return map.addPolygon(options);
 	}
 	
 	private PolygonOptions addHole(List<Location> points, PolygonOptions options) {
@@ -278,10 +282,11 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 	}
 	
 	private void createMap() {
-
+		gameBoundaryPoints = UIController.getInstance().getGameBoundaryPoints();
 		gameLocationPoints = UIController.getInstance().getGameLocationPoints();
 		crystalZones = UIController.getInstance().getCrystalZones();
 		final ThroneRoom throneRoom = UIController.getInstance().getThroneRoom();
+		final GameLocation gameLocation = UIController.getInstance().getGameLocation();
 		
 		// Update the map information
 		gameUpdateThread = new Thread(new Runnable() {
@@ -301,21 +306,26 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 						markersOnMap.clear();
 						
 						android.location.Location l = map.getMyLocation();
-						character.setLatitude(l.getLatitude());
-						character.setLongitude(l.getLongitude());
+						if (l != null) {
+							character.setLatitude(l.getLatitude());
+							character.setLongitude(l.getLongitude());
+							
+							GPSTracker.getInstance().setGameLocation(l);
+							LocationManager.getInstance().setCharacterLocation(character);
+						}
 						
 						PolygonOptions options = new PolygonOptions();
 						options.strokeColor(Color.BLUE);
 						options.strokeWidth(2);
-						options = addHole(gameLocationPoints, options);
-						drawPoligon(gameBoundaryPoints, options);
 						
-						for(CrystalZone crystalZone:crystalZones){
-							options = new PolygonOptions();
-							options.strokeColor(Color.GREEN);
-							options.strokeWidth(2);
-							
-							drawPoligon(crystalZone.getLocationList(), options);
+						options = addHole(gameLocationPoints, options);
+						drawPolygon(gameBoundaryPoints, options);
+						
+						if (gameLocation != null) {
+							if (gameLocation.isWithin(character)) {
+								Toast.makeText(GameActivity.this, "Out of game location!", Toast.LENGTH_SHORT).show();
+								GameManager.getInstance().endGame(GameEndType.OUT_OF_TIME);
+							}
 						}
 						
 						if(null != throneRoom) {
@@ -324,19 +334,25 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 								.position(new LatLng(location.getLatitude(),location.getLongitude()))
 								.icon(BitmapDescriptorFactory.fromResource(R.drawable.throne)));
 							
-							options = new PolygonOptions();
-							options.strokeColor(Color.rgb(180, 70, 70));
-							options.strokeWidth(2);
-							options.fillColor(Color.argb(50, 180, 70, 70));
-							drawPoligon(throneRoom.getLocationList(), options);
+							CircleOptions cOptions = new CircleOptions();
+							cOptions.center(new LatLng(location.getLatitude(), location.getLongitude()));
+							cOptions.fillColor(Color.argb(50, 210, 85, 70));
+							
+							map.addCircle(cOptions);
 						}
 						
 						for (Crystal crystal : crystals) {
-							if (crystal.isInRange(character)) {
+							boolean checks[] = crystal.rangeChecks(character);
+							if (checks[0]) {
 								markersOnMap.put(crystal.getID(), 
 									map.addMarker(new MarkerOptions()
 										.position(new LatLng(crystal.getLatitude(),crystal.getLongitude()))
 										.icon(BitmapDescriptorFactory.fromResource(R.drawable.crystal_small)))); 
+								if (checks[1]) {
+									if (!GameStateManager.getInstance().captureCrystal(character, crystal)) {
+										Toast.makeText(GameActivity.this, "Failed to pick up crystal.", Toast.LENGTH_SHORT).show();
+									}
+								}
 							} 
 //							else {
 //								map.addMarker(new MarkerOptions()
@@ -346,13 +362,20 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 						} 
 						
 						for (MagicalItem item : items) {
+							boolean checks[] = item.rangeChecks(character);
 							if (character.getCharacterType() == CharacterType.SAGE ||
-									item.isInRange(character)) {
+									checks[0]) {
 								Toast.makeText(GameActivity.this, "in range of magical item", Toast.LENGTH_SHORT).show();
 								markersOnMap.put(item.getID(), 
 									map.addMarker(new MarkerOptions()
 										.position(new LatLng(item.getLatitude(), item.getLongitude()))
 										.icon(BitmapDescriptorFactory.fromResource(R.drawable.magical_item)))); 
+								
+								if (checks[1]) {
+									if (!GameStateManager.getInstance().captureMagicalItem(character, item)) {
+										Toast.makeText(GameActivity.this, "Failed to pick up crystal.", Toast.LENGTH_SHORT).show();
+									}
+								}
 							} 
 //							else {
 //								map.addMarker(new MarkerOptions()
@@ -366,15 +389,21 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 								continue;
 							}
 							
+							boolean checks[] = c.rangeChecks(character);
 							if (character.getCharacterType() == CharacterType.WARRIOR ||
-									c.isInRange(character)) {
+									checks[0]) {
 								markersOnMap.put(c.getID(), 
 									map.addMarker(new MarkerOptions()
 										.position(new LatLng(c.getLatitude(), c.getLongitude()))
 										.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-										.title(c.getID())
+										.title(c.getName())
 										.snippet("Magical items: " + c.getMagicalItems().size())
 									)); 
+								
+								if (checks[1]) {
+									InteractionManager.getInstance().initiateInteraction(
+											CrystalGame.getCommunication().out, c.getClientId());
+								}
 							} 
 							// TOOD: remove
 							else {
@@ -668,13 +697,10 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 						float distancebetween  = location1.distanceTo(location2);
 						
 						Toast.makeText(getBaseContext(), "Crystal Detected : "+distancebetween, Toast.LENGTH_LONG).show();
-						
-						GameStateManager.getInstance().itemProximityAlert(crystalItem);
 					}
 					
 					if(magicalItem != null) {
 						//Toast.makeText(getBaseContext(), "Magical Item Detected : "+magicalItem, Toast.LENGTH_LONG).show();
-						GameStateManager.getInstance().itemProximityAlert(magicalItem);
 					}
 					
 					// If none of the items exist, then remove it from the game map

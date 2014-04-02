@@ -205,13 +205,13 @@ public class GPSTracker extends Service implements LocationListener {
 
 	@Override
 	public void onLocationChanged(Location location) {
-		previousLocation = currentLocation;
-		currentLocation = new com.example.crystalgame.library.data.Location(location.getLatitude(),location.getLongitude());
-		
-		// Once location callbacks are enabled, then invoke the callback functions
-		if(isEnableLocationCallbacks()) {
-			gameLocationManager.locationTrackerCallback(previousLocation, currentLocation);
-		}
+//		previousLocation = currentLocation;
+//		currentLocation = new com.example.crystalgame.library.data.Location(location.getLatitude(),location.getLongitude());
+//		
+//		// Once location callbacks are enabled, then invoke the callback functions
+//		if(isEnableLocationCallbacks()) {
+//			gameLocationManager.locationTrackerCallback(previousLocation, currentLocation);
+//		}
 	}
 
 	@Override
@@ -255,4 +255,7 @@ public class GPSTracker extends Service implements LocationListener {
 		this.enableLocationCallbacks = enableLocationCallbacks;
 	}
 	
+	public synchronized void setGameLocation(Location location){
+		this.location = location;
+	}
 }
