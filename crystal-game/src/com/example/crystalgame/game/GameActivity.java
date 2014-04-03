@@ -266,13 +266,11 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 		return options.addHole(it);
 	}
 	
-	private boolean debug = true;
-	private void createMap() {
-		gameBoundaryPoints = UIController.getInstance().getGameBoundaryPoints();
-		gameLocationPoints = UIController.getInstance().getGameLocationPoints();
-		crystalZones = UIController.getInstance().getCrystalZones();
+	private void drawMap() {
+		map.clear();
+		markersOnMap.clear();
+		
 		final ThroneRoom throneRoom = UIController.getInstance().getThroneRoom();
-		final GameLocation gameLocation = UIController.getInstance().getGameLocation();
 		
 		PolygonOptions options = new PolygonOptions();
 		options.strokeColor(Color.BLACK);
@@ -297,6 +295,15 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 			
 			map.addCircle(cOptions);
 		}
+	}
+	
+	private boolean debug = false;
+	private void createMap() {
+		gameBoundaryPoints = UIController.getInstance().getGameBoundaryPoints();
+		gameLocationPoints = UIController.getInstance().getGameLocationPoints();
+		crystalZones = UIController.getInstance().getCrystalZones();
+		
+		drawMap();
 		
 		// Update the map information
 		gameUpdateThread = new Thread(new Runnable() {
@@ -388,34 +395,34 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 							}
 						}
 						
-//						for (Character c : characters) {
-//							addDebugMark(c);
-//							if (c.getID().equals(character.getID()) || c.getCharacterType() == CharacterType.UNKNOWN) {
-//								continue;
-//							}
-//							
-//							boolean checks[] = c.rangeChecks(character);
-//							if (character.getCharacterType() == CharacterType.WARRIOR ||
-//									checks[0]) {
-//								if (markersOnMap.get(c.getID()) == null) {
-//									markersOnMap.put(c.getID(), 
-//										map.addMarker(new MarkerOptions()
-//											.position(new LatLng(c.getLatitude(), c.getLongitude()))
-//											.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-//											.title(c.getName())
-//											.snippet("Magical items: " + c.getMagicalItems().size())
-//										)); 
-//								}
-//								
-//								currentIDs.add(c.getID());
-//								
+						for (Character c : characters) {
+							addDebugMark(c);
+							if (c.getID().equals(character.getID()) || c.getCharacterType() == CharacterType.UNKNOWN) {
+								continue;
+							}
+							
+							boolean checks[] = c.rangeChecks(character);
+							if (character.getCharacterType() == CharacterType.WARRIOR ||
+									checks[0]) {
+								if (markersOnMap.get(c.getID()) == null) {
+									markersOnMap.put(c.getID(), 
+										map.addMarker(new MarkerOptions()
+											.position(new LatLng(c.getLatitude(), c.getLongitude()))
+											.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+											.title(c.getName())
+											.snippet("Magical items: " + c.getMagicalItems().size())
+										)); 
+								}
+								
+								currentIDs.add(c.getID());
+								
 //								if (checks[1]) {
 //									Toast.makeText(GameActivity.this, "In interaction range of character", Toast.LENGTH_SHORT).show();
 //									InteractionManager.getInstance().initiateInteraction(
 //											CrystalGame.getCommunication().out, c.getClientId());
 //								}
-//							} 
-//						}
+							} 
+						}
 						
 						removeUnusedMarkers(currentIDs);
 						
@@ -478,7 +485,7 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 		
 		CircleOptions cOptions = new CircleOptions();
 		cOptions.center(new LatLng(location.getLatitude(), location.getLongitude()));
-		cOptions.radius(0.75);
+		cOptions.radius(1);
 		cOptions.strokeWidth(1);
 		cOptions.strokeColor(Color.WHITE);
 		
@@ -617,6 +624,12 @@ public class GameActivity extends FragmentActivity implements UIControllerHelper
 		switch(item.getItemId()) {
 		case R.id.action_leave_group:
 			leaveGroup();
+			return true;
+		case R.id.debug:
+			boolean checked = !item.isChecked();
+			item.setChecked(checked);
+			debug = checked;
+			drawMap();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
