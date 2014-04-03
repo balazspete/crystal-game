@@ -9,8 +9,104 @@
     tools:context=".MainActivity" >
 
     <TextView
+        android:id="@+id/instruction_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hello_world" />
+
+    <EditText
+        android:id="@+id/editText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/instruction_text"
+        android:layout_below="@+id/instruction_text"
+        android:layout_marginTop="17dp"
+        android:ems="10" />
+
+    <EditText
+        android:id="@+id/group_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/editText2"
+        android:layout_below="@+id/editText2"
+        android:ems="10" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/editText3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/group_name"
+        android:layout_below="@+id/group_name"
+        android:ems="10" />
+
+    <Button
+        android:id="@+id/button_create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/editText3"
+        android:layout_below="@+id/editText3"
+        android:layout_marginTop="20dp"
+        android:onClick="createGroup"
+        android:text="Create" />
+
+    <Button
+        android:id="@+id/button_paper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button_create"
+        android:layout_alignBottom="@+id/button_create"
+        android:layout_toRightOf="@+id/button_create"
+        android:onClick="joinGroup"
+        android:text="Join" />
+
+    <Button
+        android:id="@+id/button_scissor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button_paper"
+        android:layout_alignBottom="@+id/button_paper"
+        android:layout_toRightOf="@+id/button_paper"
+        android:onClick="leaveGroup"
+        android:text="Leave" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button_create"
+        android:layout_below="@+id/button_create"
+        android:onClick="sendMulticast"
+        android:text="Multicast" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/button4"
+        android:layout_alignBottom="@+id/button4"
+        android:layout_toRightOf="@+id/button4"
+        android:onClick="sendUnicast"
+        android:text="Unicast" />
+
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button4"
+        android:layout_below="@+id/button4"
+        android:onClick="getMembers"
+        android:text="Get member list" />
+
+    <Button
+        android:id="@+id/button7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/button5"
+        android:layout_below="@+id/button6"
+        android:onClick="requestGameStart"
+        android:text="Request game start" />
 
 </RelativeLayout>

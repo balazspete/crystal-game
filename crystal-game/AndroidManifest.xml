@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Author - Rajan Verma (Map related Stuff) -->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.crystalgame"
     android:versionCode="1"
@@ -6,21 +8,117 @@
 
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="18" />
+        android:targetSdkVersion="19" />
+
+    <permission
+        android:name="com.example.crystalgame.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" >
+    </permission>
+
+    <uses-permission android:name="com.example.crystalgame.permission.MAPS_RECEIVE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <!--
+     The following two permissions are not required to use
+     Google Maps Android API v2, but are recommended.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
     <application
+        android:name="com.example.crystalgame.CrystalGame"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
+        <!--
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="4132500" />
+        -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="4030500" />
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyDqHXD71OHSJ4hnmLk4t3Np_G5RktYSQXg" />
+
         <activity
-            android:name="com.example.crystalgame.MainActivity"
+            android:name="com.example.crystalgame.CrystalGameLaunchActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.crystalgame.groups.JoinGroupActivity"
+            android:parentActivityName=".CrystalGameLaunchActivity" >
+        </activity>
+        <activity
+            android:name="com.example.crystalgame.groups.SelectPlayerActivity"
+            android:parentActivityName=".groups.JoinGroupActivity" >
+        </activity>
+        <activity
+            android:name="com.example.crystalgame.GpsActivity"
+            android:label="@string/title_activity_gps" >
+        </activity>
+        <activity
+            android:name="com.example.crystalgame.SettingsActivity"
+            android:label="@string/title_activity_settings" >
+        </activity>
+        <activity
+            android:name="com.example.crystalgame.ui.GameMenuActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity android:name="com.example.crystalgame.game.CreateGameActivity" >
+        </activity>
+        <activity android:name="com.example.crystalgame.groups.CreateGroupActivity" >
+        </activity>
+        <activity android:name="com.example.crystalgame.game.GameBoundaryActivity" >
+        </activity>
+        <activity
+            android:name="com.example.crystalgame.game.GameActivity"
+            >
+            <!-- android:theme="@style/GameViewTheme"--> 
+        </activity>
+        <activity android:name="com.example.crystalgame.DataWarehouseTestActivity" >
+        </activity>
+
+        <!-- This activity is for testing -->
+        <activity
+            android:name="com.example.crystalgame.MainActivity"
+            android:label="@string/app_name_test" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.crystalgame.groups.GroupLobbyActivity"
+            android:label="@string/title_activity_group_lobby" >
+        </activity>
+        <activity
+            android:name="com.example.crystalgame.game.CharacterSelectionActivity"
+            android:label="@string/title_activity_character_selection" >
+        </activity>
+
+        <service android:name="com.example.crystalgame.location.GPSTracker" >
+        </service>
+
+        <activity
+            android:name="com.example.crystalgame.game.GameEndActivity"
+            android:label="@string/title_activity_game_end" >
         </activity>
     </application>
 

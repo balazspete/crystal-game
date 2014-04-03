@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    
+    <item
+        android:id="@+id/action_dw_test"
+        android:orderInCategory="100"
+        android:showAsAction="never|ifRoom"
+        android:title="DW" 
+        android:onClick="launchDW"
+        />
+    <item
+        android:id="@+id/action_leave_group"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_leave_group"/>
+
+</menu>

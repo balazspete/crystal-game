@@ -2,7 +2,43 @@
 <resources>
 
     <string name="app_name">Crystal Game</string>
+    <string name="app_name_test">Crystal Game Test Utility</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_gps">GpsActivity</string>
+    <string name="pref_default_server_address">example.com</string>
+    <string name="pref_server_address_name">Server address</string>
+    <string name="pref_default_port">3000</string>
+    <string name="pref_port_name">Port</string>
+    <string name="SERVER_ADDRESS">server_address</string>
+    <string name="PORT">port</string>
+    <string name="TIME">Time</string>
+    <string name="CRYSTL">Crystal</string>
+    <string name="MAGIC_ITEM">Magic</string>
+    <string name="ENERGY">Energy</string>
+    <string name="title_activity_data_warehouse_test">DataWarehouseTestActivity</string>
+    <string name="button_create_group">Create a group</string>
+    <string name="button_create_group2">Create the group</string>
+    <string name="button_join_group">Join a group</string>
+    <string name="button_join_group2">Join the group</string>
+    <string name="own_name_hint">Your desired alias</string>
+    <string name="player_name_hint">Search for player\'s alias</string>
+    <string name="group_name_hint">The name of your new group</string>
+    <string name="select_player">Select the other player</string>
+    <string name="title_activity_group_lobby">GroupLobbyActivity</string>
+    <string name="request_game_start">Request game start</string>
+    <string name="NameHint">player name</string>
+    <string name="reset_game_info">Game settings cleared</string>
+    <string name="action_save_boundary">Save</string>
+    <string name="choose_character_button_label">Choose</string>
+    <string name="title_activity_character_selection">Choose Character</string>
+    <string name="select_character_warning">Select a character!</string>
+    <string name="communication_failure">Failed to communicate with the server. Try again!</string>
+    <string name="action_leave_group">Leave group</string>
+    <string name="title_activity_game_end">GameEndActivity</string>
+    <string name="end_of_game">The game has ended.</string>
+    <string name="go_to_lobby">Go back to lobby</string>
+    
+    <string name="game_length">Game length (minutes)</string>
 
 </resources>

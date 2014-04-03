@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10sp" >
+
+    <EditText
+        android:id="@+id/player_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:ems="10"
+        android:hint="@string/own_name_hint" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/group_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/player_name"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/player_name"
+        android:layout_marginTop="18dp"
+        android:ems="10"
+        android:hint="@string/group_name_hint" />
+
+    <Button
+        android:id="@+id/button_get_player_alias"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/player_name"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/player_name"
+        android:layout_marginTop="18dp"
+        android:onClick="selectPlayer"
+        android:text="@string/select_player" />
+
+    <Button
+        android:id="@+id/boundary_select"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/button_get_player_alias"
+        android:layout_alignRight="@+id/button_get_player_alias"
+        android:layout_below="@+id/button_get_player_alias"
+        android:layout_marginTop="20dp"
+        android:onClick="createBoundary"
+        android:text="Set game boundary" />
+
+    <Button
+        android:id="@+id/button_create"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:onClick="createGroup"
+        android:text="@string/button_create_group2" />
+
+    <Button
+        android:id="@+id/button_join"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/boundary_select"
+        android:layout_alignBottom="@+id/boundary_select"
+        android:layout_alignParentRight="true"
+        android:onClick="joinGroup"
+        android:text="@string/button_join_group2" />
+
+</RelativeLayout>
